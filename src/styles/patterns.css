@@ -1,0 +1,590 @@
+/* SOCLE — états des composants.
+   Ce fichier existe parce que les styles inline ne savent pas exprimer
+   :hover / :focus-visible / :active / :disabled, et que chaque composant du système
+   doit montrer ces états. Toutes les valeurs viennent des jetons — rien n'est inventé ici.
+   Les aides de démo .is-hover / .is-active / .is-focus forcent un état dans les cartes
+   spécimens. */
+
+/* CE QUI EST UN JETON ICI, ET CE QUI RESTE UN LITTÉRAL — la frontière, écrite une fois.
+
+   JETON, dans tokens/scales.css : toute mesure qui porte de l'IDENTITÉ — la hauteur de la
+   navbar, la largeur du tiroir, la taille de la case à cocher, l'arrondi propre à la barre
+   d'onglets. Deux marques peuvent les vouloir différentes, et une marque les redéclare
+   depuis son fichier (§ FACULTATIF de brand.template.css) sans qu'une ligne d'ici bouge.
+
+   LITTÉRAL, et il le reste : les espacements INTERNES d'un composant — le gap entre une
+   icône et son libellé (0.5625rem, 0.625rem, 0.6875rem), le padding d'un bouton, d'une
+   cellule, d'un bandeau. Une vingtaine de valeurs, dont une bonne moitié ne tombe pas sur
+   l'échelle --space-*. Trois raisons de ne pas y toucher :
+     · les CALER sur le palier --space-* le plus proche CHANGE le rendu — 0.5625rem (9px)
+       n'a pas de voisin à moins de 1px, et à l'échelle d'un contrôle ça se voit ;
+     · en faire des jetons de marque donnerait un contrat où l'on règle l'écart entre une
+       icône et son libellé : personne ne remplit ce contrat-là ;
+     · ce sont des mesures de COMPACITÉ, c'est-à-dire de la structure — et la structure ne
+       se substitue pas, c'est la doctrine du dépôt.
+   Trois d'entre elles valent 0.875rem (padding de .ds-input, de .ds-banner, gap de
+   .ds-modal). Ce n'est pas le palier typographique du même nombre : celui-là est devenu
+   --text-body-sm et a quitté ce fichier. Un même nombre, deux métiers. */
+
+/* LA HAUTEUR D'UN CONTRÔLE VIENT DE SON RAIL, PAS DE L'INTERLIGNE DE LA PAGE — v0.10.0.
+   Le preflight fait hériter la police ET l'interligne aux contrôles natifs (`font: inherit`
+   sur button / input / select / textarea). Les trois règles ci-dessous n'avaient jamais
+   déclaré de `line-height` : elles reposaient EN SILENCE sur le `normal` du navigateur, et
+   sans cette ligne elles passeraient à --leading-body et GRANDIRAIENT. Mesuré, sous 64rem :
+   le champ à 47px là où le rail tactile vaut 44 — donc désaligné du bouton posé à côté, ce
+   que le rail unique existe précisément pour empêcher ; l'onglet 36 -> 39 ; l'item de menu
+   déroulant 38 -> 41.
+   On rend la dépendance EXPLICITE au lieu de la laisser dériver avec l'interligne du corps
+   de texte. Les autres contrôles natifs du système ne sont PAS ici : leur boîte est calée
+   par une hauteur fixe ou un min-height (--control-md, --page-min, --cal-day, --modal-close),
+   leur géométrie ne bouge pas d'un pixel, et l'héritage y fait même CONVERGER les rendus
+   <a> et <button> de .ds-sidenav, qui divergeaient.
+   `.ds-btn` déclare déjà la sienne (line-height:1) et `.ds-textarea` la sienne
+   (--leading-normal) : toutes deux sont plus bas dans le fichier, elles restent maîtres. */
+.ds-input,.ds-tab,.ds-dropdown__item{line-height:normal}
+
+/* ---------- LES CRÉNEAUX D'ICÔNE — v0.3.0 ---------- */
+/* UNE ICÔNE SE DIMENSIONNE SELON LE CRÉNEAU QUI LA PORTE, et le créneau est du CSS.
+   Le mécanisme : `.ds-icon` (et `.ds-spinner`) lisent `var(--ds-icon-size, 1.25rem)` ;
+   la propriété est enregistrée `inherits:false` dans core.css — une règle posée sur un
+   conteneur est INERTE, une règle doit viser le `svg` (ou le `.ds-spinner`) lui-même.
+   La prop `size` d'un site d'appel écrit la propriété INLINE : elle gagne sur toute
+   règle de créneau — la surcharge optique au site d'appel reste possible, et doit le
+   rester (une croix ouverte lit plus petit qu'un aplat : on la remonte d'un cran).
+   LES TAILLES SONT LES DÉFAUTS DU SOCLE : un contrôle sm rend 1rem, un md 1.125rem, un
+   badge dense 0.75rem, une pastille de dialogue ou de panneau 1.5rem, un déclencheur de
+   champ 1rem ; tout le reste tombe sur le repli 1.25rem. Une marque qui veut d'autres
+   créneaux réécrit CES règles — c'est le fichier du projet (voir PORTAGE.md § 5).
+   Ces tailles sont des mesures de COMPACITÉ interne, pas d'identité : des littéraux,
+   comme les gaps — voir la doctrine en tête de fichier.
+   @tokenref-fallback: --ds-icon-size — le repli EST le défaut : la propriété n'est
+   déclarée nulle part exprès (enregistrée guaranteed-invalid dans core.css), pour que
+   1.25rem reprenne la main partout où ni un créneau ni un site d'appel ne la pose. */
+.ds-icon{width:var(--ds-icon-size,1.25rem);height:var(--ds-icon-size,1.25rem);flex:none;display:block}
+.ds-btn--sm :is(svg,.ds-spinner){--ds-icon-size:1rem}
+.ds-btn--md :is(svg,.ds-spinner){--ds-icon-size:1.125rem}
+.ds-icon-btn--sm svg{--ds-icon-size:1rem}
+.ds-icon-btn--md svg{--ds-icon-size:1.125rem}
+.ds-select__chev,.ds-datepicker__trigger svg{--ds-icon-size:1rem}
+.ds-badge--dense svg{--ds-icon-size:0.75rem}
+.ds-pastille--dialogue svg{--ds-icon-size:1.5rem}
+.ds-pastille--panneau svg{--ds-icon-size:1.5rem}
+
+/* ---------- actions: Button ---------- */
+.ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:var(--control-md);padding:0.8125rem 1.375rem;font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-semibold);line-height:1;border:none;border-radius:calc(var(--control-md) / 3);cursor:pointer;text-decoration:none;white-space:nowrap;box-sizing:border-box;outline:none;transition:transform var(--duration-fast) var(--ease-standard),box-shadow var(--duration-base) var(--ease-standard),background var(--duration-base) var(--ease-standard),border-color var(--duration-base) var(--ease-standard),filter var(--duration-base) var(--ease-standard)}
+.ds-btn--sm{gap:0.4375rem;min-height:var(--control-sm);padding:0.5625rem 1rem;font-size:var(--text-body-sm)}
+.ds-btn--lg{gap:0.5625rem;min-height:var(--control-lg);padding:0.9375rem 1.625rem;font-size:var(--text-body)}
+/* LE RAYON DES CONTRÔLES EST UN RATIO DU RAIL — hauteur / 3 (décision Yunary) : 16 à 48,
+   14 à 42, ~12,7 à 38, ~14,7 sous 64rem. Un rayon FIXE rendait les petits contrôles
+   quasi-pill ; le ratio garde la personnalité Yunary à toutes les hauteurs. Chips,
+   pastilles, tooltips et menus restent sur l'échelle --radius-*. */
+.ds-btn--sm{border-radius:calc(var(--control-sm) / 3)}
+.ds-btn--lg{border-radius:calc(var(--control-lg) / 3)}
+.ds-btn--block{width:100%}
+.ds-btn--primary{background:var(--brand-gradient);color:var(--primary-foreground);box-shadow:var(--shadow-glow)}
+.ds-btn--primary:hover:not(:disabled),.ds-btn--primary.is-hover{box-shadow:var(--shadow-glow-lg);transform:translateY(-1px)}
+.ds-btn--primary:active:not(:disabled),.ds-btn--primary.is-active{transform:translateY(1px);box-shadow:var(--shadow-glow-sm)}
+.ds-btn--primary:focus-visible,.ds-btn--primary.is-focus{box-shadow:var(--shadow-glow),0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+.ds-btn--secondary{background:var(--secondary);color:var(--secondary-foreground);border:1.5px solid var(--border)}
+.ds-btn--secondary:hover:not(:disabled),.ds-btn--secondary.is-hover{background:var(--surface-alt);border-color:var(--primary)}
+.ds-btn--secondary:active:not(:disabled),.ds-btn--secondary.is-active{transform:translateY(1px)}
+.ds-btn--ghost{background:transparent;color:var(--foreground)}
+.ds-btn--ghost:hover:not(:disabled),.ds-btn--ghost.is-hover{background:var(--surface-alt)}
+.ds-btn--ghost:active:not(:disabled),.ds-btn--ghost.is-active{transform:translateY(1px)}
+.ds-btn--danger{background:var(--destructive);color:var(--destructive-foreground)}
+.ds-btn--danger:hover:not(:disabled),.ds-btn--danger.is-hover{filter:brightness(.93);transform:translateY(-1px)}
+.ds-btn--danger:active:not(:disabled),.ds-btn--danger.is-active{transform:translateY(1px)}
+.ds-btn--secondary:focus-visible,.ds-btn--ghost:focus-visible,.ds-btn--danger:focus-visible,.ds-btn--secondary.is-focus,.ds-btn--ghost.is-focus,.ds-btn--danger.is-focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+/* LA SURFACE D'UN BOUTON SECONDAIRE, DÉCLARÉE À LA MAIN.
+   Le socle ne DÉDUIT pas la surface ici : `.ds-btn--secondary` porte --secondary partout, et
+   l'échelle de surfaces du gabarit garantit déjà que --secondary se distingue de --card
+   (check-surfaces.mjs, seuil 1,04). Rien à réparer tant que ce fichier n'est pas retouché.
+   La prop `surface` de Button et IconButton existe quand même, et pour deux raisons.
+   1. C'EST L'API DE L'INVENTAIRE. Le gabarit garantit le nom, l'emplacement et l'API des
+      37 composants — un projet né d'ici doit avoir les mêmes props que les autres.
+   2. LE JOUR OÙ CE FICHIER CHANGE. patterns.css appartient au projet client : une marque qui
+      rapproche --secondary de --card devra déduire la surface, comme le fait la marque
+      Julien Fernandes. La déduction ne prévoit alors qu'UN niveau — un bouton sur une carte —
+      et un panneau --background posé DANS la carte peint le bouton de sa propre couleur.
+      `surface="page"` est le cran de rattrapage, prêt d'avance.
+   « card » force --background hors d'une vraie .ds-card, pour un conteneur qui n'en a que
+   l'apparence : celui-là rend quelque chose dès aujourd'hui.
+   Les sélecteurs valent 0,2,0 pour passer devant une éventuelle déduction (0,2,0 elle aussi)
+   écrite plus haut ; le survol, à 0,3,0, continue de passer devant tout. */
+.ds-btn--secondary.ds-btn--on-page,.ds-icon-btn--secondary.ds-icon-btn--on-page{background:var(--secondary)}
+.ds-btn--secondary.ds-btn--on-card,.ds-icon-btn--secondary.ds-icon-btn--on-card{background:var(--background)}
+.ds-btn:disabled,.ds-btn.is-disabled{opacity:.5;cursor:not-allowed;transform:none}
+.ds-btn.is-loading{cursor:progress}
+.ds-spin{animation:ds-spin var(--duration-rotate) linear infinite;flex:none}
+@keyframes ds-spin{to{transform:rotate(360deg)}}
+
+/* ---------- actions: IconButton ---------- */
+.ds-icon-btn{display:inline-flex;align-items:center;justify-content:center;width:var(--icon-control-md);height:var(--icon-control-md);padding:0;border:1.5px solid var(--border);background:var(--secondary);color:var(--foreground);border-radius:calc(var(--icon-control-md) / 3);cursor:pointer;box-sizing:border-box;outline:none;transition:background var(--duration-base) var(--ease-standard),border-color var(--duration-base) var(--ease-standard),color var(--duration-base) var(--ease-standard),box-shadow var(--duration-base) var(--ease-standard)}
+.ds-icon-btn--sm{width:var(--icon-control-sm);height:var(--icon-control-sm)}
+.ds-icon-btn--lg{width:var(--icon-control-lg);height:var(--icon-control-lg)}
+.ds-icon-btn--sm{border-radius:calc(var(--icon-control-sm) / 3)}
+.ds-icon-btn--lg{border-radius:calc(var(--icon-control-lg) / 3)}
+.ds-icon-btn--secondary:hover:not(:disabled),.ds-icon-btn--secondary.is-hover,.ds-icon-btn--ghost:hover:not(:disabled),.ds-icon-btn--ghost.is-hover{background:var(--surface-alt)}
+.ds-icon-btn--ghost{border:none;background:transparent}
+.ds-icon-btn--primary{border:none;background:var(--brand-gradient);color:var(--primary-foreground);box-shadow:var(--shadow-glow)}
+.ds-icon-btn--primary:hover:not(:disabled),.ds-icon-btn--primary.is-hover{box-shadow:var(--shadow-glow-lg);transform:translateY(-1px)}
+.ds-icon-btn--danger{border:none;background:var(--destructive);color:var(--destructive-foreground)}
+.ds-icon-btn--danger:hover:not(:disabled),.ds-icon-btn--danger.is-hover{filter:brightness(.93)}
+/* LA VARIANTE « SÉLECTIONNÉ DOUX » — v0.3.0. Fond --accent, sans bordure, icône
+   --primary : l'état d'un lien-icône ou d'un raccourci actif. Sans elle, une app
+   détourne l'aide de démo `is-active` et annule la bordure en style inline — c'est
+   arrivé. L'icône est DÉCORATIVE et de marque : elle prend --primary, comme la pastille
+   (règle consolidée au-dessus de .ds-pastille--brand) — à vérifier au portage : le
+   couple --primary / --accent doit tenir le seuil 3:1 des graphiques non textuels,
+   check-contrast le mesure. Le survol tire la plaque vers la marque, pas vers
+   --surface-alt : la variante EST une teinte, son survol reste dans la teinte.
+   Button n'a pas ce jumeau, et c'est délibéré : le besoin n'est attesté que sur le
+   carré d'icône — on promeut au deuxième appelant, jamais avant. */
+.ds-icon-btn--accent{border:none;background:var(--accent);color:var(--primary)}
+.ds-icon-btn--accent:hover:not(:disabled),.ds-icon-btn--accent.is-hover{background:color-mix(in srgb,var(--primary) 10%,var(--accent))}
+.ds-icon-btn.is-active,.ds-icon-btn--secondary[aria-pressed="true"]{border-color:var(--primary);background:var(--accent);color:var(--primary-readable)}
+.ds-icon-btn:focus-visible,.ds-icon-btn.is-focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+.ds-icon-btn:disabled,.ds-icon-btn.is-disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* ---------- forms ---------- */
+.ds-field{display:flex;flex-direction:column;gap:var(--space-2)}
+.ds-label{font-size:var(--text-caption);font-weight:var(--weight-semibold);color:var(--text-secondary);letter-spacing:0}
+/* L'astérisque « requis ». Était un style inline dans FormField.tsx — une décision du
+   socle qu'aucun sélecteur ne pouvait viser (v0.3.0, la doctrine du créneau). */
+.ds-label__required{color:var(--primary)}
+.ds-help{font-size:var(--text-caption);color:var(--text-muted)}
+.ds-error{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-caption);font-weight:var(--weight-medium);color:var(--destructive-readable)}
+.ds-input{width:100%;min-height:var(--control-md);padding:0.6875rem 0.875rem;box-sizing:border-box;font-family:var(--font-body);font-size:var(--text-control);color:var(--foreground);background:var(--secondary);border:1.5px solid var(--input);border-radius:calc(var(--control-md) / 3);outline:none;transition:border-color var(--duration-base) var(--ease-standard),box-shadow var(--duration-base) var(--ease-standard)}
+.ds-input--on-card{background:var(--background)}
+/* Un champ DÉDUIT sa surface porteuse au lieu de l'attendre en prop. --secondary est le
+   remplissage d'un contrôle posé sur la MISE EN PAGE ; dans une carte, une modale, une
+   feuille ou un popover, la porteuse est plus claire que la page et le champ doit passer
+   SOUS elle, sur --background. Couvre Input, Textarea, Select et le déclencheur de
+   DatePicker (tous portent .ds-input). La prop surface="card" reste comme échappatoire
+   explicite, elle n'est plus une obligation. */
+.ds-card .ds-input,.ds-modal .ds-input,.ds-actionsheet .ds-input,.ds-dropdown .ds-input,.ds-datepicker__pop .ds-input{background:var(--background)}
+.ds-input--sm{min-height:var(--control-sm)}
+.ds-input--lg{min-height:var(--control-lg)}
+.ds-input--sm{border-radius:calc(var(--control-sm) / 3)}
+.ds-input--lg{border-radius:calc(var(--control-lg) / 3)}
+.ds-input::placeholder{color:var(--text-muted)}
+.ds-input:focus,.ds-input.is-focus{border-color:var(--ring)}
+.ds-input.is-error,.ds-input[aria-invalid="true"]{border-color:var(--destructive)}
+.ds-input.is-error:focus,.ds-input[aria-invalid="true"]:focus{border-color:var(--destructive)}
+.ds-input:disabled,.ds-input.is-disabled{cursor:not-allowed;background:var(--muted);color:var(--muted-foreground)}
+/* LE CHAMP À UNITÉ — v0.3.0. L'unité (« kg », « € », « min ») est une méta posée DANS
+   le champ, à droite, en sourdine : elle ne se clique pas, ne se lit pas deux fois
+   (aria-hidden — le libellé du FormField la nomme). Le padding réservé vaut --space-7 :
+   assez pour trois caractères, la limite documentée. Une unité plus longue est un
+   SUFFIXE de libellé, pas une unité de champ.
+   LE RETRAIT DE L'UNITÉ SUIT LE PADDING DU CHAMP, il ne le devine pas. `1rem` était un
+   littéral hérité du socle de marque, où `.ds-input` porte justement `…0 1rem` : ici le
+   champ est à `0.875rem`, et l'unité rendait 2px plus à l'intérieur que le texte qu'elle
+   accompagne. Si le padding de `.ds-input` bouge, cette valeur bouge avec lui. */
+.ds-input-unit{position:relative;display:block;width:100%}
+.ds-input-unit .ds-input{padding-right:var(--space-7)}
+.ds-input-unit__label{position:absolute;right:0.875rem;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:var(--text-body-sm)}
+.ds-textarea{height:auto;min-height:0;resize:vertical;line-height:var(--leading-normal)}
+.ds-select{position:relative;display:block}
+.ds-select select{appearance:none;-webkit-appearance:none;padding-right:var(--space-7);cursor:pointer}
+.ds-select__chev{position:absolute;right:var(--space-4);top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted)}
+.ds-choice{display:inline-flex;align-items:center;gap:0.5625rem;cursor:pointer;font-size:var(--text-body-sm);color:var(--foreground);line-height:var(--leading-snug);position:relative}
+.ds-choice input{position:absolute;opacity:0;width:0;height:0}
+.ds-choice__box{flex:none;display:inline-flex;align-items:center;justify-content:center;width:var(--choice-box);height:var(--choice-box);border:1.5px solid var(--input);background:var(--background);border-radius:var(--choice-box-radius);color:var(--primary-foreground);transition:background var(--duration-fast) var(--ease-standard),border-color var(--duration-fast) var(--ease-standard),box-shadow var(--duration-fast) var(--ease-standard)}
+.ds-choice__box--radio{border-radius:var(--radius-pill)}
+.ds-choice__box>*{opacity:0;transition:opacity var(--duration-fast) var(--ease-standard)}
+.ds-choice:hover .ds-choice__box,.ds-choice.is-hover .ds-choice__box{border-color:var(--primary)}
+/* PAS DE LISERÉ SUR LE DÉGRADÉ — v0.3.0. Une bordure de couleur PLATE autour d'un fond
+   en dégradé se voit : en haut à gauche le fond est à son arrêt clair, la bordure au bout
+   sombre — un liseré. La bordure passe TRANSPARENTE et le dégradé se peint `border-box` :
+   il se dessine SOUS elle, sur toute la boîte — le mot-clé règle origin ET clip, sinon
+   l'origine resterait padding-box et la zone de bordure montrerait la répétition du tile,
+   pas son prolongement. La boîte garde sa taille : les 1.5px sont toujours là. */
+.ds-choice input:checked+.ds-choice__box,.ds-choice.is-checked .ds-choice__box{background:var(--brand-gradient) border-box;border-color:transparent}
+.ds-choice input:checked+.ds-choice__box>*,.ds-choice.is-checked .ds-choice__box>*{opacity:1}
+/* Le radio coché revient sur un fond PLAT : sa bordure redevient un anneau visible, et
+   doit donc REPRENDRE --brand-to — sans cette déclaration il hériterait du transparent
+   posé juste au-dessus et l'anneau disparaîtrait. */
+.ds-choice input:checked+.ds-choice__box--radio,.ds-choice.is-checked .ds-choice__box--radio{background:var(--background);border-color:var(--brand-to)}
+/* Indéterminée — la case d'en-tête d'une sélection partielle : remplie comme cochée, mais
+   un trait (minus) à la place de la coche. La propriété DOM `indeterminate` est posée par
+   le composant via sa ref ; le CSS ne lit que la classe. */
+.ds-choice.is-indeterminate .ds-choice__box{background:var(--brand-gradient) border-box;border-color:transparent}
+.ds-choice.is-indeterminate .ds-choice__box>*{opacity:1}
+.ds-choice input:focus-visible+.ds-choice__box,.ds-choice.is-focus .ds-choice__box{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+.ds-choice.is-disabled{opacity:.5;cursor:not-allowed}
+.ds-choice__dot{width:var(--choice-dot);height:var(--choice-dot);border-radius:var(--radius-pill);background:var(--brand-gradient)}
+.ds-switch{display:inline-flex;align-items:center;gap:0.5625rem;cursor:pointer;font-size:var(--text-body-sm);position:relative}
+.ds-switch input{position:absolute;opacity:0;width:0;height:0}
+/* Mesures en jetons (--switch-*) : la course du knob en DÉCOULE (calc), elle n'est plus un
+   littéral inventé. Fond du knob = --tone-light-alt (jamais #fff), relief = --shadow-knob. */
+.ds-switch__track{position:relative;flex:none;width:var(--switch-w);height:var(--switch-h);border-radius:var(--radius-pill);background:var(--border);transition:background var(--duration-base) var(--ease-standard),box-shadow var(--duration-base) var(--ease-standard)}
+.ds-switch__knob{position:absolute;top:var(--switch-inset);left:var(--switch-inset);width:var(--switch-knob);height:var(--switch-knob);border-radius:var(--radius-pill);background:var(--tone-light-alt);box-shadow:var(--shadow-knob);transition:transform var(--duration-base) var(--ease-standard)}
+/* Symétrie avec .ds-choice:hover : le survol annonce l'interaction. La piste non cochée
+   se teinte vers --primary ; cochée, la règle :checked ci-dessous (plus spécifique, ou
+   plus tardive pour .is-checked) garde le plein --primary. */
+.ds-switch:hover .ds-switch__track,.ds-switch.is-hover .ds-switch__track{background:color-mix(in srgb,var(--primary) 30%,var(--border))}
+.ds-switch input:checked+.ds-switch__track,.ds-switch.is-checked .ds-switch__track{background:var(--brand-gradient)}
+.ds-switch input:checked+.ds-switch__track .ds-switch__knob,.ds-switch.is-checked .ds-switch__knob{transform:translateX(calc(var(--switch-w) - var(--switch-knob) - var(--switch-inset) * 2))}
+.ds-switch input:focus-visible+.ds-switch__track,.ds-switch.is-focus .ds-switch__track{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+.ds-switch.is-disabled{opacity:.5;cursor:not-allowed}
+
+/* ---------- data-display: Card · Badge · Tooltip ---------- */
+/* Card — header slots. Passing no slot renders exactly as before. */
+/* L'ALIGNEMENT DE L'EN-TÊTE EST DÉCIDÉ PAR LE SOCLE, EN DEUX CAS — v0.4.0.
+   Le flex-start historique n'avait jamais rencontré un design réel : mesuré sur les
+   maquettes d'une app consommatrice, le centrage est la langue du design, et les
+   en-têtes recomposés à la main s'alignaient de trois façons sur un même écran.
+   La règle : titre SIMPLE -> center (le défaut ci-dessous) ; titre ET sous-titre ->
+   flex-start (--stacked, posé par Card lui-même quand `subtitle` est passé) — l'action
+   s'aligne sur le titre, elle ne flotte pas entre deux lignes. AUCUNE prop d'alignement
+   au site d'appel : c'est tout l'objet de la règle.
+   `baseline` est ÉCARTÉ, preuve à l'appui : pour qu'un badge tombe juste dans une
+   rangée en baseline, il faut écrire `align-self:center; position:relative; top:-1px`
+   dessus — une règle qui exige une retouche par instance n'est pas une règle. */
+.ds-card__header{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4)}
+.ds-card__header--stacked{align-items:flex-start}
+.ds-card__header--airy{margin-bottom:var(--space-6)}
+.ds-card__header-main{display:flex;flex-direction:column;gap:0.1875rem;flex:1;min-width:0}
+.ds-card__title{margin:0;font-family:var(--font-display);font-weight:var(--heading-weight);text-transform:var(--heading-transform);font-size:var(--text-heading-sm);letter-spacing:var(--tracking-heading-sm);line-height:var(--leading-snug)}
+.ds-card__title--lg{font-size:var(--text-subheading);letter-spacing:var(--tracking-subheading);line-height:var(--leading-heading)}
+.ds-card__subtitle{font-size:var(--text-body-sm);color:var(--text-muted);line-height:var(--leading-snug)}
+.ds-card__action{flex:none;margin-left:auto}
+.ds-card{background:var(--card);color:var(--card-foreground);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--card-pad);box-shadow:var(--shadow-sm);box-sizing:border-box}
+.ds-card--lg{border-radius:var(--radius-xl);padding:var(--card-pad-lg)}
+.ds-card--flush{padding:0;overflow:hidden}
+.ds-card--interactive{cursor:pointer;transition:box-shadow var(--duration-base) var(--ease-standard),transform var(--duration-base) var(--ease-standard)}
+.ds-card--interactive:hover,.ds-card--interactive.is-hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.ds-card--interactive:active,.ds-card--interactive.is-active{transform:translateY(0);box-shadow:var(--shadow-sm)}
+.ds-card--interactive:focus-visible,.ds-card--interactive.is-focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+.ds-card--feature{background:var(--grad-soft);border-color:color-mix(in srgb,var(--brand-from) 28%,transparent)}
+.ds-badge{display:inline-flex;align-items:center;gap:0.375rem;min-height:var(--badge-h);padding:0.25rem 0.6875rem;box-sizing:border-box;border-radius:var(--radius-pill);font-family:var(--font-body);font-size:0.78125rem;font-weight:var(--weight-semibold);line-height:1.3;white-space:nowrap}
+.ds-badge--dense{min-height:var(--badge-h-dense);padding-block:0.0625rem}
+.ds-badge--coral{background:var(--pill-coral-bg);color:var(--pill-coral-fg)}
+.ds-badge--amber{background:var(--pill-amber-bg);color:var(--pill-amber-fg)}
+.ds-badge--danger{background:var(--pill-danger-bg);color:var(--pill-danger-fg)}
+.ds-badge--warning{background:var(--pill-warning-bg);color:var(--pill-warning-fg)}
+.ds-badge--success{background:var(--pill-success-bg);color:var(--pill-success-fg)}
+.ds-badge--neutral{background:var(--pill-neutral-bg);color:var(--pill-neutral-fg)}
+.ds-badge--accent{background:var(--accent);color:var(--primary-readable)}
+.ds-badge--outline{background:transparent;color:var(--text-secondary);box-shadow:inset 0 0 0 1px var(--border)}
+.ds-tooltip{position:relative;display:inline-flex}
+.ds-tooltip__bubble{position:absolute;bottom:calc(100% + 0.5625rem);left:50%;transform:translateX(-50%) translateY(0.25rem);padding:0.5rem 0.75rem;border-radius:var(--radius-md);background:var(--tone-dark);color:var(--text-inverted);font-size:var(--text-caption);font-weight:var(--weight-semibold);line-height:1.3;white-space:nowrap;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:opacity var(--duration-fast) var(--ease-standard),transform var(--duration-fast) var(--ease-standard);z-index:var(--z-popover)}
+.ds-tooltip__bubble::after{content:"";position:absolute;left:50%;bottom:-0.25rem;width:0.5rem;height:0.5rem;background:inherit;transform:translateX(-50%) rotate(45deg)}
+.dark .ds-tooltip__bubble{background:var(--tone-light-alt);color:var(--tone-dark)}
+.ds-tooltip:hover .ds-tooltip__bubble,.ds-tooltip:focus-within .ds-tooltip__bubble,.ds-tooltip.is-open .ds-tooltip__bubble{opacity:1;transform:translateX(-50%) translateY(0)}
+.ds-tooltip--bottom .ds-tooltip__bubble{bottom:auto;top:calc(100% + 0.5625rem)}
+.ds-tooltip--bottom .ds-tooltip__bubble::after{bottom:auto;top:-0.25rem}
+
+/* ---------- data-display: Pastille — the icon tile. Sizes named by context. ---------- */
+.ds-pastille{flex:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}
+.ds-pastille--carte{width:var(--pastille-carte);height:var(--pastille-carte);border-radius:var(--radius-sm)}
+.ds-pastille--dialogue{width:var(--pastille-dialogue);height:var(--pastille-dialogue);border-radius:var(--radius-md)}
+.ds-pastille--panneau{width:var(--pastille-panneau);height:var(--pastille-panneau);border-radius:var(--radius-lg)}
+.ds-pastille--heros{width:var(--pastille-heros);height:var(--pastille-heros);border-radius:var(--radius-xl)}
+.ds-pastille--ecran{width:var(--pastille-ecran);height:var(--pastille-ecran);border-radius:var(--radius-2xl)}
+.ds-pastille--rond{border-radius:var(--radius-pill)}
+.ds-pastille--brand{background:var(--pill-coral-bg);color:var(--primary)}
+/* LE TON PLEIN DE LA MARQUE — la tuile que le socle n'avait pas. Il portait la tuile
+   DOUCE (--grad-soft, ci-dessus) et le bouton PLEIN (.ds-btn--primary,
+   .ds-icon-btn--primary), et rien entre les deux : une app qui voulait un carré en dégradé
+   plein NON interactif devait recomposer le remplissage à la main.
+   ⚠ AUCUNE LUEUR ICI, et ce n'est pas un oubli. Dans ce système la lueur marque ce qui se
+   PRESSE : seuls les deux boutons primaires la portent. Les cinq autres endroits où le
+   dégradé remplit quelque chose — barre de progression, case à cocher, pastille du radio,
+   piste de l'interrupteur, jour sélectionné du calendrier — n'en ont pas, et une Pastille
+   ne se clique jamais. Un appelant qui veut le halo l'ajoute chez lui, en le sachant. */
+.ds-pastille--brand-solid{background:var(--brand-gradient);color:var(--primary-foreground)}
+.ds-pastille--coral{background:var(--pill-coral-bg);color:var(--pill-coral-fg)}
+.ds-pastille--amber{background:var(--pill-amber-bg);color:var(--pill-amber-fg)}
+.ds-pastille--success{background:var(--pill-success-bg);color:var(--pill-success-fg)}
+.ds-pastille--warning{background:var(--pill-warning-bg);color:var(--pill-warning-fg)}
+.ds-pastille--danger{background:var(--pill-danger-bg);color:var(--pill-danger-fg)}
+.ds-pastille--neutral{background:var(--pill-neutral-bg);color:var(--pill-neutral-fg)}
+.ds-pastille--inverse{background:var(--foreground);color:var(--background)}
+.ds-pastille--outlined{border:1px solid color-mix(in srgb,currentColor 22%,transparent)}
+
+/* ---------- feedback: Toast · Banner · EmptyState · Skeleton ---------- */
+.ds-toast{display:flex;align-items:center;gap:0.6875rem;padding:0.8125rem 0.9375rem;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--card);color:var(--card-foreground);box-shadow:var(--shadow-lg);min-width:var(--toast-w-min);max-width:var(--toast-w-max);box-sizing:border-box}
+.ds-toast__icon{flex:none;display:inline-flex;align-items:center;justify-content:center;width:1.5rem;height:1.5rem;border-radius:var(--radius-sm)}
+.ds-toast__title{font-size:var(--text-body-sm);font-weight:var(--weight-semibold);line-height:var(--leading-snug)}
+.ds-toast__desc{font-size:var(--text-caption);color:var(--muted-foreground);line-height:var(--leading-normal)}
+.ds-toast__close{flex:none;display:inline-flex;border:none;background:transparent;color:var(--muted-foreground);cursor:pointer;padding:0.125rem;border-radius:var(--radius-sm)}
+.ds-toast__close:hover{color:var(--foreground)}
+.ds-banner{display:flex;align-items:center;gap:0.6875rem;padding:0.875rem 1rem;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--card)}
+.ds-banner--info{background:var(--accent);border-color:color-mix(in srgb,var(--primary) 30%,transparent);color:var(--primary-readable)}
+.ds-banner--danger{background:var(--pill-danger-bg);border-color:color-mix(in srgb,var(--destructive) 35%,transparent);color:var(--pill-danger-fg)}
+.ds-banner--warning{background:var(--pill-warning-bg);border-color:color-mix(in srgb,var(--brand-via) 35%,transparent);color:var(--pill-warning-fg)}
+.ds-banner--success{background:var(--pill-success-bg);border-color:color-mix(in srgb,var(--success) 35%,transparent);color:var(--pill-success-fg)}
+.ds-toast__body{display:flex;flex-direction:column;gap:0.125rem;flex:1}
+/* Tons de l'icône de Toast — la paire pill du même ton, comme Badge et Banner. info lit
+   --muted-foreground : le toast neutre est une méta, pas un message de marque. */
+.ds-toast__icon--success{background:var(--pill-success-bg);color:var(--pill-success-fg)}
+.ds-toast__icon--danger{background:var(--pill-danger-bg);color:var(--pill-danger-fg)}
+.ds-toast__icon--warning{background:var(--pill-warning-bg);color:var(--pill-warning-fg)}
+.ds-toast__icon--info{background:var(--pill-neutral-bg);color:var(--muted-foreground)}
+.ds-banner__icon{margin-top:0.0625rem}
+.ds-banner__main{display:flex;flex-direction:column;gap:0.125rem;flex:1}
+.ds-banner__title{font-size:var(--text-body-sm);font-weight:var(--weight-semibold);color:inherit}
+/* En ton info le bandeau est sur --accent : le titre repasse à l'encre pleine. */
+.ds-banner--info .ds-banner__title{color:var(--foreground)}
+.ds-banner__text{font-size:var(--text-caption);line-height:var(--leading-normal);color:var(--text-secondary)}
+.ds-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:0.75rem;padding:var(--space-6);border:1px dashed var(--border);border-radius:var(--radius-lg);background:var(--card)}
+.ds-empty__main{display:flex;flex-direction:column;gap:0.1875rem;align-items:center}
+.ds-empty__title{margin:0}
+/* 20rem : largeur max d'une colonne de texte courte — une mesure de LISIBILITÉ, pas
+   d'identité. Littéral structurel, comme les micro-espacements (voir la doctrine en tête). */
+.ds-empty__desc{max-width:20rem;color:var(--muted-foreground);font-size:var(--text-body-sm);line-height:var(--leading-normal)}
+/* Le point haut du shimmer prend --surface-alt, pas --accent : c'est un écart de
+   SURFACE, pas une teinte. Sur --accent il valait --muted en sombre — dégradé plat,
+   squelette immobile. */
+.ds-skel{display:block;background:linear-gradient(90deg,var(--muted) 0%,var(--surface-alt) 50%,var(--muted) 100%);background-size:560px 100%;border-radius:var(--radius-sm);animation:shimmer var(--duration-shimmer) infinite linear}
+
+/* ---------- overlays: Modal · Dropdown ---------- */
+.ds-scrim{position:fixed;inset:0;z-index:var(--z-modal);background:color-mix(in srgb,var(--tone-dark) 45%,transparent);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:var(--space-5)}
+.ds-modal{width:var(--modal-w);max-width:100%;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-radius:var(--radius-2xl);box-shadow:var(--shadow-lg);padding:var(--space-5);display:flex;flex-direction:column;gap:0.875rem;box-sizing:border-box}
+.ds-modal__close{width:var(--modal-close);height:var(--modal-close);border-radius:var(--radius-sm);border:none;background:transparent;color:var(--muted-foreground);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-left:auto}
+.ds-modal__close:hover:not(:disabled){background:var(--surface-alt);color:var(--foreground)}
+.ds-modal__close:disabled{opacity:.4;cursor:not-allowed;background:transparent;color:var(--muted-foreground)}
+.ds-modal__head{display:flex;align-items:flex-start;justify-content:space-between}
+.ds-modal__head--end{justify-content:flex-end}
+.ds-modal__title{margin:0}
+.ds-modal__text{margin:0}
+/* Modal phases — __desc and __foot officialise Modal.tsx's inline styles, values identical. */
+.ds-modal__desc{font-size:var(--text-body-sm);color:var(--muted-foreground);line-height:1.5;display:flex;flex-direction:column;gap:var(--space-3)}
+.ds-modal__foot{display:flex;gap:0.625rem;justify-content:flex-end;margin-top:0.25rem}
+.ds-modal__desc--block{display:block}
+.ds-modal__foot--center{justify-content:center}
+.ds-modal__result{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-2);padding-block:var(--space-2)}
+.ds-modal-wrap{display:flex;justify-content:center;width:100%}
+.ds-modal-slot{display:contents}
+/* Bottom-sheet grip — hidden until the modal is a sheet (under 64rem). */
+.ds-grip{display:none;flex:none;width:var(--grip-w);height:var(--space-1);margin-inline:auto;border-radius:var(--radius-pill);background:var(--border)}
+
+/* ActionSheet — the « ⋯ » menu on mobile. DOCTRINE: Dropdown is desktop only; under 64rem
+   a « ⋯ » menu ALWAYS opens as an ActionSheet. Same gesture, two screen sizes. */
+.ds-actionsheet{width:100%;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-bottom:0;border-radius:var(--radius-2xl) var(--radius-2xl) 0 0;box-shadow:var(--shadow-lg);padding:var(--space-2) var(--space-2) max(var(--space-3),env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:0.125rem;box-sizing:border-box}
+.ds-actionsheet .ds-grip{display:block;margin-block:var(--space-1) var(--space-2)}
+.ds-actionsheet__head{display:flex;flex-direction:column;gap:0.125rem;padding:var(--space-1) var(--space-3) var(--space-2)}
+.ds-actionsheet__title{font-size:var(--text-body-sm);font-weight:var(--weight-semibold)}
+.ds-actionsheet__subtitle{font-size:var(--text-caption);color:var(--text-muted)}
+.ds-actionsheet__item{display:flex;align-items:center;gap:0.625rem;min-height:var(--control-md);padding:0 var(--space-3);border:0;background:transparent;color:var(--foreground);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-medium);text-align:left;border-radius:var(--radius-sm);cursor:pointer;transition:background var(--duration-fast) var(--ease-standard)}
+.ds-actionsheet__item:hover,.ds-actionsheet__item.is-hover,.ds-actionsheet__item:focus-visible{background:var(--surface-alt);outline:none}
+.ds-actionsheet__item--danger{color:var(--destructive-readable)}
+.ds-actionsheet__note{font-size:var(--text-caption);color:var(--text-muted);line-height:var(--leading-normal);padding:var(--space-1) var(--space-3) var(--space-2)}
+/* PAS DE FILET DANS UNE FEUILLE D'ACTION — v0.8.0. La règle .ds-actionsheet__sep a été
+   retirée, et ActionSheet n'émet plus de <hr>. Un menu de BUREAU (.ds-dropdown) garde le
+   sien : il est dense, survolé à la souris, et le filet y sépare l'action destructrice du
+   reste. Une feuille du bas est haute, aérée, parcourue au pouce — le rythme des lignes
+   suffit, et l'action destructrice se signale déjà par sa couleur. */
+.ds-actionsheet__cancel{justify-content:center;font-weight:var(--weight-semibold);color:var(--text-secondary)}
+.ds-scrim--sheet{align-items:flex-end;padding:0}
+/* RÈGLE, pas effet de bord : au-dessus de 64 rem une ActionSheet ne s'ouvre JAMAIS en surface
+   modale — la doctrine ⋯ est tenue par le CSS, sans JS de point de rupture. */
+@media (min-width:64.0625rem){.ds-scrim--sheet{display:none}}
+/* Au-dessus de 64 rem elle n'existe QU'EN spécimen : un panneau, pas une feuille — 4 coins au
+   rayon 2xl, bordure complète, pas de poignée, largeur nommée --actionsheet-w-panneau. */
+.ds-actionsheet--panneau{width:var(--actionsheet-w-panneau);max-width:100%;border:1px solid var(--border);border-radius:var(--radius-2xl);padding-bottom:var(--space-2)}
+.ds-actionsheet--panneau .ds-grip{display:none}
+.ds-dropdown--floating{position:absolute;z-index:var(--z-popover)}
+.ds-dropdown{width:var(--dropdown-w);padding:0.375rem;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;gap:0.125rem;box-sizing:border-box}
+.ds-dropdown__item{display:flex;align-items:center;gap:0.625rem;width:100%;padding:0.5625rem 0.6875rem;border:0;background:transparent;color:var(--foreground);font-family:var(--font-body);font-size:var(--text-body-sm);text-align:left;border-radius:var(--radius-sm);cursor:pointer;transition:background var(--duration-fast) var(--ease-standard)}
+.ds-dropdown__item:hover,.ds-dropdown__item.is-hover,.ds-dropdown__item:focus-visible{background:var(--surface-alt);outline:none}
+.ds-dropdown__item--danger{color:var(--destructive-readable)}
+/* Le hint d'un item — le raccourci, la méta. Était couleur + taille inline dans
+   Dropdown.tsx : une décision du socle qu'aucun sélecteur ne pouvait viser (v0.3.0). */
+.ds-dropdown__hint{color:var(--text-muted);font-size:var(--text-caption)}
+.ds-dropdown__sep{height:1px;margin:0.25rem 0.375rem;background:var(--border);border:0}
+
+/* Modal as a bottom sheet under 64rem — the system's ONE breakpoint. Above it: nothing changes.
+   Inline panels (specimen cards, no scrim) are untouched: the rules require .ds-scrim. */
+@media (max-width:64rem){
+.ds-scrim{align-items:flex-end;padding:0}
+.ds-scrim .ds-modal{width:100%;max-width:none;border-radius:var(--radius-2xl) var(--radius-2xl) 0 0;border-inline:0;border-bottom:0;padding-bottom:max(var(--space-5),env(safe-area-inset-bottom));animation:ds-sheet-in var(--duration-slow) var(--ease-standard)}
+.ds-scrim .ds-modal .ds-grip{display:block;margin-bottom:var(--space-2)}
+}
+@keyframes ds-sheet-in{from{transform:translateY(100%)}to{transform:none}}
+
+/* ---------- navigation ---------- */
+.ds-navbar{position:sticky;top:0;z-index:var(--z-navbar);width:100%;background:var(--secondary);border-bottom:1px solid var(--border);transition:background-color var(--duration-base) var(--ease-standard),border-color var(--duration-base) var(--ease-standard),box-shadow var(--duration-base) var(--ease-standard)}
+.ds-navbar.is-scrolled{background:color-mix(in srgb,var(--secondary) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:var(--shadow-sm)}
+.ds-navbar__inner{display:flex;align-items:center;justify-content:space-between;gap:var(--space-5);height:var(--navbar-h)}
+.ds-navbar__links{display:flex;align-items:center;gap:var(--space-6)}
+.ds-navbar__cta{display:flex;align-items:center;gap:var(--space-3)}
+.ds-navlink{font-size:var(--text-body);font-weight:var(--weight-medium);color:var(--text-secondary);text-decoration:none;padding:var(--space-2) 0;transition:color var(--duration-fast) var(--ease-standard)}
+.ds-navlink:hover,.ds-navlink.is-hover{color:var(--foreground)}
+/* L'item actif se signale par sa GRAISSE, pas par un libellé coloré : l'orange est
+   rationné, et le lien actif cessait d'être lisible comme du texte. */
+.ds-navlink.is-active{color:var(--foreground);font-weight:var(--weight-semibold)}
+.ds-tabs{display:inline-flex;align-items:center;gap:var(--space-1);padding:var(--space-1);border-radius:var(--tabs-radius);min-height:var(--control-md);box-sizing:border-box;background:var(--secondary);border:1px solid var(--border)}
+.ds-tabs--on-card{background:var(--background)}
+.ds-tab{appearance:none;border:0;background:transparent;color:var(--text-muted);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-semibold);padding:var(--space-2) var(--space-4);border-radius:var(--radius-sm);cursor:pointer;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
+.ds-tab:hover,.ds-tab.is-hover{color:var(--foreground)}
+/* L'ÉLÉMENT SÉLECTIONNÉ PORTE LA PLAQUE DE MARQUE — --accent + --primary-readable (5,16 /
+   5,85 mesurés), le même état « sélectionné doux » que .ds-icon-btn--accent et le badge
+   accent — le TEXTE actif prend --primary, comme les icônes de marque (⚠ 2,86/3,49 sur
+   la plaque : sous 4,5 — décision de marque, texte 15/600 ; la sélection est aussi
+   portée par la plaque, l'ombre et la graisse). Depuis que --secondary a rejoint le ton carte (régime v0.5 du kit maître), un
+   actif posé en --background n'avait plus que ~1,05 d'écart avec sa barre : invisible.
+   La teinte chaude se lit dans les DEUX thèmes — plus de régime sombre séparé. */
+.ds-tab[aria-selected="true"],.ds-tab.is-selected{background:var(--accent);color:var(--primary);box-shadow:var(--shadow-sm)}
+/* Sur une carte, la plaque accent se confondrait avec la teinte de la carte : l'actif
+   reprend le régime historique — fond --card, texte --foreground — au-dessus de la barre
+   creusée en --background. */
+.ds-tabs--on-card .ds-tab[aria-selected="true"],.ds-tabs--on-card .ds-tab.is-selected{background:var(--card);color:var(--foreground)}
+/* La barre d'onglets DÉDUIT la carte comme le champ (même défaut d'opt-in que surface="card") :
+   posée dans une carte, elle se creuse en --background et son onglet actif remonte au niveau
+   de la carte. La prop onCard reste comme échappatoire explicite. */
+.ds-card .ds-tabs{background:var(--background)}
+.ds-card .ds-tabs .ds-tab[aria-selected="true"],.ds-card .ds-tabs .ds-tab.is-selected{background:var(--card);color:var(--foreground)}
+.ds-tab:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.ds-footer{border-top:1px solid var(--border);background:var(--background);color:var(--text-secondary)}
+.ds-footer__inner{display:flex;flex-wrap:wrap;gap:var(--space-7);justify-content:space-between;padding-block:var(--space-7)}
+/* 20rem : lisibilité de la ligne de signature — voir .ds-empty__desc. */
+.ds-footer__brand{display:flex;flex-direction:column;gap:var(--space-3);max-width:20rem}
+.ds-footer__note{font-size:var(--text-caption);color:var(--text-muted)}
+.ds-footer__cols{display:flex;flex-wrap:wrap;gap:var(--space-7)}
+.ds-footer__col{display:flex;flex-direction:column;gap:var(--space-3)}
+.ds-footer__link{font-size:var(--text-caption);color:var(--text-secondary)}
+.ds-footer__social{display:flex;gap:var(--space-3);padding-bottom:var(--space-6)}
+
+/* ---------- separator ---------- */
+.ds-sep{border:0;margin:0;flex:none;height:1px;width:100%;background:var(--border)}
+.ds-sep--vertical{width:1px;height:auto;min-height:1.5rem;align-self:stretch}
+.ds-sep--label{display:flex;align-items:center;gap:var(--space-3);height:auto;background:none;font-family:var(--font-body);font-size:var(--text-caption);font-weight:var(--weight-semibold);color:var(--text-muted);white-space:nowrap}
+.ds-sep--label::before,.ds-sep--label::after{content:"";flex:1;height:1px;background:var(--border)}
+
+/* ---------- spinner ---------- */
+/* La taille vient du créneau, comme l'icône — même propriété, même repli (voir LES
+   CRÉNEAUX D'ICÔNE) : c'est lui qui remplit le créneau quand un bouton charge, il doit
+   rendre la MÊME taille que l'icône qu'il remplace. */
+.ds-spinner{display:inline-block;flex:none;box-sizing:border-box;width:var(--ds-icon-size,1.25rem);height:var(--ds-icon-size,1.25rem);border-radius:var(--radius-pill);border:2px solid color-mix(in srgb,currentColor 25%,transparent);border-top-color:currentColor;animation:ds-spin var(--duration-spin) linear infinite}
+
+/* ---------- progress ---------- */
+/* Rail sur --surface-alt : un cran de séparation depuis la porteuse, dans les deux
+   thèmes. Pas --accent — une teinte de marque sous une barre --primary se confondrait
+   avec elle ; pas --border non plus, ce n'est pas un filet. */
+/* La BARRE REMPLIE porte le dégradé de marque, jamais l'aplat. C'est la doctrine que la
+   marque énonce elle-même pour le CTA — « --primary est une couleur de REMPLISSAGE, le CTA
+   réel porte --brand-gradient, pas cet aplat » — et elle vaut ici plus qu'ailleurs : une
+   barre de progression est l'endroit où une marque raconte l'avancement. Le socle
+   l'appliquait aux boutons et l'avait oubliée ici.
+   La PISTE, elle, reste --surface-alt : c'est un creux, pas une surface de marque. */
+.ds-progress{position:relative;display:block;width:100%;height:var(--progress-h);border-radius:var(--radius-xs);background:var(--surface-alt);overflow:hidden}
+.ds-progress__bar{position:absolute;inset-block:0;left:0;border-radius:inherit;background:var(--brand-gradient);transition:width var(--duration-base) var(--ease-standard)}
+.ds-progress--indeterminate .ds-progress__bar{width:40%;animation:ds-progress-slide var(--duration-shimmer) var(--ease-standard) infinite}
+@keyframes ds-progress-slide{0%{left:-40%}100%{left:100%}}
+
+/* ---------- table ---------- */
+.ds-table{width:100%;border-collapse:collapse;font-family:var(--font-body);font-size:var(--text-body-sm);line-height:var(--leading-snug);color:var(--foreground)}
+.ds-table th{text-align:left;font-size:var(--text-caption);font-weight:var(--weight-semibold);color:var(--text-secondary);padding:0.6875rem var(--space-4);border-bottom:1px solid var(--border);white-space:nowrap}
+.ds-table td{padding:0.8125rem var(--space-4);border-bottom:1px solid var(--border);vertical-align:middle}
+.ds-table tbody tr:last-child td{border-bottom:0}
+.ds-table--striped tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--muted) 55%,transparent)}
+.ds-table--hoverable tbody tr:hover td{background:var(--surface-alt)}
+.ds-table--framed{border-collapse:separate;border-spacing:0;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--card)}
+.ds-table--framed thead th{background:var(--background)}
+.ds-table--framed thead th:first-child{border-top-left-radius:calc(var(--radius-lg) - 1px)}
+.ds-table--framed thead th:last-child{border-top-right-radius:calc(var(--radius-lg) - 1px)}
+.ds-table--framed tbody tr:last-child td:first-child{border-bottom-left-radius:calc(var(--radius-lg) - 1px)}
+.ds-table--framed tbody tr:last-child td:last-child{border-bottom-right-radius:calc(var(--radius-lg) - 1px)}
+.ds-table--columns th:not(:last-child),.ds-table--columns td:not(:last-child){border-right:1px solid var(--border)}
+
+/* ---------- pagination ---------- */
+.ds-pagination{display:inline-flex;align-items:center;gap:var(--space-1);padding:var(--space-1);background:var(--secondary);border:1px solid var(--border);border-radius:var(--pagination-radius);min-height:var(--control-md);box-sizing:border-box}
+.ds-page{appearance:none;border:0;background:transparent;min-width:var(--page-min);min-height:var(--page-min);padding:0 var(--space-2);display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-semibold);color:var(--text-muted);cursor:pointer;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
+.ds-page:hover:not(:disabled):not(.ds-page--ellipsis){color:var(--foreground);background:var(--surface-alt)}
+.ds-page[aria-current="page"]{background:var(--accent);color:var(--primary);box-shadow:var(--shadow-sm)}
+.ds-page:disabled{opacity:.5;cursor:not-allowed}
+.ds-page:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.ds-page--ellipsis{cursor:default;pointer-events:none}
+
+/* ---------- appshell / sidebar ---------- */
+.ds-appshell{display:grid;grid-template-columns:auto 1fr;align-items:stretch;min-height:100%}
+/* AU-DESSUS DU SEUIL MOBILE, la barre COLLE et tient la hauteur de la fenêtre.
+   Sans ça, la cellule de grille s'étire à la hauteur du DOCUMENT : sur une page longue, le
+   logo et la navigation sortent de l'écran au défilement — précisément ce qu'une coque
+   d'outil ne doit pas faire. `align-self:start` est indispensable : `align-items:stretch`
+   de la grille annulerait le `sticky` sans lui.
+   Le document défile normalement, ce qui laisse fonctionner les barres `sticky top-0` des
+   écrans sans compensation de décalage. Sous le seuil, la barre redevient un tiroir. */
+@media (min-width:64.0625rem){
+  .ds-appshell .ds-sidebar{position:sticky;top:0;align-self:start;height:100dvh}
+}
+.ds-appshell__main{min-width:0}
+.ds-sidebar{display:flex;flex-direction:column;gap:var(--space-2);width:var(--sidebar-w);background:var(--secondary);border-right:1px solid var(--border);padding:var(--space-5) var(--space-4);box-sizing:border-box;transition:width var(--duration-base) var(--ease-standard)}
+/* TOUT CE QUI VIT DANS LA BARRE PARTAGE UN SEUL BORD OPTIQUE GAUCHE — 24 px (kit maître
+   v0.14.0) : --space-4 de boîte + --space-2 de contenu. Les 8 px du contenu existent pour
+   que la pilule de survol dépasse du texte, et c'est leur seul rôle. */
+.ds-sidebar.is-collapsed{width:var(--sidebar-w-collapsed);padding-inline:var(--space-3)}
+.ds-sidebar__head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);min-height:var(--sidebar-head-h);margin-bottom:var(--space-2);padding-inline:var(--space-2)}
+.ds-sidebar.is-collapsed .ds-sidebar__head{padding-inline:0}
+.ds-sidebar.is-collapsed .ds-sidebar__head{flex-direction:column;justify-content:center;gap:var(--space-2)}
+.ds-sidebar__toggle{appearance:none;border:0;background:transparent;color:var(--text-muted);cursor:pointer;display:inline-flex;padding:var(--space-2);border-radius:var(--radius-sm);transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
+.ds-sidebar__toggle:hover{background:var(--surface-alt);color:var(--foreground)}
+.ds-sidebar__toggle:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+/* L'ESPACEMENT INTER-GROUPES EST AU GROUPE, PLUS AU TITRE — v0.3.0. Chaque section rend
+   désormais un `.ds-sidebar__group` ; le gap de la nav sépare les GROUPES (--space-4),
+   le gap du groupe sépare ses entrées (--space-1, la valeur historique de la nav).
+   Avant, la séparation venait du padding-top du TITRE (--space-3 + le gap --space-1 =
+   16px) : deux groupes SANS titre se collaient à 4px. La somme est CONSERVÉE — 16px
+   entre groupes titrés, à l'identique — le titre perd son padding-top, devenu le rôle
+   du gap. Deux groupes sans titre passent de 4 à 16px : c'est le correctif. */
+.ds-sidebar__nav{display:flex;flex-direction:column;gap:var(--space-4);flex:1;overflow-y:auto;min-height:0}
+.ds-sidebar__group{display:flex;flex-direction:column;gap:var(--space-1)}
+.ds-sidebar__title{font-family:var(--font-body);font-size:0.6875rem;font-weight:var(--weight-bold);letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);padding:var(--space-3) var(--space-2) var(--space-1)}
+.ds-sidebar.is-collapsed .ds-sidebar__title{display:none}
+.ds-sidenav{display:flex;align-items:center;gap:var(--space-3);min-height:var(--sidenav-h);padding:0 var(--space-2);border-radius:var(--radius-sm);border:0;background:transparent;color:var(--text-secondary);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-medium);text-align:left;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
+.ds-sidenav:hover{background:var(--surface-alt);color:var(--foreground)}
+/* L'item actif se signale par sa GRAISSE et son ICÔNE, pas par un libellé coloré.
+   L'orange est rationné : une icône de 20 px le porte, une ligne de texte entière le
+   gaspille — et un libellé en encre pleine sur la plaque tient bien mieux son contraste.
+   L'icône, elle, est de MARQUE : elle prend --brand-via — voir la règle et son écart
+   assumé juste en dessous. (La phrase qui tenait ici — « le jumeau lisible
+   --primary-readable, jamais --primary » — ne décrit aucune des deux valeurs.) */
+.ds-sidenav.is-active{background:var(--surface-alt);color:var(--foreground);font-weight:var(--weight-semibold)}
+/* L'ICÔNE de l'item actif porte --brand-via, l'arrêt MÉDIAN du dégradé.
+   ⚠️ ÉCART DE CONTRASTE ASSUMÉ, mesuré : 2,29:1 en clair sur --surface-alt, 5,34:1 en
+   sombre. En clair, l'icône est donc PÂLE — c'est un choix de marque, pas un oubli.
+   Ce qu'il faut savoir avant de le « corriger » : l'état actif est déjà porté par le FOND
+   et par la GRAISSE du libellé, et le libellé lui-même reste en --foreground. L'icône est
+   un renfort décoratif, jamais le seul porteur de l'information — c'est ce qui rend
+   l'écart tenable. Le jour où il déplaît, --primary-readable (5,09) est le repli. */
+.ds-sidenav.is-active svg{color:var(--brand-via)}
+.ds-sidenav:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.ds-sidebar.is-collapsed .ds-sidenav{justify-content:center;padding:0}
+.ds-sidebar.is-collapsed .ds-sidenav__label{display:none}
+/* Le pied de NAVIGATION : une colonne d'entrées, séparée du contenu par un filet.
+   Distinct de .ds-sidebar__foot, qui est une rangée horizontale pour « avatar + nom ». */
+.ds-sidebar__footnav{display:flex;flex-direction:column;gap:var(--space-1);border-top:1px solid var(--border);padding-top:var(--space-2);margin-top:var(--space-2)}
+.ds-sidebar__foot{display:flex;align-items:center;gap:var(--space-3);border-top:1px solid var(--border);padding:var(--space-3) var(--space-2) 0;margin-top:var(--space-2)}
+.ds-sidebar.is-collapsed .ds-sidebar__foot{padding-inline:0}
+.ds-sidebar.is-collapsed .ds-sidebar__foot{justify-content:center}
+.ds-appshell__scrim{position:fixed;inset:0;z-index:var(--z-scrim);background:color-mix(in srgb,var(--tone-dark) 45%,transparent);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+@media (min-width:64.0625rem){.ds-appshell__scrim{display:none}}
+@media (max-width:64rem){
+.ds-appshell:not(.ds-appshell--static){grid-template-columns:1fr}
+.ds-appshell:not(.ds-appshell--static) .ds-sidebar:not(.ds-sidebar--static){position:fixed;inset-block:0;left:0;z-index:var(--z-drawer);transform:translateX(-100%);transition:transform var(--duration-slow) var(--ease-standard)}
+.ds-appshell:not(.ds-appshell--static) .ds-sidebar.is-open{transform:none;box-shadow:var(--shadow-lg)}
+}
+
+/* ---------- calendar / datepicker ---------- */
+.ds-cal{display:inline-flex;flex-direction:column;gap:var(--space-2);padding:var(--space-3);background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm)}
+.ds-cal--bare{padding:0;background:none;border:0;box-shadow:none}
+.ds-cal__head{display:flex;align-items:center;gap:var(--space-1)}
+.ds-cal__label{flex:1;text-align:center;font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-semibold);text-transform:capitalize}
+.ds-cal__nav{appearance:none;border:0;background:transparent;color:var(--text-muted);width:var(--cal-nav);height:var(--cal-nav);display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);cursor:pointer;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
+.ds-cal__nav:hover{background:var(--surface-alt);color:var(--foreground)}
+.ds-cal__nav:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.ds-cal__grid{display:grid;grid-template-columns:repeat(7,var(--cal-day));gap:0.125rem;justify-items:center}
+.ds-cal__wd{width:var(--cal-day);text-align:center;font-family:var(--font-body);font-size:0.6875rem;font-weight:var(--weight-semibold);text-transform:uppercase;letter-spacing:0.04em;color:var(--text-muted);padding-block:var(--space-1)}
+.ds-cal__day{appearance:none;border:0;background:transparent;width:var(--cal-day);height:var(--cal-day);display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:var(--text-body-sm);color:var(--foreground);cursor:pointer;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
+.ds-cal__day:hover:not(:disabled):not(.is-selected){background:var(--surface-alt)}
+.ds-cal__day.is-today{color:var(--primary);font-weight:var(--weight-bold)}
+.ds-cal__day.is-selected{background:var(--brand-gradient);color:var(--primary-foreground);font-weight:var(--weight-semibold)}
+.ds-cal__day:disabled{opacity:.35;cursor:not-allowed}
+.ds-cal__day:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.ds-datepicker{position:relative;display:inline-block;width:100%}
+.ds-datepicker__trigger{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);text-align:left;cursor:pointer}
+.ds-datepicker__ph{color:var(--text-muted)}
+.ds-datepicker__pop{position:absolute;top:calc(100% + 0.5rem);left:0;z-index:var(--z-popover);display:block;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:var(--space-3)}

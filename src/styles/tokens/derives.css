@@ -1,0 +1,48 @@
+/* SOCLE — LES JETONS DÉRIVÉS. Aucune valeur de marque : rien que des FORMULES.
+
+   Ces sept-là ne sont pas des décisions, ce sont des calculs. Dans deux marques écrites
+   indépendamment ils portaient la MÊME formule au caractère près — un dégradé bâti sur les
+   trois arrêts, un fond de pastille à x % d'une couleur déjà choisie. Les demander au
+   fichier de marque, c'était demander de recopier quelque chose qu'on ne peut que rater.
+   Ils sont donc calculés ICI, et le contrat ne les liste plus.
+
+   POURQUOI EN :root ET EN .dark, avec la MÊME formule dans les deux.
+   Une propriété personnalisée dont la valeur contient `var()` est résolue sur l'élément où
+   elle est DÉCLARÉE, puis héritée telle quelle. Déclarée seulement en `:root`, elle figerait
+   les couleurs claires et les ferait descendre dans une section `.dark` imbriquée — le défaut
+   exact que `check-dark-substitution.mjs` refuse. La redéclaration en `.dark` rejoue la
+   formule dans le contexte sombre, où les sources ont leurs valeurs sombres.
+   Si vous ajoutez un jeton dérivé, déclarez-le DANS LES DEUX BLOCS. Le garde le vérifie.
+
+   UNE MARQUE PEUT TOUJOURS LES ÉCRASER : le fichier de marque charge après ce fichier. Une
+   marque dont le dégradé n'est pas un simple 90° redéclare `--brand-gradient` chez elle, en
+   `:root` et en `.dark`, et c'est elle qui gagne. Ce fichier fournit le cas courant, il ne
+   l'impose pas. */
+
+:root{
+  /* Les deux dégradés de marque, bâtis sur les trois arrêts du contrat. */
+  --brand-gradient:linear-gradient(90deg,var(--brand-from),var(--brand-via),var(--brand-to));
+  --brand-gradient-diagonal:linear-gradient(135deg,var(--brand-from),var(--brand-via),var(--brand-to));
+
+  /* Les quatre fonds de pastille qui se déduisent d'une couleur déjà choisie. Les deux
+     autres — danger et warning — restent au contrat : leurs formules diffèrent d'une
+     marque à l'autre. Les six couleurs de TEXTE restent au contrat elles aussi. */
+  --pill-coral-bg:color-mix(in srgb,var(--primary) 12%,transparent);
+  --pill-amber-bg:color-mix(in srgb,var(--brand-from) 16%,transparent);
+  --pill-success-bg:color-mix(in srgb,var(--success) 16%,transparent);
+  --pill-neutral-bg:color-mix(in srgb,var(--muted-foreground) 12%,transparent);
+
+  /* Le voile du bouton lecture sur une vignette. */
+  --overlay-play-bg:color-mix(in srgb,var(--tone-dark) 42%,transparent);
+}
+
+/* Mêmes formules, rejouées dans le contexte sombre. Ne pas les alléger : voir l'en-tête. */
+.dark{
+  --brand-gradient:linear-gradient(90deg,var(--brand-from),var(--brand-via),var(--brand-to));
+  --brand-gradient-diagonal:linear-gradient(135deg,var(--brand-from),var(--brand-via),var(--brand-to));
+  --pill-coral-bg:color-mix(in srgb,var(--primary) 12%,transparent);
+  --pill-amber-bg:color-mix(in srgb,var(--brand-from) 16%,transparent);
+  --pill-success-bg:color-mix(in srgb,var(--success) 16%,transparent);
+  --pill-neutral-bg:color-mix(in srgb,var(--muted-foreground) 12%,transparent);
+  --overlay-play-bg:color-mix(in srgb,var(--tone-dark) 42%,transparent);
+}

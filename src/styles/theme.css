@@ -1,0 +1,335 @@
+/* SOCLE — couche Tailwind v4 du design system.
+   Pendant de `core.css` : celui-là porte les JETONS (tokens/*.css) et le reset,
+   celui-ci les UTILITAIRES Tailwind générés depuis ces jetons.
+
+   RÈGLE : ce fichier ne contient QUE des `var(--…)`. Aucune valeur littérale
+   (couleur, taille, rayon, ombre, durée, tracking) n’est écrite ici — elles vivent
+   toutes, et uniquement, dans `src/styles/tokens/*.css`. Un jeton manquant se
+   déclare là-bas, jamais ici.
+
+   Ce fichier s’importe DEPUIS LE CSS de l’app (celui que traite @tailwindcss/vite),
+   jamais par un import JS :
+     @import "@yunary/ds/theme.css";
+   Il porte lui-même les `@import "tailwindcss/…"` : l’app ne doit PAS écrire
+   `@import "tailwindcss";` de son côté, elle chargerait Tailwind deux fois.
+
+   Le thème sombre est le scope `.dark`, jamais un media query. */
+
+/* Ordre des couches. Déclaré ici ET en tête de `styles/core.css` : les deux
+   fichiers arrivent par des chemins différents et c’est la PREMIÈRE déclaration
+   rencontrée qui fixe l’ordre. La double déclaration est idempotente et rend le
+   montage insensible à l’ordre de chargement. */
+@layer theme, base, components, utilities;
+
+/* Import SÉLECTIF : `preflight.css` n'est PAS importé ici — ET IL NE DOIT PAS L'ÊTRE.
+   N'ajoute pas `@import "tailwindcss/preflight.css"` dans ce fichier.
+
+   Ce n'est pas que le socle se passe de preflight : il en PORTE un depuis la 0.10.0,
+   versé dans le dépôt et chargé par `core.css` en `layer(base)` juste avant
+   `tokens/base.css`. La raison est qu'il ne peut pas être chargé D'ICI.
+
+   `theme.css` et `core.css` sont DEUX POINTS D'ENTRÉE INDÉPENDANTS : l'app les importe
+   séparément, et ce fichier n'importe pas `core.css`. Un reset posé ici n'a donc AUCUN
+   rapport d'ordre garanti avec `tokens/base.css`, qui vit dans l'autre entrée — or le
+   reset du socle ne tient QUE par cet ordre-là. La copie versée dans `core.css` le
+   garantit parce qu'elle est dans le même fichier, à la ligne d'avant.
+
+   ET LE PIÈGE EST PIRE QUE ÇA, mesuré : un `@import` SANS `layer()` atterrit HORS COUCHE,
+   et le CSS hors couche l'emporte sur TOUTES les couches, quelle que soit sa position dans
+   la feuille. Vérifié sur les quatre cas — hors couche gagne qu'il soit inséré avant ou
+   après le socle ; en `layer(base)` il ne gagne que s'il vient après. Un preflight importé
+   ici sans couche écrase donc h1→h4, les liens et le focus du socle, TOUJOURS. C'est
+   très probablement l'observation d'origine — « le preflight écrase notre reset » — prise
+   à l'époque pour une incompatibilité alors que c'était un problème d'ORDRE et de COUCHE.
+
+   Deux autres raisons interdisent l'import direct de `tailwindcss/preflight.css`, où que
+   ce soit : l'import de police de la marque avalé, et le peer optionnel. Elles sont
+   écrites une seule fois, dans l'en-tête de `tokens/preflight.css` — un raisonnement écrit
+   à deux endroits est un raisonnement qui divergera. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* Le `darkMode` en mode classe du preset v3. */
+@custom-variant dark (&:is(.dark *));
+
+/* @theme INLINE, jamais @theme nu. Deux raisons.
+   (a) Nos valeurs sont des `var(--…)` déclarées dans tokens/*.css et le thème
+       sombre est le scope `.dark`. Un `@theme` nu redéclarerait la variable dans
+       `:root` et figerait l’indirection : une section `.dark` au milieu d’une page
+       claire hériterait de la valeur claire. Sans aucune erreur au build.
+   (b) Nos jetons portent DÉJÀ les noms des namespaces v4 — `--text-heading`,
+       `--radius-lg`, `--shadow-glow`, `--font-display`, `--tracking-eyebrow`,
+       `--leading-body`, `--container-shell`, `--ease-standard`. Avec `@theme` nu,
+       `--text-heading: var(--text-heading)` est une auto-référence circulaire dans
+       `:root` : le palier ne résout plus rien et les titres retombent sur la taille
+       héritée.
+   `@theme inline` n’émet pas la variable, il inline la valeur dans l’utilitaire —
+   `text-heading` sort `font-size: var(--text-heading)`, résolu par élément. */
+@theme inline {
+  /* ---------- Couleurs : surfaces & neutres chauds (convention shadcn) ---------- */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  /* LES QUATRE QUI MANQUAIENT — v0.3.1. Le socle les emploie dans ses propres règles
+     (15 usages pour --surface-alt, 6 pour --primary-readable, 3 pour
+     --destructive-readable, 1 pour --success) mais ne les exposait pas : une app qui en
+     avait besoin recopiait le var() à la main — la forme 2 du défaut de doctrine, côté
+     utilitaires. Ce n'était pas une politique : primary et destructive étaient exposés
+     quand leurs jumeaux -readable — précisément ceux qui posent une couleur sur du
+     TEXTE — ne l'étaient pas. Balayé : ces quatre étaient les seuls manquants PARMI LES
+     COULEURS ; --tone-deep reste dehors, exclusion délibérée documentée plus bas.
+     ⚠️ La phrase disait « seuls ces quatre manquaient » tout court, et c'était FAUX d'un
+     cran : --shadow-glow-sm cochait exactement les mêmes cases dans l'espace des OMBRES —
+     déclaré par la marque, employé par le socle, jamais exposé, recopié à la main par
+     l'app. Il est exposé plus bas ; le balayage vaut désormais pour les deux espaces. */
+  --color-surface-alt: var(--surface-alt);
+  --color-primary-readable: var(--primary-readable);
+  --color-destructive-readable: var(--destructive-readable);
+  --color-success: var(--success);
+
+  /* ---------- Couleurs : neutres de marque ----------
+     --color-tone-deep n’est pas ici : il appartient à l’extension métier et vit dans
+     `brand-content.css`, avec les utilitaires qui l’emploient. */
+  --color-tone-dark: var(--tone-dark);
+  --color-tone-dark-soft: var(--tone-dark-soft);
+  --color-tone-light: var(--tone-light);
+  --color-tone-light-alt: var(--tone-light-alt);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverted: var(--text-inverted);
+
+  /* ---------- Couleurs : marque — accent uniquement ---------- */
+  --color-brand-from: var(--brand-from);
+  --color-brand-via: var(--brand-via);
+  --color-brand-to: var(--brand-to);
+
+  /* ---------- Couleurs : pills sémantiques — toujours couleur + icône + texte ---------- */
+  --color-pill-coral-bg: var(--pill-coral-bg);
+  --color-pill-coral-fg: var(--pill-coral-fg);
+  --color-pill-amber-bg: var(--pill-amber-bg);
+  --color-pill-amber-fg: var(--pill-amber-fg);
+  --color-pill-danger-bg: var(--pill-danger-bg);
+  --color-pill-danger-fg: var(--pill-danger-fg);
+  --color-pill-warning-bg: var(--pill-warning-bg);
+  --color-pill-warning-fg: var(--pill-warning-fg);
+  --color-pill-success-bg: var(--pill-success-bg);
+  --color-pill-success-fg: var(--pill-success-fg);
+  --color-pill-neutral-bg: var(--pill-neutral-bg);
+  --color-pill-neutral-fg: var(--pill-neutral-fg);
+  --color-overlay-play: var(--overlay-play-bg);
+
+  /* ---------- Échelle typo ----------
+     `--text-*: initial` SUPPRIME l’échelle native de Tailwind. En v3 le preset
+     REMPLAÇAIT `theme.fontSize` ; en v4 `@theme` étend par défaut, il faut donc
+     réinitialiser AVANT de déclarer nos paliers, sinon `text-sm` / `text-base` /
+     `text-lg` redeviennent générables. C’est volontaire : seuls les paliers
+     sémantiques du DS existent, une régression casse visiblement au lieu de
+     dériver en silence.
+     Chaque palier porte sa taille, et son interligne et son interlettrage quand le
+     preset les déclarait — les paliers `body`, `control`, `caption` et `chip` en
+     omettent une partie, à l’identique de la v3. */
+  --text-*: initial;
+  --text-display-xl: var(--text-display-xl);
+  --text-display-xl--line-height: var(--leading-display);
+  --text-display-xl--letter-spacing: var(--tracking-display);
+  --text-display: var(--text-display);
+  --text-display--line-height: var(--leading-display);
+  --text-display--letter-spacing: var(--tracking-display);
+  --text-heading-xl: var(--text-heading-xl);
+  --text-heading-xl--line-height: var(--leading-display);
+  --text-heading-xl--letter-spacing: var(--tracking-heading-xl);
+  --text-heading: var(--text-heading);
+  --text-heading--line-height: var(--leading-heading);
+  --text-heading--letter-spacing: var(--tracking-heading);
+  --text-subheading: var(--text-subheading);
+  --text-subheading--line-height: var(--leading-heading);
+  --text-subheading--letter-spacing: var(--tracking-subheading);
+  --text-heading-sm: var(--text-heading-sm);
+  --text-heading-sm--line-height: var(--leading-snug);
+  --text-heading-sm--letter-spacing: var(--tracking-heading-sm);
+  --text-body-lg: var(--text-body-lg);
+  --text-body-lg--line-height: var(--leading-body);
+  --text-body-lg--letter-spacing: var(--tracking-body-lg);
+  --text-body: var(--text-body);
+  --text-body--line-height: var(--leading-body);
+  /* Tous les contrôles : boutons, champs, chips, onglets. */
+  --text-control: var(--text-control);
+  /* Un cran sous le corps de texte : surfaces denses. Ni interligne ni interlettrage,
+     comme --text-control — les dix sites qui le portent règlent le leur. */
+  --text-body-sm: var(--text-body-sm);
+  --text-caption: var(--text-caption);
+  --text-caption--line-height: var(--leading-normal);
+  --text-eyebrow: var(--text-eyebrow);
+  --text-eyebrow--line-height: var(--leading-snug);
+  --text-eyebrow--letter-spacing: var(--tracking-eyebrow);
+  --text-chip: var(--text-chip);
+  --text-chip--letter-spacing: var(--tracking-chip);
+
+  /* ---------- Familles ---------- */
+  /* Titres uniquement, jamais sous 1.125rem. La CASSE et la GRAISSE du titrage ne sont pas
+     ici : elles viennent de --heading-transform / --heading-weight, que la marque règle. */
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  /* ---------- Graisses ---------- */
+  --font-weight-regular: var(--weight-regular);
+  --font-weight-medium: var(--weight-medium);
+  --font-weight-semibold: var(--weight-semibold);
+  --font-weight-bold: var(--weight-bold);
+
+  /* ---------- Interlettrage ---------- */
+  /* Même raison que `--text-*` plus haut, et un incident réel derrière : l'échelle native
+     de Tailwind (`tracking-tight`, `-wide`, `-widest`…) est presque entièrement POSITIVE,
+     alors que l'interlettrage de la display de marque est NÉGATIF. Les deux vocabulaires
+     cohabitaient, rien ne disait lequel était le bon, et une app a écrit `tracking-widest`
+     (+0,1em) là où sa maquette demandait `--tracking-display` (−0,02em) : 0,12em d'écart,
+     signe inversé, aucune valeur « proche » n'existait. La classe cesse d'exister ; le seul
+     interlettrage disponible est celui de la marque.
+     ⚠️ LA LIGNE DOIT RESTER AVANT LES JETONS. Posée après, elle vide l'espace de noms une
+     fois qu'ils y sont : plus AUCUN utilitaire `tracking-*`, pas même ceux du système. Les
+     paliers `.text-*`, eux, gardent leur interlettrage dans les deux cas — il vient de
+     `tokens/typography.css` et se résout à l'exécution. Le mauvais placement coûte les
+     utilitaires, pas la typographie. Mesuré sur les deux compilations, pas déduit.
+     Rappel : chaque palier de texte porte DÉJÀ son interlettrage (`--text-display--letter-spacing`),
+     donc une app n'a jamais à l'écrire à la main. */
+  --tracking-*: initial;
+  --tracking-display: var(--tracking-display);
+  --tracking-heading-xl: var(--tracking-heading-xl);
+  --tracking-heading: var(--tracking-heading);
+  --tracking-subheading: var(--tracking-subheading);
+  --tracking-heading-sm: var(--tracking-heading-sm);
+  --tracking-body-lg: var(--tracking-body-lg);
+  --tracking-eyebrow: var(--tracking-eyebrow);
+  --tracking-chip: var(--tracking-chip);
+  --tracking-dense: var(--tracking-dense);
+
+  /* ---------- Interlignes ---------- */
+  --leading-tight: var(--leading-tight);
+  --leading-snug: var(--leading-snug);
+  --leading-normal: var(--leading-normal);
+  --leading-display: var(--leading-display);
+  --leading-heading: var(--leading-heading);
+  --leading-body: var(--leading-body);
+  --leading-prose: var(--leading-prose);
+
+  /* ---------- Rayons ----------
+     `--radius-*: initial` SUPPRIME l’échelle native de Tailwind, exactement comme
+     `--text-*: initial` plus haut et pour la même raison. Sans lui, Tailwind 4.3.3
+     déclare huit rayons dont DEUX que nous ne redéclarons pas : `--radius-3xl` (24px)
+     et `--radius-4xl` (32px) survivaient. `rounded-3xl` rendait donc 24px — la valeur
+     de --radius-xl du système, en double, mais NON SUBSTITUABLE : un client qui
+     retouche son échelle de rayons ne l’aurait pas bougée. Une classe utilitaire
+     parfaitement ordinaire rendait une mesure qui n’appartient à aucune marque.
+
+     CE QUE LA NEUTRALISATION EMPORTE, vérifié sur tailwindcss 4.3.3 et non supposé :
+       · `rounded-none` et `rounded-full` SURVIVENT — ce sont des `staticValues` de
+         l’utilitaire, pas des entrées du namespace.
+       · `rounded` NU MEURT. Il lisait la clé `--radius` de Tailwind (0.25rem), une
+         quatrième valeur étrangère au système ; il ne génère plus rien. C’est le
+         comportement voulu, et il ne casse rien : aucune de ces trois classes n’est
+         écrite dans `src/` ni dans `demo/src/`. `--radius` de scales.css vaut
+         `var(--radius-lg)` et reste lisible en `var(--radius)` depuis du CSS d’app —
+         c’est `rounded-lg` qu’on écrit en utilitaire. */
+  --radius-*: initial;
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  /* Badges et compteurs UNIQUEMENT — jamais un bouton, jamais un input, jamais
+     une barre d’onglets (les tabs ont leur propre rayon). */
+  --radius-pill: var(--radius-pill);
+
+  /* ---------- Ombres ---------- */
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  /* Réservé au CTA primaire et aux éléments de marque. Les TROIS paliers sont exposés :
+     -sm manquait alors que le socle l'emploie (l'état enfoncé de .ds-btn--primary) et
+     qu'une app le recopiait en shadow-[var(--shadow-glow-sm)] — même défaut que les
+     quatre couleurs de la v0.3.1, un espace de noms plus loin.
+     --shadow-logo-dot n'est PAS ici, et c'est délibéré : sa seule lecture est
+     `.ds-logo__dot`, un élément que le socle rend lui-même. Aucun appelant ne l'écrit. */
+  --shadow-glow: var(--shadow-glow);
+  --shadow-glow-lg: var(--shadow-glow-lg);
+  --shadow-glow-sm: var(--shadow-glow-sm);
+
+  /* ---------- Espacement ----------
+     Échelle NOMMÉE : elle n’écrase pas l’échelle numérique de Tailwind
+     (`p-4`, `gap-2`… restent disponibles). `gap-space-5` = `var(--space-5)`,
+     `h-control-md` = `var(--control-md)`. */
+  --spacing-space-1: var(--space-1);
+  --spacing-space-2: var(--space-2);
+  --spacing-space-3: var(--space-3);
+  --spacing-space-4: var(--space-4);
+  --spacing-space-5: var(--space-5);
+  --spacing-space-6: var(--space-6);
+  --spacing-space-7: var(--space-7);
+  --spacing-space-8: var(--space-8);
+  /* Rail de hauteur des contrôles — rail UNIQUE : Button, Input, Select et la barre
+     d’onglets s’alignent tous sur --control-md, qui descend à 2.75rem sous 64rem
+     (cible tactile). Les alias sm/lg existent pour la compat d’API. */
+  --spacing-control-sm: var(--control-sm);
+  --spacing-control-md: var(--control-md);
+  --spacing-control-lg: var(--control-lg);
+  /* IconButton — même rail : les trois tailles rendent le même carré. */
+  --spacing-icon-control-sm: var(--icon-control-sm);
+  --spacing-icon-control-md: var(--icon-control-md);
+  --spacing-icon-control-lg: var(--icon-control-lg);
+  --spacing-card-pad: var(--card-pad);
+  --spacing-card-pad-lg: var(--card-pad-lg);
+
+  /* ---------- Largeurs de contenu par rôle — jamais une largeur inventée. ---------- */
+  --container-shell: var(--container-shell);
+  --container-wide: var(--container-wide);
+  --container-read: var(--container-read);
+  --container-narrow: var(--container-narrow);
+
+  /* ---------- Motion ---------- */
+  --ease-standard: var(--ease-standard);
+  /* v4 n'a pas de namespace pour transition-duration : ces jetons se consomment en
+     var(--duration-*) dans du CSS, pas en utilitaire. Ils sont exposés ici pour être
+     lisibles depuis un utilitaire arbitraire, duration-[var(--duration-fast)]. */
+  --duration-fast: var(--duration-fast);
+  --duration-base: var(--duration-base);
+  --duration-slow: var(--duration-slow);
+}
+
+/* Dégradés et trames de fond. `background-image` et `background-size` n’ont PAS de
+   namespace en v4 : ils passent donc par `@utility`, ce qui les rend variantables
+   (`hover:`, `dark:`, `data-[state=active]:`) contrairement à une classe posée dans
+   `@layer utilities`.
+   `background-image` et non le raccourci `background` : le raccourci réinitialiserait
+   au passage la couleur, la position et la taille de fond de l’élément. */
+@utility bg-brand-gradient {
+  background-image: var(--brand-gradient);
+}
+@utility bg-brand-gradient-diagonal {
+  background-image: var(--brand-gradient-diagonal);
+}
+@utility bg-grad-soft {
+  background-image: var(--grad-soft);
+}
+@utility bg-halo {
+  background-image: var(--gradient-halo);
+}
+/* L'utilitaire métier `bg-thumbnail` n'est pas ici : il est parti avec l'extension
+   optionnelle `brand-content.css`. */

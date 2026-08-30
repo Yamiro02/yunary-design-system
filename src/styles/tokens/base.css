@@ -1,0 +1,121 @@
+/* SOCLE — reset + utilitaires de marque. Les RÈGLES sont ici, les VALEURS dans le
+   fichier de marque : pas un littéral de couleur, de police ou de lueur dans ce fichier.
+   Utilitaires : .display .heading .eyebrow .chip .accent .mono .halo .page */
+/* LA COULEUR DE BORDURE PAR DÉFAUT — ÉCART DÉLIBÉRÉ AVEC TAILWIND v4. NE PAS « ALIGNER ».
+   Le preflight d'amont pose `border: 0 solid` : sans couleur, donc `currentColor`. C'est
+   le bon défaut pour un framework générique, qui ne connaît aucune palette. Ce n'en est
+   pas un pour un socle qui porte EXACTEMENT UN jeton de bordure.
+   Deux raisons de le renverser ici.
+   1 · LA DOCTRINE. Le socle fournit les VALEURS, l'app écrit les NOMS. Un défaut
+       `currentColor` dit l'inverse : il fait dépendre la bordure d'une propriété de texte,
+       que l'app n'a pas choisie pour ça.
+   2 · LE MODE DE PANNE EST SILENCIEUX. Sur une page crème à encre sombre, un `border` nu
+       trace un filet quasi noir là où on attendait le gris doux de --border. Rien ne
+       casse, l'écran est juste faux — la classe exacte de défauts que ce chantier ferme.
+   Le cas rare — une bordure qui doit suivre la couleur du texte — s'écrit `border-current`,
+   un mot, et c'est bien LUI qui doit coûter les mots.
+   Le repli `currentColor` n'est pas décoratif : un socle monté sans fichier de marque
+   retrouve exactement le comportement d'amont.
+   @tokenref-fallback: --border — le repli EST la décision : sans fichier de marque, le socle
+   retrouve le `currentColor` d'amont plutôt que de perdre la propriété. */
+*,::after,::before,::backdrop,::file-selector-button{border-color:var(--border,currentColor)}
+
+/* Conservée même si le preflight la rend redondante : c'est la garantie propre du socle
+   le jour où le preflight bouge. */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+/* `-webkit-font-smoothing: auto`, ET SURTOUT PAS `antialiased`. Le nom trompe : la valeur
+   `antialiased` n'AJOUTE pas de lissage, elle force le lissage en niveaux de gris à la
+   place du rendu dense par défaut. Les fûts perdent une fraction de pixel de chaque côté
+   et TOUT le corps de texte descend d'environ un demi-cran de graisse sur macOS. Le corps
+   entre 13 et 16 est là où ça se voit ; une display à 40 ne bouge presque pas — d'où une
+   maquette qui paraît juste et une app qui paraît anémique.
+   C'est l'une des lignes les plus copiées-collées du web. Elle réglait un défaut de Chrome
+   sur macOS disparu depuis ; elle est restée dans à peu près tous les resets.
+   `auto` EXPLICITE plutôt que rien : sans la déclaration, quelqu'un remet `antialiased`.
+   Le jumeau Firefox `-moz-osx-font-smoothing: grayscale` n'est PAS posé non plus, et ne
+   doit pas l'être : le socle ne demande à aucun moteur d'amincir son texte.
+   Constaté et vérifié à l'écran sur macOS le 28/08/2026, inspecteur ouvert, en décochant
+   la déclaration : tout le texte s'épaissit d'un coup. */
+body{margin:0;background:var(--background);color:var(--foreground);font-family:var(--font-body);font-size:var(--text-body);font-weight:var(--weight-regular);line-height:var(--leading-body);-webkit-font-smoothing:auto;text-rendering:optimizeLegibility}
+/* LE TITRAGE LIT DEUX JETONS DE MARQUE, il n'impose plus rien. Ces deux lignes posaient
+   `uppercase` + graisse 400 : ce n'est pas de la structure, c'est le régime d'UNE face
+   display particulière — une condensée à capitales qui ne livre qu'une graisse. Sous une
+   serif ou une grotesque classique, tout le titrage rendait en CAPITALES 400, ce qu'aucun
+   designer ne choisit.
+   Les deux jetons gouvernent EXACTEMENT les règles qui posent font-family:var(--font-display),
+   et rien d'autre : h1→h4, .display, .display-xl ici, .ds-card__title dans patterns.css,
+   .ds-logo plus bas. Les capitales de .eyebrow et .chip restent EN DUR : elles sont en
+   --font-body, où les capitales sont une convention de taille et de rôle — une
+   micro-étiquette de 11 px — pas une règle de la face display. */
+h1,h2,h3,h4{margin:0;font-family:var(--font-display);font-weight:var(--heading-weight);text-transform:var(--heading-transform)}
+h1{font-size:var(--text-heading-xl);letter-spacing:var(--tracking-heading-xl);line-height:var(--leading-display)}
+h2{font-size:var(--text-heading);letter-spacing:var(--tracking-heading);line-height:var(--leading-heading)}
+h3{font-size:var(--text-subheading);letter-spacing:var(--tracking-subheading);line-height:var(--leading-heading)}
+h4{font-size:var(--text-heading-sm);letter-spacing:var(--tracking-heading-sm);line-height:var(--leading-snug)}
+p{margin:0;text-wrap:pretty}
+/* Les liens prennent le jumeau lisible, pas --primary : 3,12 sur --background, c'était la
+   couleur de tout le texte cliquable du système. Le survol se DÉRIVE en tirant vers
+   --foreground — donc toujours plus contrasté que le repos, dans les deux thèmes, sans
+   second jeton à faire remplir au client. */
+a{color:var(--primary-readable);text-decoration:none;transition:color var(--duration-fast) var(--ease-standard)}
+a:hover{color:color-mix(in srgb,var(--primary-readable) 80%,var(--foreground))}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+code,pre,kbd,samp{font-family:var(--font-mono)}
+img{max-width:100%;display:block}
+::selection{background:color-mix(in srgb,var(--primary) 24%,transparent)}
+
+/* Utilitaires display / titre — --font-display, en CAPITALES uniquement */
+.display{font-family:var(--font-display);font-weight:var(--heading-weight);text-transform:var(--heading-transform);font-size:var(--text-display);letter-spacing:var(--tracking-display);line-height:var(--leading-display)}
+.display-xl{font-family:var(--font-display);font-weight:var(--heading-weight);text-transform:var(--heading-transform);font-size:var(--text-display-xl);letter-spacing:var(--tracking-display);line-height:var(--leading-display)}
+.eyebrow{font-family:var(--font-body);font-size:var(--text-eyebrow);font-weight:var(--weight-semibold);text-transform:uppercase;letter-spacing:var(--tracking-eyebrow);line-height:var(--leading-snug);background:var(--brand-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;width:fit-content}
+.chip{font-family:var(--font-body);font-size:var(--text-chip);font-weight:var(--weight-bold);text-transform:uppercase;letter-spacing:var(--tracking-chip);line-height:1}
+.mono{font-family:var(--font-mono);font-weight:var(--weight-regular)}
+.caption{font-size:var(--text-caption);font-weight:var(--weight-medium);line-height:var(--leading-normal);color:var(--text-muted)}
+.prose{line-height:var(--leading-prose)}
+
+/* The signature: ONE gradient word per title. Never two.
+   QUATRE DÉCLARATIONS SOLIDAIRES — background, background-clip, color, width. Retirez-en
+   une, l'effet disparaît, et LA PANNE EST MUETTE : le texte reste lisible, l'écran est
+   juste faux. Or cette règle vit en layer(base) et les utilitaires Tailwind en
+   layer(utilities) : posés sur le MÊME nœud, ils gagnent TOUJOURS, quelle que soit la
+   spécificité. Deux cas réels, dans deux apps différentes :
+   · un `text-*` de couleur écrase `color:transparent` → le dégradé disparaît, le mot
+     s'affiche en couleur pleine ;
+   · une largeur (`w-12`…) écrase `width:fit-content` → le dégradé se peint sur toute la
+     boîte puis se découpe aux lettres, qui n'en montrent qu'une tranche — deux nombres
+     de largeurs différentes n'ont plus la même couleur.
+   DANGEREUX : tout utilitaire de couleur, de fond, de background-clip ou de dimension —
+   ce qui touche l'une des quatre déclarations. SANS RISQUE : la typographie (`font-*`,
+   paliers `text-heading`…, `leading-*`), qui n'en touche aucune. LA PARADE, quand une
+   mise en page est nécessaire : un span externe la porte, le span `.accent` n'en porte pas.
+   `.eyebrow`, plus haut, clippe le dégradé avec les mêmes quatre déclarations : même
+   piège, même règle. L'interdit est dans docs/DESIGN.md § 9. */
+.accent{background:var(--brand-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;width:fit-content}
+
+/* Warm radial halo — bottom-anchored, never full-screen */
+.halo{position:absolute;inset:0;pointer-events:none;background:var(--gradient-halo)}
+.halo-top{background:var(--gradient-halo-top)}
+.halo-center{background:var(--gradient-halo-center)}
+
+/* .accent-hot n'est PAS ici : c'est un motif de MINIATURE et de MOTION, pas d'interface.
+   Il est parti avec l'extension optionnelle `brand-content.css`. */
+
+.page{width:100%;max-width:var(--container-shell);margin-inline:auto;padding-inline:var(--space-5)}
+
+/* Logo — la marque rendue en CSS : --font-display + pastille carrée à coins arrondis en
+   --brand-gradient-diagonal, lueur --shadow-logo-dot. Côté ~0.21em, rayon 25 %, marge gauche
+   ~10 % du côté. Les lettres s'inversent avec la surface.
+   Le MOT-MARQUE n'est pas ici : c'est une prop de <Logo>, pas une règle CSS.
+   La casse et la graisse suivent --heading-transform / --heading-weight, comme le titrage.
+   Le template dont ce dépôt descend garde `uppercase` en dur ici ; on s'en écarte, sinon un
+   client dont le mot-marque n'est pas en capitales obtient un logo qui l'est. Le cas rare —
+   titrage en capitales mais mot-marque en casse mixte — se règle par une ligne
+   `.ds-logo{text-transform:none}` dans le fichier de marque. */
+.ds-logo{display:inline-flex;align-items:flex-end;font-family:var(--font-display);font-weight:var(--heading-weight);text-transform:var(--heading-transform);line-height:0.92;letter-spacing:0;white-space:nowrap;color:var(--foreground)}
+/* ⚠️ QUATRE MESURES FIGÉES (taille, deux marges, alignement) — la troisième forme du
+   défaut de doctrine (PROMPTS.md, en tête) : atteignables par la cascade, mais rien ne
+   dit qu'elles sont censées varier — un projet qui en veut d'autres les recopie. Candidat
+   à une ouverture (jetons ou doc de surcharge), PAS un besoin : un seul appelant, un
+   seul contexte — on promeut au deuxième demandeur. */
+.ds-logo__dot{display:inline-block;flex:none;width:0.21em;height:0.21em;border-radius:25%;margin-left:0.07em;margin-bottom:0.03em;background:var(--brand-gradient-diagonal);box-shadow:var(--shadow-logo-dot)}

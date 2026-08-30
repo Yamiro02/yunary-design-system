@@ -1,0 +1,70 @@
+/* SOCLE — paliers typographiques. Aucune famille ici, aucune valeur de marque.
+   --font-display = TOUS les niveaux de titre (H1 -> H4) + display. Jamais dans un
+   paragraphe / bouton / libellé / valeur de formulaire, jamais sous 1.125rem — sous ce
+   palier, un titre retombe sur --font-body en gras.
+   LA CASSE ET LA GRAISSE DU TITRAGE NE SONT PAS ICI : elles viennent de
+   --heading-transform et --heading-weight, que la MARQUE règle, parce qu'elles découlent
+   de la face choisie. Une condensée à capitales veut uppercase + 400, une grotesque
+   classique veut none + 700 : ce n'est pas une propriété du palier.
+   --font-body = texte et UI. --font-mono = code, prompts, méta technique.
+   Les trois familles sont fournies par le fichier de MARQUE. L'échelle ci-dessous vaut
+   pour n'importe quelle famille.
+   Échelle en rem, px en commentaire. Ne jamais fixer un font-size px sur html/:root. */
+:root{
+  /* Les FAMILLES ne sont pas ici : --font-display / --font-body / --font-mono appartiennent
+     à la marque et vivent dans SON fichier, avec leurs @font-face. Le socle ne connaît que
+     leurs NOMS et l'échelle ci-dessous — laquelle vaut pour n'importe quelle famille. */
+
+  /* Type scale (rem, px in comment) */
+  --text-display-xl:4.5rem;   /* 72 — thumbnail / motion card. Range 4–8rem. ADDED */
+  --text-display:3.25rem;     /* 52 — héros de site. --font-display */
+  --text-heading-xl:2.5rem;   /* 40 — H1. --font-display */
+  --text-heading:1.8125rem;   /* 29 — H2. --font-display */
+  --text-subheading:1.375rem; /* 22 — H3. --font-display */
+  --text-heading-sm:1.125rem; /* 18 — H4. --font-display. ADDED */
+  --text-body-lg:1.125rem;    /* 18 — --font-body 400/500. Même taille que H4, tracking et leading inverses */
+  --text-body:1rem;           /* 16 — --font-body 400 */
+  --text-control:0.9375rem;   /* 15 — contrôles : boutons, champs, chips, onglets. FROM APP CODE */
+  /* 14 — LE PALIER QUI MANQUAIT. Il était écrit `0.875rem` en littéral DIX fois dans
+     patterns.css : bouton sm, choice, switch, sous-titre de carte, titre de toast,
+     description de modale, titre d'actionsheet, item de menu, table, jour de calendrier.
+     Dix composants rendaient donc une taille que l'échelle ne nommait pas, et une marque
+     qui retouche son échelle ne les emmenait pas avec elle.
+     Le RÔLE : un cran SOUS le corps de texte, partout où la surface est dense — un menu,
+     une feuille, une table, la ligne secondaire d'une carte, le libellé d'un contrôle
+     compact. Ce n'est pas --text-caption : la légende est une méta, celui-ci est du
+     contenu qu'on lit. ADDED v0.5 */
+  --text-body-sm:0.875rem;    /* 14 — --font-body 400/500, surfaces denses */
+  --text-caption:0.8125rem;   /* 13 — --font-body 500 */
+  --text-eyebrow:0.75rem;     /* 12 — --font-body 600 CAPS, tracking .18em */
+  --text-chip:0.75rem;        /* 12 — --font-body 700 CAPS, tracking .14em, leading 1 */
+
+  /* Tracking — en em, il suit la taille. Valeurs CALIBRÉES SUR UNE DISPLAY CONDENSÉE
+     : une display large ou une serif demandera moins de resserrement.
+     C'est l'un des rares endroits où changer de famille peut demander de retoucher un
+     palier — le seul du contrat qui ne soit pas purement une couleur. */
+  --tracking-display:-0.02em;    /* display-xl + display */
+  --tracking-heading-xl:-0.015em;
+  --tracking-heading:-0.01em;
+  --tracking-subheading:0em;
+  --tracking-heading-sm:0.01em;
+  --tracking-body-lg:-0.01em; /* body-lg only. FROM APP CODE */
+  --tracking-eyebrow:0.18em;
+  --tracking-chip:0.14em;
+  --tracking-dense:0.14em;    /* en-tête de colonne, tuile serrée. FROM APP CODE (same value as chip) */
+
+  /* Leading — unitless ratios. tight/snug/normal sont les paliers génériques ;
+     display/heading/body AJOUTÉS — une display en capitales demande un interligne plus
+     serré qu'une grotesque de texte. */
+  --leading-tight:1.1; --leading-snug:1.25; --leading-normal:1.5;
+  --leading-display:1.05; --leading-heading:1.12;
+  --leading-body:1.5;  /* interface body — FROM APP CODE (was 1.6) */
+  --leading-prose:1.7; /* colonne de lecture suivie (légal, article) — FROM APP CODE */
+
+  --weight-regular:400; --weight-medium:500; --weight-semibold:600; --weight-bold:700;
+}
+/* Responsive heading drop — FROM APP CODE: below Tailwind's lg (64rem) the two
+   title tiers step down one notch. Tokens only; desktop is untouched. */
+@media (width < 64rem){
+  :root{ --text-heading-xl:1.75rem; /* 28 */ --text-heading:1.625rem; /* 26 */ }
+}

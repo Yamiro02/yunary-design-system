@@ -1,0 +1,34 @@
+/* Échelle d'app — OPT-IN, outils internes desktop uniquement.
+   N'est PAS importé par core.css : le site public, les e-mails et les slides gardent le
+   rem natif. Une app l'active en important ce fichier après le socle et sa marque.
+   Paliers en % — ils MULTIPLIENT la préférence de taille du navigateur au lieu de
+   l'écraser (l'interdit « jamais de font-size px sur html » reste respecté).
+   Logique : largeur effective (physique ÷ facteur) ≈ 1440–1600, pour montrer à peu
+   près ce que montre la maquette 1440 sur tout écran. VALEURS DU CODE APP (08/2026).
+   Palier haut dézoomé de 10 % (144 → 130) : constat terrain sur 30 pouces. */
+html{font-size:103%}                             /* < 1600 — plancher, mise en page effective ~1398 */
+@media (min-width:1600px){html{font-size:112%}}  /* 1600–1919 — ~1500 */
+@media (min-width:1920px){html{font-size:126%}}  /* 1920–2399 — ~1524 */
+@media (min-width:2400px){html{font-size:130%}}  /* ≥ 2400 — ~1969, prix assumé du dézoom */
+/* Garde-fou desktop : 1100 × 1.03, en px VOLONTAIREMENT pour ne pas bouger avec le facteur. */
+body{min-width:1133px}
+
+/* ── Aucune retouche de palier typographique ici, et c'est le POINT ────────────
+   Ce fichier ne contient QUE les quatre bandes de zoom ci-dessus. Tout étant en rem,
+   changer la racine suffit : l'interface entière suit, sans qu'aucun palier n'ait à
+   être repris. Retoucher trois paliers par bande reviendrait à dire que le facteur ne
+   fait pas son travail.
+
+   Une version précédente le faisait — eyebrow, subheading et caption grossis d'un cran
+   au-delà de 2400 px. Le réglage venait d'un constat fait à l'œil sur un 30 pouces, avec
+   une AUTRE app et un autre design system, et il n'a jamais été revérifié. Retiré : une
+   règle de système ne se fonde pas sur une observation qu'on ne peut plus reproduire.
+
+   LES SEULES media queries légitimes du socle sont celles du seuil MOBILE (64 rem), et
+   elles répondent à des contraintes que le rem ne peut pas résoudre : la largeur physique
+   d'un écran et la taille d'un doigt. Un titre de 40 px sur un téléphone de 390 px passe
+   à la ligne quatre fois, quelle que soit la racine. C'est le même seuil que celui de
+   l'ActionSheet, de la Modal en feuille du bas et des cibles tactiles à 44 px.
+
+   Si un jour un palier paraît réellement trop discret sur un très grand écran, il se
+   corrige ICI — mais sur une observation reproductible, pas sur un souvenir. */

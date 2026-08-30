@@ -1,0 +1,341 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   LE CONTRAT DE MARQUE — la liste de tout ce qu'un fichier de marque doit fournir.
+   ═══════════════════════════════════════════════════════════════════════════════
+   C'est LE fichier de référence du dépôt. Écrire une marque, c'est le lire de haut en bas
+   et répondre à chaque ligne. Il est écrit pour être suffisant seul : rien de ce qui suit
+   ne demande d'aller voir ailleurs.
+
+   ÉCRIRE UNE MARQUE, EN TROIS GESTES
+
+     1. `npm run rebrand -- "@vous/ds" "Votre Marque"` — renomme le paquet et l'identité
+        textuelle (`src/brand.ts`). Il ne crée AUCUN fichier de marque.
+     2. Copiez `src/styles/brand-example.css` en `src/styles/brand-<vous>.css` et repeignez
+        chaque valeur : partir du fichier d'exemple donne les 54 emplacements dans le bon
+        ordre avec leurs commentaires, et comme on remplace toutes les valeurs, on n'hérite
+        d'aucune couleur. CE fichier-ci reste le CONTRAT annoté qu'on garde ouvert à côté
+        pendant qu'on remplit — il n'est pas le point de départ à recopier.
+     3. Montez-le à côté du socle, partout où le design system est chargé :
+
+            @import "@yunary/ds/core.css";     <- la structure, invariante
+            @import "./brand-<vous>.css";               <- la vôtre
+
+        Il n'existe pas d'entrée qui monte une marque toute seule. Deux imports, toujours :
+        la marque que vous montez est visible dans le code de l'app, jamais implicite.
+
+   DEUX RÉGIMES, ET ILS NE SE COMPORTENT PAS PAREIL. C'est le point à comprendre avant tout
+   le reste : le § 3 et le § 4 se contredisent en apparence, et c'est voulu.
+
+     · L'IDENTITÉ — couleurs, polices, dégradés, lueurs. § 3, OBLIGATOIRE. AUCUN REPLI.
+       Un jeton oublié fait que la variable n'existe pas, que la propriété qui l'emploie est
+       invalide, et ça se VOIT à l'écran. La raison : un repli livrerait la couleur de
+       quelqu'un d'autre — c'est une fuite d'identité. C'est aussi pourquoi il n'y a pas de
+       palette par défaut dans le paquet, et pourquoi il y a DEUX fichiers plutôt qu'un
+       override en cascade.
+
+     · LA FORME — arrondis, rail de contrôles, dimensions de composants. § 4, FACULTATIF.
+       REPLI SUR LA VALEUR DU SOCLE. Un `--navbar-h` que vous ne déclarez pas retombe sur
+       4.5rem, et 4.5rem n'est la marque de personne : il n'y a rien à fuiter. Ces valeurs
+       vivent dans `tokens/scales.css`, ce sont les défauts ; vous ne les redéclarez que
+       pour les CHANGER.
+
+   Si quelqu'un « corrige » un jour cette incohérence apparente en alignant les deux régimes,
+   il casse l'un des deux : soit une marque incomplète livre en silence une couleur qui n'est
+   pas la sienne, soit un fichier de marque doit répéter quarante mesures qui ne le regardent
+   pas. Les deux régimes tiennent ensemble, pas séparément.
+
+   COMBIEN : 54 jetons OBLIGATOIRES en `:root`, dont AU MOINS 32 à redéclarer en `.dark` —
+   davantage si votre marque éclaircit ses remplissages en thème sombre. Sept jetons qui
+   étaient autrefois à remplir — les deux dégradés de marque et cinq fonds de pilule — sont
+   maintenant DÉRIVÉS par le socle dans `tokens/derives.css` et n'ont plus à l'être. Plus
+   3 jetons MÉTIER, optionnels, en bas du bloc et commentés : ils ne servent qu'aux visuels
+   d'export. Plus 33 jetons de FORME, tous facultatifs, au § 4.
+
+   CE QUE VOUS N'AVEZ TOUJOURS PAS À FOURNIR, même au § 4 : les espacements (--space-*), les
+   paliers typographiques, les interlignes et interlettrages, les durées, les ombres neutres
+   d'élévation, les largeurs de contenu. Ce sont les mesures qui font que deux design systems
+   nés de ce dépôt se ressemblent en STRUCTURE tout en n'ayant rien en commun.
+
+   VÉRIFIEZ AVANT DE LIVRER :
+       TOKENS=src/styles/brand-<vous>.css node check-contrast.mjs
+       node check-dark-substitution.mjs
+       node check-contract.mjs
+   Le premier refuse toute paire sous seuil que vous n'avez pas déclarée ; le deuxième
+   refuse un jeton qui figerait sa valeur claire dans une section sombre imbriquée ; le
+   troisième refuse un contrat incomplet.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ---------- 1 · POLICES ----------
+   Posez ici les @font-face du client, ou l'import de son fournisseur. Ils appartiennent
+   à la marque : le socle ne connaît que les trois NOMS déclarés au §3. */
+/* @import url('...'); */
+/* @font-face{font-family:'…';font-style:normal;font-weight:400;font-display:swap;src:url('…') format('woff2')} */
+
+/* ---------- 2 · ÉCARTS D'ACCESSIBILITÉ ASSUMÉS ----------
+   `check-contrast.mjs` mesure VOTRE palette et fait tomber le build sur toute paire
+   sous le seuil qui n'est pas déclarée ici. La liste est VIDE au départ, exprès : les
+   renoncements d'une autre marque ne sont pas les vôtres, et vous ne devez en hériter
+   d'aucun.
+
+   Lancez le contrôle, lisez ce qu'il refuse, puis pour chaque paire : corrigez le jeton,
+   ou assumez-la ici AVEC sa raison. Un écart assumé est une décision écrite.
+
+       /* @a11y-assume: <clé exacte de la paire, telle que le script la nomme>
+          <pourquoi la marque impose cet écart, et ce qui l'atténue> * /
+*/
+
+/* ---------- 3 · JETONS OBLIGATOIRES — L'IDENTITÉ ----------
+   Aucun repli. Chaque ligne doit recevoir une valeur. */
+:root{
+  /* Surfaces & neutres — les six surfaces sur lesquelles tout se pose.
+
+     LA RÈGLE DE L'ÉCHELLE, et elle est ABSOLUE : ces surfaces forment une échelle
+     ordonnée, jamais deux valeurs identiques parmi les paires qui se COMPOSENT —
+     muted sur card (rayures de table, champ désactivé), secondary sur card (champ,
+     barre d'onglets, pagination posés dans une carte), popover sur card (dropdown,
+     modale au-dessus d'une carte), accent sur card (plaque de badge et de bandeau),
+     card sur background. Un écart de luminance de 1,000 est STRICTEMENT invisible ;
+     sous ~1,04 il ne survit pas à un vrai écran. check-surfaces.mjs mesure ces paires
+     dans les DEUX thèmes et refuse tout écart sous seuil non assumé par écrit
+     (@surface-assume). Piège classique du thème sombre : les ombres n'y portent plus
+     l'élévation, donc si card = popover = secondary = muted, tout ce qui se pose SUR
+     une carte disparaît — c'est arrivé, neuf sites cassés, d'où ce contrôle.
+     En sombre, visez : page → muted → card → popover → surface-alt → secondary.
+     En clair : muted → background → card → popover/secondary. --accent n'est pas une
+     surface neutre : c'est la plaque de marque, TEINTÉE, dans les deux thèmes. */
+  --background:; --foreground:;
+  --card:; --card-foreground:;
+  --popover:; --popover-foreground:;
+  --secondary:; --secondary-foreground:;
+  --muted:; --muted-foreground:;
+  --accent:; --accent-foreground:;
+  --border:; --input:;
+
+  /* UN CRAN DE SÉPARATION depuis la surface courante. 15 sites : le survol de 13 règles,
+     le rail de .ds-progress, le point haut du shimmer de .ds-skel. Ce n'est PAS une teinte
+     de marque — c'est un pas de surface : plus SOMBRE que sa porteuse en thème clair, plus
+     CLAIR qu'elle en thème sombre. Visez le même ÉCART DE LUMINANCE dans les deux thèmes ;
+     dans la marque d'exemple il vaut 1,084 et 1,088. N'y mettez pas une couleur de survol
+     franche : la barre de progression et le squelette la prendraient aussi. */
+  --surface-alt:;
+
+  /* Neutres nommés — l'encre et le papier de la marque, indépendamment du thème actif. */
+  --tone-dark:; --tone-dark-soft:; --tone-light:; --tone-light-alt:;
+  --text-secondary:; --text-muted:; --text-inverted:;
+
+  /* Marque — remplissages. */
+  --primary:; --primary-foreground:;
+  --destructive:; --destructive-foreground:;
+  --ring:;
+  --brand-from:; --brand-via:; --brand-to:;
+  /* --brand-gradient et --brand-gradient-diagonal NE SONT PLUS À REMPLIR : le socle les
+     calcule depuis vos trois arrêts, dans tokens/derives.css. Une marque dont le dégradé
+     n'est pas un simple 90°/135° les redéclare chez elle, en :root ET en .dark. */
+  --grad-soft:;                 /* @kind color — lavis translucide, pastille de marque */
+  --gradient-halo:;             /* @kind color — halo bas, jamais plein écran */
+  --gradient-halo-top:;         /* @kind color */
+  --gradient-halo-center:;      /* @kind color */
+
+  /* LES JUMEAUX LISIBLES — le point le plus facile à rater du contrat.
+     --primary et --destructive sont des couleurs de REMPLISSAGE : un aplat, une bordure.
+     Posées comme couleur de TEXTE sur une surface claire, elles n'atteignent en général
+     pas 4,5:1 — un remplissage vif mesure typiquement autour de 3:1 sur --background, et
+     en faire la couleur de tous les liens rend le texte illisible. Ces deux jetons-ci sont
+     la même marque, rendue LISIBLE : plus foncée en thème clair, plus claire en thème sombre.
+     Le contrat exige >= 4,5:1 sur --background, --card, --popover, --secondary, --accent
+     et --surface-alt, dans les DEUX thèmes. check-contrast.mjs le vérifie. */
+  --primary-readable:;
+  --destructive-readable:;
+
+  /* Sémantique — les 6 pilules. Le FOND est traditionnellement translucide (color-mix
+     avec transparent) pour se poser sur n'importe quelle surface ; le TEXTE doit tenir
+     4,5:1 une fois le fond composité sur --card ET sur --background.
+     ATTENTION : si le fond d'une pilule contient var(X) et que X change en .dark, il faut
+     RÉPÉTER sa déclaration dans .dark — voir la note en tête du bloc .dark. */
+  /* Quatre fonds sur six sont CALCULÉS par le socle (tokens/derives.css) — coral, amber,
+     success, neutral : ils se déduisent d'une couleur que vous avez déjà choisie. Vous ne
+     remplissez que danger et warning, dont les formules varient d'une marque à l'autre, et
+     les six couleurs de TEXTE, qui sont de vraies décisions de contraste. */
+  --pill-coral-fg:;
+  --pill-amber-fg:;
+  --pill-danger-bg:;  --pill-danger-fg:;
+  --pill-warning-bg:; --pill-warning-fg:;
+  --pill-success-fg:;
+  --pill-neutral-fg:;
+  --success:;          /* vert sémantique — bordure du bandeau de succès. Sert aussi de
+                          source au fond de la pastille success, calculé par le socle. */
+
+  /* Familles — les NOMS des polices posées au §1. Gardez un repli système à la fin :
+     il tient la mise en page pendant le chargement, il ne remplace pas la police. */
+  --font-display:;  /* @kind font — titres */
+  --font-body:;     /* @kind font — texte et UI */
+  --font-mono:;     /* @kind font — code, méta technique */
+
+  /* LE RÉGIME DE TITRAGE — deux jetons, et c'est le réglage qu'on rate le plus souvent.
+     Ils gouvernent h1→h4, .display, .display-xl, .ds-card__title et .ds-logo : exactement
+     les règles qui posent --font-display, et rien d'autre. Ils appartiennent à la marque
+     parce qu'ils découlent de la FACE que vous avez choisie :
+       · condensée à capitales (Anton, Oswald, Bebas…)  ->  uppercase + var(--weight-regular)
+       · grotesque classique  (Inter, Geist, DM Sans…)  ->  none + var(--weight-bold)
+     Si votre mot-marque n'est pas en capitales mais votre titrage si, ajoutez ici
+     `.ds-logo{text-transform:none}` : le logo lit ces jetons comme le reste du titrage. */
+  --heading-transform:none;
+  --heading-weight:var(--weight-bold);
+
+  /* Relief de marque — la LUEUR. À distinguer des ombres neutres du socle
+     (--shadow-sm/md/lg/knob), qui décrivent une élévation et ne se substituent pas.
+     Une marque sans lueur peut les mettre à `none` : les quatre jetons doivent EXISTER. */
+  --shadow-glow:;      /* CTA primaire au repos */
+  --shadow-glow-lg:;   /* CTA primaire survolé */
+  --shadow-glow-sm:;   /* CTA primaire enfoncé */
+  --shadow-logo-dot:;  /* la pastille du logo */
+
+  /* ---------- MÉTIER — OPTIONNEL, et à ne décommenter que si vous en avez besoin ----------
+     Ces trois jetons ne servent QU'À l'extension `brand-content.css` : halos de miniature,
+     cartes motion, visuels d'export. Une app d'INTERFACE ne les déclare pas et n'importe
+     pas l'extension — elle ne perd rien, il n'y a pas un écran là-dedans.
+     Le contrat des trois est écrit en tête de `src/styles/brand-content.css`.
+     Le pendant JavaScript est sur `@yunary/ds/brand-content` :
+     `HaloHot`, `ContentIcon`. */
+  /* --tone-deep:; --gradient-thumbnail:; --shadow-accent-hot:; */
+}
+
+/* Les 32 jetons dont la valeur DÉPEND DU THÈME. Les 22 autres n'en dépendent pas et ne
+   se répètent pas ici.
+
+   PIÈGE À CONNAÎTRE — la substitution figée. Un jeton dont la valeur contient var(Y) est
+   substitué sur l'élément où il est DÉCLARÉ, pas où il est employé. Si Y change en .dark
+   et que le jeton n'est déclaré qu'en :root, il fige la valeur CLAIRE et l'emporte dans
+   toute section .dark IMBRIQUÉE — invisible quand .dark est sur <html>, où :root et .dark
+   matchent le même élément. `check-dark-substitution.mjs` refuse ce cas. C'est pourquoi
+   les jetons DÉRIVÉS du socle (tokens/derives.css) sont déjà déclarés dans les deux blocs :
+   vous n'avez pas à y penser. La règle vaut pour les VÔTRES : si vous écrivez un jeton
+   dont la valeur contient var() et que la source change en .dark, répétez-le. */
+.dark{
+  --background:; --foreground:;
+  --card:; --card-foreground:;
+  --popover:; --popover-foreground:;
+  --secondary:; --secondary-foreground:;
+  --muted:; --muted-foreground:;
+  --accent:; --accent-foreground:;
+  --border:; --input:; --ring:;
+  --surface-alt:;
+  --text-secondary:; --text-muted:; --text-inverted:;
+  --primary:; --primary-foreground:;
+  --destructive:; --destructive-foreground:;
+  --primary-readable:;
+  --destructive-readable:;
+  --grad-soft:;
+  --pill-coral-fg:;
+  --pill-amber-fg:;
+  --pill-danger-fg:;
+  --pill-warning-fg:;
+  --pill-success-fg:;
+  --pill-neutral-fg:;
+}
+
+/* @section:facultatif — TOUT CE QUI SUIT EST OPTIONNEL. Marqueur lu par check-contract.mjs :
+   au-dessus, le contrat exigible ; en dessous, des réglages qui ont tous un défaut. */
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   4 · FACULTATIF — LA FORME
+   ═══════════════════════════════════════════════════════════════════════════════
+   Trente-trois mesures qui portent de l'identité sans porter de couleur : la hauteur d'une
+   navbar, la largeur d'un tiroir, l'arrondi d'une barre d'onglets, la taille d'une case à
+   cocher. Le socle les DÉCLARE toutes dans `tokens/scales.css` — ce sont les défauts, et
+   ils sont écrits en commentaire sur chaque ligne ci-dessous pour que vous puissiez décider
+   en connaissance de cause.
+
+   LE MÉCANISME. Une app importe `core.css` PUIS votre fichier. Votre `:root` arrive donc
+   plus tard dans l'ordre de source, à spécificité égale et hors couche des deux côtés : il
+   GAGNE. Il n'y a rien d'autre à savoir, pas de `var(--x, défaut)` à écrire, pas de bloc à
+   déplacer. Un fichier de marque qui ne déclare aucune de ces lignes rend exactement ce que
+   rend le socle.
+
+   TOUT EST COMMENTÉ, ET C'EST L'ÉTAT NORMAL. Décommentez UNIQUEMENT les lignes que vous
+   changez, et remplacez leur valeur. Une ligne décommentée telle quelle ne fait rien — elle
+   redéclare le défaut. Une ligne décommentée et VIDÉE casse le composant : `var()` sur une
+   variable vide est invalide, et la propriété disparaît. Ce n'est pas le § 3, on ne laisse
+   pas une valeur en attente ici.
+
+   CE QUI SE PASSE SI VOUS EN OUBLIEZ UN : rien. C'est la différence avec le § 3.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+:root{
+
+  /* ---------- 4.1 · ARRONDIS — l'échelle complète ----------
+     Sept paliers. C'est le réglage le plus rentable du § : passer l'échelle entière à des
+     valeurs plus vives ou plus sèches change la personnalité du système en sept lignes.
+     Gardez l'ORDRE croissant — des composants imbriqués s'appuient dessus (une carte en
+     --radius-lg contient des chips en --radius-sm).
+     `--radius` n'est pas listé : le socle le déclare `var(--radius-lg)`, il suit donc
+     l'échelle tout seul. Le redéclarer ici le DÉCROCHERAIT de --radius-lg. */
+  /* --radius-xs:0.375rem; */   /* socle : 6 — squircle sur une boîte d'environ 20px */
+  /* --radius-sm:0.625rem; */   /* socle : 10 — chips, éléments imbriqués, squelette, onglet */
+  /* --radius-md:0.75rem; */    /* socle : 12 — boutons, champs, selects, boutons-icône */
+  /* --radius-lg:1.25rem; */    /* socle : 20 — carte standard, dropdown. C'est --radius */
+  /* --radius-xl:1.5rem; */     /* socle : 24 — grandes cartes, panneaux, héros */
+  /* --radius-2xl:1.75rem; */   /* socle : 28 — modales, feuilles */
+  /* --radius-pill:9999px; */   /* socle : badges et compteurs. Le mettre à 0 casse le switch
+                                   et le radio, qui l'emploient pour être ronds. */
+
+  /* ---------- 4.2 · RAIL DE CONTRÔLES ----------
+     UNE hauteur minimale pour tout contrôle : bouton dans ses trois tailles, champ, select,
+     barre d'onglets. Les carrés du bouton-icône ont leur propre rail, à trois tailles réelles.
+
+     LE PIÈGE, ET IL EST À VOUS : le socle REDÉCLARE --control-md et --control-lg dans un
+     `@media (max-width:64rem)` — 2.75rem, soit la cible tactile de 44px. Comme votre fichier
+     arrive APRÈS le socle, un `--control-md` posé ici en `:root` nu gagne AUSSI sous 64rem
+     et efface la cible tactile sans rien signaler. Si vous changez ces deux-là, répétez le
+     media query dans votre fichier :
+
+         @media (max-width:64rem){ :root{ --control-md:…; --control-lg:…; } }
+
+     --control-sm vaut `var(--control-md)` dans le socle et suit donc tout seul ; ne le
+     redéclarez que pour DÉCROCHER le bouton sm du rail commun. */
+  /* --control-sm:var(--control-md); */ /* socle : alias — le bouton sm tient le rail */
+  /* --control-md:3rem; */              /* socle : 48 · 44 sous 64rem — voir le piège ci-dessus */
+  /* --control-lg:3.25rem; */           /* socle : 52 · 48 sous 64rem — CTA héros uniquement */
+  /* --icon-control-sm:2.375rem; */     /* socle : 38 */
+  /* --icon-control-md:2.625rem; */     /* socle : 42 */
+  /* --icon-control-lg:3rem; */         /* socle : 48 */
+
+  /* ---------- 4.3 · DIMENSIONS DE COMPOSANTS ----------
+     Vingt mesures, une par décision de forme. Elles n'ont AUCUN effet les unes sur les
+     autres : changer --navbar-h ne bouge pas le tiroir.
+     Ce qui n'est PAS ici, et n'y sera pas : les espacements internes d'un composant — le
+     gap entre une icône et son libellé, le padding d'une cellule. Ce sont des mesures de
+     compacité, elles appartiennent à la structure et restent dans patterns.css. */
+
+  /* Navigation */
+  /* --navbar-h:4.5rem; */              /* socle : 72 — hauteur de la barre */
+  /* --sidebar-w:16rem; */              /* socle : 256 — tiroir déployé */
+  /* --sidebar-w-collapsed:4.5rem; */   /* socle : 72 — tiroir replié */
+  /* --sidebar-head-h:3rem; */          /* socle : 48 — en-tête du tiroir */
+  /* --sidenav-h:2.75rem; */           /* socle : 44 — un lien de tiroir, au seuil tactile */
+  /* --page-min:2.5rem; */              /* socle : 40 — carré minimum d'un bouton de pagination */
+  /* --tabs-radius:0.875rem; */         /* socle : 14 — l'arrondi PROPRE à la barre d'onglets.
+                                           Il ne suit pas --radius-* : le changer ne touche
+                                           ni les cartes ni les boutons. */
+  /* --pagination-radius:0.875rem; */   /* socle : 14 — même chose pour la pagination */
+
+  /* Surfaces flottantes */
+  /* --modal-w:23.75rem; */             /* socle : 380. Sans effet sous 64rem, où la modale
+                                           devient une feuille en pleine largeur. */
+  /* --modal-close:2rem; */             /* socle : 32 — le carré du bouton de fermeture */
+  /* --dropdown-w:14.375rem; */         /* socle : 230 */
+  /* --actionsheet-w-panneau:20rem; */  /* socle : 320 — la variante panneau, au-dessus de
+                                           64rem ; la feuille, elle, est en pleine largeur */
+  /* --toast-w-min:17.5rem; */          /* socle : 280 */
+  /* --toast-w-max:26rem; */            /* socle : 416 */
+
+  /* Formulaires et données */
+  /* --choice-box:1.25rem; */           /* socle : 20 — la case à cocher, carrée */
+  /* --choice-box-radius:0.4375rem; */  /* socle : 7 — son arrondi. --radius-sm clipperait
+                                           la case en cercle à cette taille. */
+  /* --choice-dot:0.625rem; */          /* socle : 10 — le point du bouton radio */
+  /* --progress-h:0.5rem; */            /* socle : 8 — l'épaisseur du rail de progression */
+  /* --cal-day:2.25rem; */              /* socle : 36 — LA COLONNE du calendrier. Un seul jeton
+                                           pour la case du jour, l'en-tête de jour de semaine
+                                           et la colonne de grille : les trois DOIVENT rester
+                                           égaux, sinon la grille se décale. */
+  /* --cal-nav:2rem; */                 /* socle : 32 — les flèches de mois, carrées */
+}

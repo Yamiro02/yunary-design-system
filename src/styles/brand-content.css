@@ -1,0 +1,56 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   EXTENSION MÉTIER — miniatures YouTube, cartes motion, visuels d'export.
+   OPTIONNELLE. Une app d'interface ne l'importe pas.
+
+   Rien de ce que porte ce fichier n'est de l'INTERFACE : les halos chauds de miniature,
+   le noir profond et la lueur de mot-clé servent à fabriquer des VISUELS — une vignette YouTube, une carte de motion design — pas des écrans.
+
+       @import "@yunary/ds/theme.css";
+       @import "@yunary/ds/brand-content.css";   <- seulement si vous en avez besoin
+
+   Il s'importe depuis le CSS de l'app, à côté de `theme.css` et pas depuis le JS :
+   il déclare des `@utility` et un `@theme inline`, que seul le plugin Tailwind sait lire.
+
+   COMME `core.css`, IL NE PORTE AUCUNE VALEUR. Il déclare la STRUCTURE — les règles, les
+   utilitaires, les correspondances de thème — et le CONTRAT des trois jetons que le fichier
+   de marque doit fournir en face. C'est la même règle qu'ailleurs dans ce paquet : un
+   fichier de structure ne contient pas de couleur, et un jeton manquant fait que la
+   variable n'existe pas au lieu de retomber en silence sur celle de quelqu'un d'autre.
+
+   LE CONTRAT — trois jetons, dans votre fichier de marque, en `:root` :
+     --tone-deep               le noir le plus profond du système. Surfaces d'export
+                               uniquement, jamais un fond d'interface.
+     --gradient-thumbnail      halo de miniature. L'utilitaire s'appelle `bg-thumbnail`.
+     --shadow-accent-hot       la lueur de `.accent-hot`, en drop-shadow.
+   `brand.template.css` les liste, commentés, dans son bloc optionnel ; la marque
+   d'exemple livrée avec le paquet les renseigne.
+
+   Le pendant JavaScript est sur le sous-chemin `@yunary/ds/brand-content` :
+   `HaloHot` et `ContentIcon`.
+
+   LA GRILLE FINE N'EST PLUS ICI. `GridBackground`, `.ds-grid`, `bg-grid*` et les trois
+   jetons de maille ont été retirés : une trame de fond n'est pas du design system. Elle
+   décrit un habillage de visuel, pas un composant d'interface — et elle échouait au premier
+   test de GOVERNANCE.md, celui du nom. Une app qui en a besoin l'écrit chez elle, en six
+   lignes de CSS.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Les correspondances Tailwind des deux jetons métier exposés en utilitaires.
+   `@theme inline` et non `@theme` nu, pour la même raison qu'en tête de theme.css. */
+@theme inline {
+  --color-tone-deep: var(--tone-deep);
+}
+
+/* Dégradés et trames de fond. `background-image` et `background-size` n'ont PAS de
+   namespace en v4 : ils passent par `@utility`, ce qui les rend variantables.
+   `background-image` et non le raccourci `background` : le raccourci réinitialiserait
+   au passage la couleur, la position et la taille de fond de l'élément. */
+@utility bg-thumbnail {
+  background-image: var(--gradient-thumbnail);
+}
+/* La règle quitte `tokens/base.css` mais garde sa couche : `base` reste sous `components`
+   et sous `utilities`, l'ordre de cascade est inchangé. */
+@layer base {
+  /* Le mot-clé en dégradé, avec sa lueur — miniatures et motion uniquement. */
+  .accent-hot{-webkit-text-fill-color:transparent;filter:drop-shadow(var(--shadow-accent-hot))}
+}

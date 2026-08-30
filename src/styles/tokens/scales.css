@@ -1,0 +1,198 @@
+/* SOCLE — espacement, rayons, rail de contrôles, ombres, motion. Aucune valeur de marque.
+   Every dimensional token is rem, px equivalent in comment.
+   Kept in px, and only these: hairline borders (1px/1.5px); box/text/drop-shadow
+   offsets, blurs and spreads; the focus ring (2px, offset 2–3px, 3px ring);
+   the navbar backdrop blur radius (10px); the 9999px pill radius;
+   hover/press micro-offsets (-2px/-1px/1px);
+   the shimmer background-position (-560px -> 560px); SVG stroke-width; and the
+   fixed export dimensions of canvases. */
+:root{
+  /* Spacing — 4px base */
+  --space-1:0.25rem;  /* 4  */
+  --space-2:0.5rem;   /* 8  */
+  --space-3:0.75rem;  /* 12 */
+  --space-4:1rem;     /* 16 */
+  --space-5:1.5rem;   /* 24 */
+  --space-6:2rem;     /* 32 */
+  --space-7:3rem;     /* 48 */
+  --space-8:6rem;     /* 96 */
+
+  /* Radius — soft but tool-like on controls */
+  /* Le plus petit rayon du système. Il portait le nom d'un composant qui ne l'emploie pas —
+     .ds-badge prend --radius-pill, et son SEUL consommateur est le rail de .ds-progress.
+     Un nom qui désigne le mauvais composant fait chercher. */
+  --radius-xs:0.375rem;  /* 6 — squircle sur une boîte d'environ 20px, où sm clipperait en cercle */
+  --radius-sm:0.625rem;  /* 10 — chips, nested elements, skeleton, tab items */
+  --radius-md:0.75rem;   /* 12 — buttons, inputs, selects, icon-buttons */
+  --radius-lg:1.25rem;   /* 20 — standard card (default --radius), dropdowns */
+  --radius-xl:1.5rem;    /* 24 — large cards, panels, hero */
+  --radius-2xl:1.75rem;  /* 28 — modals, sheets */
+  --radius-pill:9999px;  /* badges, counters — metadata only. NEVER a button, input or tab bar */
+  --radius:var(--radius-lg);
+
+  /* Control height rail — ONE minimum height for every control (button in all sizes,
+     input, select trigger, square icon-button, tab bar). 3rem desktop; drops to
+     2.75rem (44px touch target) under 64rem — see the media query below.
+     sm only tightens padding + type; lg is the hero CTA. */
+  --control-sm:var(--control-md);
+  --control-md:3rem;     /* 48 · 44 mobile */
+  --control-lg:3.25rem;  /* 52 — hero CTA only */
+  /* Bouton-icône — TROIS TAILLES RÉELLES. Les trois valaient var(--control-md) : un
+     IconButton size="sm|md|lg" rendait trois carrés identiques, et une prop qui ment est
+     pire qu'une prop absente. Le rail unique reste la règle pour Button, Input et Select —
+     eux s'alignent avec les champs sur une même ligne ; un carré d'icône n'a pas cette
+     contrainte. Valeurs du kit maître, d'avant l'alignement sur le rail. */
+  --icon-control-sm:2.375rem;  /* 38 */
+  --icon-control-md:2.625rem;  /* 42 */
+  --icon-control-lg:3rem;      /* 48 */
+
+  /* Badge height rail — ADDED v0.3. The Badge height used to be emergent (padding +
+     line-height + icon), so it never matched a status pill on the same row. Now explicit.
+     dense is CALÉ on the spacing scale (= --space-5), not on the old accidental 23.6px. */
+  --badge-h:1.8125rem;      /* 29 — current rendered height, frozen for non-regression */
+  --badge-h-dense:1.5rem;   /* 24 — lines up with a status pill on the same row */
+
+  /* Pastille — the icon tile. Sizes named BY CONTEXT, never by measure. ADDED v0.3.
+     dialogue and panneau are the former .ds-modal__icon / .ds-empty__icon literals, promoted. */
+  --pastille-carte:2.25rem;     /* 36 */
+  --pastille-dialogue:2.625rem; /* 42 */
+  --pastille-panneau:3.25rem;   /* 52 */
+  --pastille-heros:4rem;        /* 64 */
+  --pastille-ecran:5rem;        /* 80 */
+
+  /* Bottom-sheet grip — ADDED v0.3. Height is --space-1. */
+  --grip-w:2.25rem;      /* 36 */
+
+  /* Card padding */
+  --card-pad:1.5rem;     /* 24 — standard card */
+  --card-pad-lg:1.75rem; /* 28 — large card / panel */
+
+  /* ---------- DIMENSIONS DE COMPOSANTS — DES DÉFAUTS, PAS DES INVARIANTS ----------
+     Vingt mesures qui étaient des littéraux dans patterns.css, et qui portent de
+     l'IDENTITÉ : la hauteur d'une navbar, la largeur d'un tiroir, la taille d'une case à
+     cocher, l'arrondi propre à une barre d'onglets. Deux marques peuvent légitimement les
+     vouloir différentes sans que la STRUCTURE bouge d'une ligne.
+
+     LE MÉCANISME, et il n'y a rien d'autre à savoir. Ces valeurs restent ICI : ce sont
+     les défauts du socle. Une marque qui veut les changer les REDÉCLARE dans son propre
+     fichier — voir la § FACULTATIF de brand.template.css. Comme une app importe core.css
+     PUIS sa marque, la redéclaration en :root arrive plus tard dans l'ordre de source, à
+     spécificité égale et hors couche des deux côtés : elle gagne. Pas de var(--x, défaut),
+     pas de jeton orphelin, et un fichier de marque qui n'en déclare aucun rend exactement
+     ce que rend le socle.
+
+     C'est l'autre régime que celui des couleurs : ici un jeton oublié RETOMBE sur la
+     valeur ci-dessous, et 4.5rem n'est la marque de personne. Il n'y a rien à fuiter.
+
+     CE QUI N'EST PAS ICI : les espacements internes d'un composant — le gap entre une
+     icône et son libellé, le padding d'une cellule. Ils restent littéraux dans
+     patterns.css : ce sont des mesures de COMPACITÉ, pas d'identité, et un contrat où on
+     peut les régler est un contrat que personne ne remplit. Voir l'en-tête de patterns.css. */
+  --navbar-h:4.5rem;              /* 72 — .ds-navbar__inner */
+  --sidebar-w:16rem;              /* 256 — .ds-sidebar déployée */
+  --sidebar-w-collapsed:4.5rem;   /* 72 — .ds-sidebar.is-collapsed */
+  --sidebar-head-h:3rem;          /* 48 — .ds-sidebar__head. Vaut le --control-md de bureau
+                                     par coïncidence, PAS par alignement : il ne descend pas
+                                     à 2.75rem sous 64rem, il est resté 3rem. */
+  /* 40 laissait l'entrée de navigation — la cible la plus cliquée d'une coque d'outil —
+     SOUS le seuil tactile de 44 que le reste du système tient déjà. */
+  --sidenav-h:2.75rem;            /* 44 — .ds-sidenav */
+  --modal-w:23.75rem;             /* 380 — .ds-modal. Ignoré sous 64rem : la modale y est
+                                     une feuille en width:100%. */
+  --modal-close:2rem;             /* 32 — .ds-modal__close, carré */
+  --dropdown-w:14.375rem;         /* 230 — .ds-dropdown */
+  --actionsheet-w-panneau:20rem;  /* 320 — .ds-actionsheet--panneau (spécimen desktop) */
+  --toast-w-min:17.5rem;          /* 280 — .ds-toast */
+  --toast-w-max:26rem;            /* 416 — .ds-toast */
+  --cal-day:2.25rem;              /* 36 — LA COLONNE du calendrier : la case du jour, l'en-tête
+                                     de jour de semaine ET la colonne de grille. UN jeton pour
+                                     les trois — trois jetons diverge, et la grille se décale. */
+  --cal-nav:2rem;                 /* 32 — .ds-cal__nav, carré */
+  --page-min:2.5rem;              /* 40 — .ds-page, le carré minimum d'un bouton de pagination */
+  --progress-h:0.5rem;            /* 8 — l'épaisseur du rail de .ds-progress */
+  /* LES DEUX ARRONDIS PROPRES À UN COMPOSANT. 0.875rem ne figure pas dans l'échelle
+     --radius-* : la barre d'onglets et la pagination ont leur rayon à elles, et c'est
+     voulu — les changer ne doit pas toucher les cartes. */
+  --tabs-radius:0.875rem;         /* 14 — .ds-tabs */
+  --pagination-radius:0.875rem;   /* 14 — .ds-pagination */
+  --choice-box:1.25rem;           /* 20 — la case de .ds-choice, carrée */
+  --choice-box-radius:0.4375rem;  /* 7 — squircle sur 20px, où --radius-sm clipperait */
+  --choice-dot:0.625rem;          /* 10 — le point du radio */
+
+  /* Content widths by ROLE — FROM APP CODE. Name the intent, never invent a width. */
+  --container-shell:70rem;    /* 1120 — widest shell (hero, landing sections) */
+  --container-wide:56.25rem;  /* 900 — wide working column */
+  --container-read:45rem;     /* 720 — continuous reading column (legal, forms) */
+  --container-narrow:30rem;   /* 480 — centred message, empty state */
+
+  /* L'ÉCHELLE DE Z-INDEX — nommée par rôle, jamais une valeur nue dans une règle ou un JSX.
+     L'ordre EST le contrat : chaque rang doit passer au-dessus du précédent.
+       navbar   < popover  (un tooltip, un datepicker, un dropdown passent devant la barre)
+       popover  < scrim    (un voile couvre la page, popovers compris)
+       scrim    < drawer   (le tiroir mobile s'ouvre AU-DESSUS de son propre voile)
+       drawer   < modal    (une modale ouverte DEPUIS le tiroir doit le couvrir — voile
+                            et panneau ensemble : le scrim de Modal/ActionSheet est --z-modal.
+                            À 50, elle passait SOUS le tiroir (60) : présente, focus piégé
+                            dedans, et invisible.) */
+  --z-navbar:30;
+  --z-popover:40;
+  --z-scrim:50;
+  --z-drawer:60;
+  --z-modal:70;
+
+  /* Ombres — trois niveaux teintés d'encre, jamais du noir pur.
+     La GÉOMÉTRIE (décalage, flou, opacité) appartient au socle et ne se substitue pas ;
+     la TEINTE suit --tone-dark, que la marque fournit déjà. Écrites en rgba(31,30,28,…) elles
+     emportaient une encre de marque dans le socle : c'étaient, après la scission, les
+     quatre dernières valeurs de la marque de référence que le balayage de la palette de
+     recette trouvait encore à l'écran. Le rendu est identique — color-mix avec transparent donne exactement
+     rgba(<ink>, <taux>). */
+  --shadow-sm:0 2px 8px color-mix(in srgb,var(--tone-dark) 6%,transparent);
+  --shadow-md:0 10px 28px color-mix(in srgb,var(--tone-dark) 9%,transparent);
+  --shadow-lg:0 20px 48px color-mix(in srgb,var(--tone-dark) 12%,transparent);
+  /* Switch geometry — ADDED v0.3. Les 4 mesures du switch, jetons plutôt que littéraux :
+     la course du knob en DÉCOULE par calc(), elle n'est plus un nombre à maintenir à la main. */
+  --switch-w:2.75rem;        /* 44 */
+  --switch-h:1.625rem;       /* 26 */
+  --switch-knob:1.25rem;     /* 20 */
+  --switch-inset:0.1875rem;  /* 3 */
+
+  /* Knob de Switch — ADDED v0.3. Le seul relief 1px du système ; ink-tinté, jamais noir pur.
+     Remplace le littéral inventé rgba(0,0,0,.2) de .ds-switch__knob. */
+  --shadow-knob:0 1px 2px color-mix(in srgb,var(--tone-dark) 28%,transparent);
+  /* Les LUEURS ne sont pas ici. --shadow-glow / -lg / -sm et --shadow-logo-dot décrivent
+     une chaleur, pas une élévation : ils appartiennent à la marque et vivent dans son
+     fichier. Les quatre ombres ci-dessus décrivent une hauteur — elles restent au
+     socle et une marque ne les substitue pas.
+     La maille de grille non plus : c'est du MÉTIER, elle part avec brand-content.css. */
+
+  /* Motion. Les DURÉES appartiennent au socle : elles décrivent un comportement — la
+     vitesse à laquelle un survol répond, le temps qu'une modale met à s'installer — pas une
+     identité. Une marque ne les substitue pas ; c'est la contrepartie de la lueur, qui elle
+     est de la marque et n'est donc pas ici.
+     Elles étaient 48 littéraux inline dans patterns.css : changer le tempo du système
+     demandait 48 remplacements, et personne ne le faisait. */
+  --duration-fast:150ms;   /* survol, focus, changement de couleur */
+  --duration-base:200ms;   /* transition standard : fond, bordure, ombre, largeur */
+  --duration-slow:300ms;   /* installation d'un panneau — modale, feuille, tiroir */
+  --duration-shimmer:1.4s; /* la boucle du squelette et de la barre indéterminée */
+  --duration-spin:0.8s;    /* la boucle du spinner */
+  --duration-rotate:1s;    /* la rotation générique de .ds-spin, posable sur une icône */
+  --ease-standard:cubic-bezier(0.2, 0, 0, 1);  /* @kind other */
+}
+.dark{
+  /* L'élévation se creuse sur fond sombre. Le NOIR PUR est ici volontaire et n'est la
+     valeur de personne : sur une surface sombre, une ombre teintée d'encre ne se voit
+     plus. Ces quatre-là n'ont donc rien à dériver. */
+  --shadow-sm:0 2px 8px rgba(0,0,0,.34);
+  --shadow-md:0 10px 28px rgba(0,0,0,.46);
+  --shadow-lg:0 20px 48px rgba(0,0,0,.58);
+  --shadow-knob:0 1px 3px rgba(0,0,0,.45);
+}
+@media (max-width:64rem){
+  :root{ --control-md:2.75rem; /* 44 — mobile touch target */ --control-lg:3rem; }
+}
+@media (prefers-reduced-motion:reduce){
+  *,::before,::after{ transition-duration:0.01ms!important; animation-duration:0.01ms!important; animation-iteration-count:1!important; }
+}
+@keyframes shimmer{0%{background-position:-560px 0}100%{background-position:560px 0}}

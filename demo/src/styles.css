@@ -1,0 +1,26 @@
+/* Entrée CSS de la démo — celle que traite @tailwindcss/vite.
+
+   Le montage est celui d’une app consommatrice, à l’identique :
+     · les FONDATIONS — `core.css` (jetons, reset, états de composants) PUIS un fichier de
+       marque — sont importées en JS, depuis main.tsx ;
+     · la COUCHE TAILWIND (`theme.css`) est importée ICI, en CSS — c’est la seule
+       voie par laquelle Tailwind la voit.
+
+   theme.css porte lui-même les @import de Tailwind : il ne faut surtout PAS
+   ajouter un @import "tailwindcss" ici, Tailwind serait chargé deux fois.
+   Aucune règle de design n’est écrite dans ce fichier : c’est la règle de la vitrine. */
+@import '@yunary/ds/theme.css';
+
+/* L'EXTENSION MÉTIER, importée EXPLICITEMENT — la vitrine rend la page Marque, qui montre
+   la grille fine et les halos de miniature. Une app d'interface ne l'importe pas, et ne
+   perd rien : elle porte des motifs de vignette et de motion, pas d'écran. C'est aussi
+   pour ça qu'elle est importée ici et pas par le socle : opt-in, jamais par défaut. */
+@import '@yunary/ds/brand-content.css';
+
+
+/* Tailwind v4 ne détecte les sources qu’à partir de la racine de la démo. Celles du
+   design system vivent un cran au-dessus : on les déclare, comme le faisait la liste
+   `content` de la v3. Sans effet aujourd’hui — les composants rendent des classes
+   .ds-* et pas des utilitaires — mais la vitrine reste exacte le jour où l’un d’eux
+   en écrira un. */
+@source '../../src';

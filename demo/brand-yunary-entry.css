@@ -1,0 +1,4 @@
+/* LE MONTAGE DE LA VITRINE — socle + marque, exactement comme le ferait une app.
+   Yunary : deux imports, toujours. */
+@import '../src/styles/core.css';
+@import './../src/styles/brand-yunary.css';

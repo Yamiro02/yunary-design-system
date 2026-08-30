@@ -1,0 +1,81 @@
+{
+  "name": "@yunary/ds",
+  "version": "0.1.0",
+  "description": "Design system Yunary — jetons, couche Tailwind v4 et primitives React.",
+  "license": "UNLICENSED",
+  "private": false,
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "docs"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "source": "./src/index.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./core.css": "./src/styles/core.css",
+    "./brand-yunary.css": "./src/styles/brand-yunary.css",
+    "./brand.template.css": "./src/styles/brand.template.css",
+    "./brand-content.css": "./src/styles/brand-content.css",
+    "./brand-content": {
+      "types": "./dist/brand-content.d.ts",
+      "source": "./src/brand-content.tsx",
+      "import": "./dist/brand-content.js",
+      "require": "./dist/brand-content.cjs"
+    },
+    "./theme.css": "./src/styles/theme.css",
+    "./app-scale.css": "./src/styles/app-scale.css",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsup && npm run check:classes",
+    "typecheck": "tsc --noEmit",
+    "setup": "npm install && npm install --prefix demo",
+    "rebrand": "node rebrand.mjs",
+    "lint": "npm run typecheck && node check-token-refs.mjs && node check-version.mjs && node check-contract.mjs && node check-utility-collisions.mjs && node check-dead-utilities.mjs && node check-font-px.mjs && node check-fragile-classes.mjs && node check-dark-substitution.mjs && node check-contrast.mjs && node check-surfaces.mjs && node check-catalogue.mjs && node check-preflight-drift.mjs && bash check-literals.sh",
+    "demo": "npm --prefix demo run dev",
+    "demo:build": "npm --prefix demo run build",
+    "check:classes": "npm --prefix demo run build:vite && node check-classes.mjs",
+    "demo:install": "npm --prefix demo install",
+    "prepare": "tsup"
+  },
+  "peerDependencies": {
+    "lucide-react": ">=0.400",
+    "react": ">=18",
+    "react-dom": ">=18",
+    "tailwind-merge": "^3",
+    "tailwindcss": ">=4"
+  },
+  "peerDependenciesMeta": {
+    "tailwindcss": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "lucide-react": "^0.469.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.3",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

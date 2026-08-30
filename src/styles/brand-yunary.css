@@ -1,0 +1,250 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MARQUE YUNARY — encre chaude & crème, dégradé ambre → orange → corail en accent
+   strictement rationné (logo, un mot de titre, sur-titre, CTA primaire, halo).
+   Transposée de l'ancien design system Yunary dans le contrat brand.template.css :
+   échelle de surfaces à six crans RECONSTRUITE (l'ancienne palette partageait une
+   même valeur entre card/popover/muted), --surface-alt, jumeaux lisibles et halos
+   nommés CRÉÉS. Palette mesurée : chaque paire du contrat tient son seuil ou est
+   assumée ci-dessous. Vérif : TOKENS=src/styles/brand-yunary.css node check-contrast.mjs
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ---------- 1 · POLICES ----------
+   AUTO-HÉBERGÉES, et c'est délibéré. Les 16 .woff2 vivent dans `assets/fonts/` et partent
+   avec le paquet : aucune requête tierce, aucun point de panne réseau, et le rendu est le
+   même hors ligne, derrière un proxy d'entreprise ou le jour où fonts.gstatic.com ne
+   répond pas. C'est la leçon d'un incident : une police qui ne charge pas ne dégrade pas
+   « un peu », elle change toute la mise en page.
+
+   Graisses réellement affichées, et rien de plus : Onest 700/800 (titrage), DM Sans
+   400/500/600/700 (texte & UI), DM Mono 400/500 (code & méta technique — même fonderie
+   que DM Sans). Deux sous-ensembles chacune, `latin` et `latin-ext`, avec leur
+   `unicode-range` : le navigateur ne télécharge que ce que la page emploie.
+
+   Les replis système restent en queue des trois --font-* : ils tiennent la mise en page
+   pendant le chargement, ils ne remplacent pas la face. */
+@font-face{font-family:'Onest';font-style:normal;font-weight:700;font-display:swap;src:url('./assets/fonts/onest-700-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Onest';font-style:normal;font-weight:700;font-display:swap;src:url('./assets/fonts/onest-700-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Onest';font-style:normal;font-weight:800;font-display:swap;src:url('./assets/fonts/onest-800-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Onest';font-style:normal;font-weight:800;font-display:swap;src:url('./assets/fonts/onest-800-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:400;font-display:swap;src:url('./assets/fonts/dm-sans-400-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:400;font-display:swap;src:url('./assets/fonts/dm-sans-400-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:500;font-display:swap;src:url('./assets/fonts/dm-sans-500-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:500;font-display:swap;src:url('./assets/fonts/dm-sans-500-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:600;font-display:swap;src:url('./assets/fonts/dm-sans-600-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:600;font-display:swap;src:url('./assets/fonts/dm-sans-600-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:700;font-display:swap;src:url('./assets/fonts/dm-sans-700-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:700;font-display:swap;src:url('./assets/fonts/dm-sans-700-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+
+@font-face{font-family:'DM Mono';font-style:normal;font-weight:400;font-display:swap;src:url('./assets/fonts/dm-mono-400-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'DM Mono';font-style:normal;font-weight:400;font-display:swap;src:url('./assets/fonts/dm-mono-400-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'DM Mono';font-style:normal;font-weight:500;font-display:swap;src:url('./assets/fonts/dm-mono-500-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'DM Mono';font-style:normal;font-weight:500;font-display:swap;src:url('./assets/fonts/dm-mono-500-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+
+/* ---------- 2 · ÉCARTS D'ACCESSIBILITÉ ASSUMÉS ----------
+   Mesurés sur CETTE palette. Deux familles : la signature CTA (label blanc sur le
+   dégradé chaud) et les contours doux (hairlines crème). Rien n'est hérité. */
+
+/* @a11y-assume: .ds-btn--primary — label sur --primary à plat
+   Signature Yunary : le CTA primaire porte le dégradé chaud avec un label blanc
+   (3,48 sur l'aplat corail). Un seul CTA par vue, libellé 15/600, lueur --shadow-glow
+   et forme pleine le rendent identifiable sans lecture fine ; 3:1 est tenu sur
+   --primary et --brand-to. L'alternative encre tombait à 4,36 sur --brand-to. */
+/* @a11y-assume: .ds-btn--primary — label sur --brand-from (pire arrêt)
+   L'arrêt jaune du dégradé (2,04). Même décision de signature que ci-dessus ;
+   l'arrêt jaune n'occupe que le bord gauche du bouton, jamais la zone du label seul. */
+/* @a11y-assume: .ds-btn--primary — label sur --brand-via
+   Arrêt médian orange (2,68). Même décision de signature. */
+/* @a11y-assume: .ds-btn--primary — label sur --brand-to
+   Arrêt corail (3,80) — au-dessus de 3:1, sous 4,5. Même décision de signature. */
+/* @a11y-assume: .ds-pastille--brand-solid — glyphe sur --brand-from
+   Glyphe blanc sur l'arrêt jaune (2,04). La pastille pleine est décorative et
+   toujours accompagnée de son libellé ; la variante douce (--grad-soft) tient 6,14
+   avec --primary-readable et reste la forme par défaut. */
+/* @a11y-assume: .ds-pastille--brand-solid — glyphe sur --brand-via
+   Arrêt orange (2,68). Même atténuation que ci-dessus. */
+/* @a11y-assume: .ds-btn--danger — label sur --destructive
+   3,80 dans les deux thèmes. Corail sémantique #e84c3d (= --brand-to) sous label blanc —
+   aligné sur le DS Julien Fernandes : le rouge foncé qui tiendrait 4,5 sortirait de la
+   palette chaude. Jamais seul : couleur + icône + mot, et le texte de danger courant passe
+   par --destructive-readable. */
+/* @a11y-assume: .ds-cal__day.is-selected
+   Même aplat que le CTA (3,48). La sélection est aussi portée par aria-selected et
+   par la forme pleine — jamais par la couleur seule. */
+/* @a11y-assume: .ds-pastille--brand — icône
+   La plaque douce passe à --pill-coral-bg et le glyphe à --primary (patterns.css) : 2,85 en
+   clair pour un seuil de 3, 3,58 en sombre — tenu. Un glyphe de pastille est un graphique
+   non textuel, décoratif, et n'est jamais seul — il est toujours accompagné de son libellé
+   en texte courant. */
+/* @a11y-assume: .ds-cal__day.is-today
+   La règle pose --primary et non le jumeau lisible : 3,25 en clair et 4,12 en sombre sur la
+   carte, pour du 14/700. Le jour du jour n'est jamais porté par la seule couleur — il l'est
+   aussi par la graisse, et le jour SÉLECTIONNÉ, lui, porte l'aplat plein. */
+/* @a11y-assume: .eyebrow / .accent — dégradé clippé en texte
+   Le dégradé clippé pique toujours à son arrêt clair (1,83 en clair) : propriété de
+   la TECHNIQUE, pas de la palette. Un seul mot par titre, jamais porteur seul du sens. */
+/* @a11y-assume: anneau de focus --ring sur --background
+   2,41 en clair — le focus porte l'arrêt médian du dégradé (#f08029), décision du kit
+   maître : la marque est plus présente avec un arrêt du dégradé qu'avec le plein orange.
+   Tenable parce que le focus ne porte jamais sur le seul contour : bord 1,5px + halo de
+   3px sur les champs, outline 2px + offset ailleurs. En sombre --ring = --brand-from
+   tient 8,16. Repli si l'écart déplaît : --brand-to #e84c3d (3,40). */
+/* @a11y-assume: .ds-input — bordure --input vs page
+   Contours doux Yunary : hairline crème (1,44). Le champ est aussi délimité par son
+   remplissage blanc sur page crème et par le focus ring corail 3:1. */
+/* @a11y-assume: .ds-input — bordure --input vs remplissage
+   Même décision de contours doux (1,59 clair). */
+/* @a11y-assume: .ds-input — remplissage vs page
+   Blanc sur crème (1,12) : le pas de surface est voulu discret ; bordure 1.5px et
+   focus ring portent la délimitation. */
+/* @a11y-assume: .ds-card — bordure --border vs page
+   Hairline 1px voulue discrète — la carte porte AUSSI une ombre teintée d'encre
+   (--shadow-sm), qui fait le détachement. */
+/* @a11y-assume: .ds-sep — filet --border sur --card
+   Même hairline, filet de rythme non porteur de sens. */
+
+/* @surface-assume: --secondary / --card — clair
+   1,009, et c'est VOULU (kit maître v0.5.0) : une barre latérale, une navbar ou un champ
+   posés sur la mise en page sont des surfaces de l'app au MÊME rang que la carte — deux
+   rôles, une hauteur de plan, le filet sépare. Ils ne se superposent jamais sans
+   dÉDUCTION : dans une carte, une modale ou un popover, le contrôle repasse sur
+   --background (règles de déduction de patterns.css). */
+/* @surface-assume: --secondary / --card — sombre
+   1,000 — même décision, même mécanique de déduction. Bénéfice mesuré : --surface-alt
+   (1,090 au-dessus) éclaircit désormais les survols des surfaces --secondary, là où
+   l'ancien sommet #3c3a37 les assombrissait. */
+
+/* ---------- 3 · JETONS OBLIGATOIRES — L'IDENTITÉ ---------- */
+:root{
+  /* L'ÉCHELLE CLAIRE — le régime « plus aucun blanc pur » du kit maître (v0.5.0) :
+       muted #f1ece4 → surface-alt #f6ede2 → background #f6f2ec → card #faf7f2
+       → secondary #fbf8f3 → popover #fdfbf8
+     Le contrôle posé sur la mise en page siège juste au-dessus de la carte (1,009,
+     assumé ci-dessous — la déduction de patterns.css sépare quand ils se composent),
+     la surface flottante au-dessus de lui (popover/carte 1,035). #ffffff ne subsiste
+     que comme couleur de TEXTE sur un aplat de marque. */
+  --background:#f6f2ec; --foreground:#1f1e1c;
+  --card:#faf7f2; --card-foreground:#1f1e1c;
+  --popover:#fdfbf8; --popover-foreground:#1f1e1c;
+  --secondary:#fbf8f3; --secondary-foreground:#1f1e1c;
+  --muted:#f1ece4; --muted-foreground:#6b6966;
+  --accent:#f6ede2; --accent-foreground:#1f1e1c;
+  --border:#e5e1da; --input:#dcd6cc;
+
+  /* Pas de surface — la teinte de survol tire vers la plaque de marque (même valeur que
+     --accent, comme dans le DS Julien Fernandes). Écart carte -> alt : 1,084 / 1,090. */
+  --surface-alt:#f6ede2;
+
+  /* Neutres nommés — l'encre chaude et la crème Yunary (ex --ink/--ink-soft/--cream/--cream-alt). */
+  --tone-dark:#1f1e1c; --tone-dark-soft:#2b2a28; --tone-light:#f6f2ec; --tone-light-alt:#faf7f2;
+  --text-secondary:#3d3c3a; --text-muted:#6b6966; --text-inverted:#f2efea;
+
+  /* Marque — remplissages. Corail #e85d2f = LA couleur d'action ; le dégradé signature
+     jaune → orange → rouge reste identique dans les deux thèmes. */
+  --primary:#e85d2f; --primary-foreground:#ffffff;
+  --destructive:#e84c3d; --destructive-foreground:#ffffff;
+  /* Le focus porte l'arrêt MÉDIAN du dégradé, pas l'aplat (kit maître) — 2,41 assumé. */
+  --ring:#f08029;
+  --brand-from:#f5a524; --brand-via:#f08029; --brand-to:#e84c3d;
+  --grad-soft:linear-gradient(135deg,rgba(245,165,36,.08),rgba(232,76,61,.06)); /* @kind color */
+  --gradient-halo:radial-gradient(60% 45% at 50% 100%, rgba(240,128,41,.30) 0%, rgba(232,76,61,.12) 45%, transparent 75%); /* @kind color */
+  --gradient-halo-top:radial-gradient(60% 45% at 50% 0%, rgba(240,128,41,.30) 0%, rgba(232,76,61,.12) 45%, transparent 75%); /* @kind color */
+  --gradient-halo-center:radial-gradient(55% 55% at 50% 50%, rgba(240,128,41,.30) 0%, rgba(232,76,61,.12) 45%, transparent 75%); /* @kind color */
+
+  /* Les jumeaux lisibles — alignés sur le DS Julien Fernandes : #b23a1c est aussi la
+     pill-coral-fg, une seule teinte « marque lisible ». ≥ 4,5:1 mesuré sur les six
+     surfaces, deux thèmes (pire cas : 4,84). */
+  --primary-readable:#b23a1c;
+  --destructive-readable:#a32d2d;
+
+  /* Sémantique — six pilules, toujours couleur + icône + texte. Les fonds coral,
+     amber, success et neutral sont calculés par le socle (derives.css). */
+  --pill-coral-fg:#b23a1c;
+  --pill-amber-fg:#8a5a0a;
+  --pill-danger-bg:rgba(226,75,74,0.15);  --pill-danger-fg:#a32d2d;
+  --pill-warning-bg:rgba(240,128,41,0.18); --pill-warning-fg:#9a4f0b;
+  --pill-success-fg:#3b6d11;
+  --pill-neutral-fg:#605e5a;
+  --success:#639922;
+
+  /* Familles — Onest en titrage, DM Sans en texte, DM Mono en méta technique. */
+  --font-display:'Onest',system-ui,sans-serif;              /* @kind font */
+  --font-body:'DM Sans',system-ui,sans-serif;               /* @kind font */
+  --font-mono:'DM Mono',ui-monospace,'Courier New',monospace; /* @kind font */
+
+  /* Régime de titrage — Onest est une grotesque classique : casse d'origine, gras.
+     Le mot-marque « Yunary » suit (casse mixte, aucun override .ds-logo nécessaire). */
+  --heading-transform:none;
+  --heading-weight:var(--weight-bold);
+
+  /* Relief de marque — la lueur chaude, réservée au CTA primaire et au logo.
+     Identique dans les deux thèmes : le dégradé ne bouge pas en sombre. */
+  --shadow-glow:0 6px 18px rgba(245,165,36,.30), 0 2px 6px rgba(232,76,61,.22);
+  --shadow-glow-lg:0 10px 28px rgba(245,165,36,.42), 0 4px 12px rgba(232,76,61,.30);
+  --shadow-glow-sm:0 2px 8px rgba(245,165,36,.25);
+  --shadow-logo-dot:0 0 12px rgba(240,128,41,.5);
+
+  /* ---------- MÉTIER — l'extension brand-content est IMPORTÉE (HaloHot en vitrine) ----------
+     Trois jetons, contrat en tête de src/styles/brand-content.css. Surfaces d'EXPORT
+     uniquement — miniatures, cartes motion — jamais un fond d'interface. Mêmes arrêts
+     chauds que le kit maître : aucune couleur inventée. Tout est littéral (aucun var()
+     dont la source bouge entre les thèmes) : rien à reprendre en .dark. */
+  --tone-deep:#0d0c0b;
+  --gradient-thumbnail:radial-gradient(70% 55% at 50% 100%, rgba(240,128,41,.55) 0%, rgba(232,76,61,.28) 45%, transparent 72%); /* @kind color */
+  --shadow-accent-hot:0 0 34px rgba(240,128,41,.65);
+}
+
+/* Le mark Yunary est VECTORIEL — l'icône (Y en squircle, dégradé de marque) remplace la
+   pastille CSS du socle : Logo.tsx est livré avec la marque (livrable optionnel n° 6,
+   API variant/letters/height conservée). La pastille par défaut est neutralisée ici pour
+   qu'aucun rendu par défaut ne la réintroduise. */
+.ds-logo__dot{display:none}
+
+/* L'ÉCHELLE SOMBRE — le même régime que le kit maître :
+     page #1f1e1c → muted #262523 → card = secondary #2b2a28 → popover #302e2b
+     → surface-alt #32302d
+   card/page 1,162 · muted/card 1,068 · popover/card 1,059 · surface-alt/card 1,090.
+   La barre latérale et les cartes partagent la valeur (assumé ci-dessus), le filet
+   sépare ; --accent est la plaque ambrée #3a2a20 (chroma 17 sur la carte) ; --input se
+   sépare de --border : le champ garde un contour qui survit à la déduction. */
+.dark{
+  --background:#1f1e1c; --foreground:#f2efea;
+  --card:#2b2a28; --card-foreground:#f2efea;
+  --popover:#302e2b; --popover-foreground:#f2efea;
+  --secondary:#2b2a28; --secondary-foreground:#f2efea;
+  --muted:#262523; --muted-foreground:#b0aea9;
+  --accent:#3a2a20; --accent-foreground:#f2efea;
+  --border:#3a3936; --input:#4a4843; --ring:#f5a524;
+  --surface-alt:#32302d;
+  --text-secondary:#d2cfc9; --text-muted:#b0aea9; --text-inverted:#1f1e1c;
+  /* Le corail d'action ne bouge pas ; le ring repasse à l'ambre --brand-from (8,16 sur
+     l'encre). Le rouge destructif garde sa teinte et son label blanc (3,80 assumé) ;
+     sa bordure d'erreur tient 3,78 sur --secondary. */
+  --primary:#e85d2f; --primary-foreground:#ffffff;
+  --destructive:#e84c3d; --destructive-foreground:#ffffff;
+  --primary-readable:#f0916b;
+  --destructive-readable:#ec8f8f;
+  --grad-soft:linear-gradient(135deg,rgba(245,165,36,.14),rgba(232,76,61,.10)); /* @kind color */
+  --pill-coral-fg:#f29a76;
+  --pill-amber-fg:#f4d193;
+  --pill-danger-fg:#f6ab9e;
+  --pill-warning-fg:#f7cf9b;
+  --pill-success-fg:#9ccc63;
+  --pill-neutral-fg:#d4d1cb;
+}
+
+/* ---------- 4 · FACULTATIF — LA FORME ----------
+   Aligné sur le kit maître Julien Fernandes : l'échelle de rayons du SOCLE est gardée
+   telle quelle (boutons/champs 12, chips 10, tabs/pagination 14 — la rigueur du ton
+   chaud ; l'ancien « soft & generous » Yunary et son pill de tabs sont abandonnés).
+   Deux redéclarations seulement :
+   · le padding de carte du kit maître — 24 se lisait serré, surtout avec un en-tête
+     à pastille ;
+   · la largeur de barre latérale FLUIDE du kit maître — plancher 240 (≤ 1280),
+     256 à 1600, 272 à 1920, plafond 288 (≥ 2240). Pente positive : la barre grandit
+     avec l'écran ; sous 64rem elle est un tiroir et le jeton ne s'applique plus. */
+:root{
+  --card-pad:1.75rem;    /* 28 — carte standard */
+  --card-pad-lg:2rem;    /* 32 — grande carte / panneau */
+  --sidebar-w:clamp(15rem,11rem + 5vw,18rem); /* 240 -> 288 */
+}

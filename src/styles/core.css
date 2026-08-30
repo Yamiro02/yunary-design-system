@@ -1,0 +1,112 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SOCLE — le TEMPLATE.   LA COUCHE INVARIANTE.
+
+   Structure, comportements, échelles, rayons, ombres neutres, rail de contrôles,
+   motion, états des 37 composants. ZÉRO valeur de marque : pas une couleur, pas une
+   police, pas un dégradé, pas une lueur. Ce fichier DÉCLARE LE CONTRAT — la liste des
+   jetons qu'un fichier de marque doit fournir — il ne le remplit pas.
+
+       @import "@yunary/ds/core.css";        <- CE fichier, l'entrée du socle
+       @import "./brand-<vous>.css";                  <- la vôtre, copiée du gabarit
+
+   POURQUOI DEUX FICHIERS, ET PAS UN OVERRIDE EN CASCADE. Importer le système complet
+   puis redéclarer par-dessus laisserait un jeton oublié retomber EN SILENCE sur la
+   valeur d'origine : on livrerait la couleur de quelqu'un d'autre sans le savoir. Avec
+   deux fichiers,
+   un jeton manquant fait que la variable n'existe pas — et ça casse à l'écran. C'est
+   la même logique que `--text-*: initial` dans theme.css, qui supprime l'échelle typo
+   native de Tailwind : une régression doit CASSER au lieu de DÉRIVER.
+
+   Un projet qui n'importe que ce fichier rend un système sans couleurs. C'est voulu.
+
+   TOUTES les mesures sont en rem (base 16px = 1rem). Ne jamais fixer un font-size en px
+   sur html/:root sur le web — le rem doit honorer la préférence de taille du navigateur.
+   Les canevas à dimensions fixes (miniatures, shorts, slides, motion, social) sont la
+   SEULE exception : chacun fixe sa propre racine, voir tokens/scales.css.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Ordre des couches. Déclaré ici ET en tête de `theme.css` : les deux fichiers sont
+   chargés séparément — celui-ci le plus souvent par un import JS, celui-là toujours par
+   un @import CSS — et l'ordre est fixé par la PREMIÈRE déclaration rencontrée. La double
+   déclaration est idempotente et rend le montage insensible à l'ordre de chargement.
+   Les imports sont en forme chaîne, pas en `url()` : Tailwind v4 résout `@import "x.css"`
+   mais laisse `@import url("x.css")` intact, ce qui casserait ce fichier dès qu'une app
+   l'atteint depuis une entrée CSS traitée par le plugin Tailwind. */
+@layer theme, base, components, utilities;
+
+/* Les jetons restent HORS COUCHE. Ce sont des propriétés personnalisées seulement — elles
+   n'entrent en conflit avec rien, et être hors couche leur fait gagner sur les repères
+   `:root` que Tailwind émet dans `layer(theme)` pour les mêmes noms. */
+@import './tokens/typography.css';
+@import './tokens/scales.css';
+/* Les jetons DÉRIVÉS — des formules, pas des valeurs. Après scales/typography, avant les
+   couches : ils lisent des jetons de MARQUE, qui sont chargés ensuite ; la résolution d'un
+   `var()` se fait à l'emploi, pas à la déclaration, donc l'ordre des fichiers est sans effet. */
+@import './tokens/derives.css';
+
+/* LE PREFLIGHT DE TAILWIND, ET IL EST ICI POUR UNE RAISON PRÉCISE — v0.10.0.
+   Il a longtemps été OMIS, au motif que « le socle embarque son propre reset que le
+   preflight neutraliserait ». Ce n'était pas une incompatibilité, c'était un problème
+   d'ORDRE : preflight et `tokens/base.css` vivent tous deux dans `layer(base)` avec des
+   sélecteurs d'éléments, donc à spécificité égale c'est le DERNIER chargé qui gagne.
+   Chargé avant, le preflight normalise ; l'identité du socle repasse par-dessus. On a les
+   deux. Quelqu'un a vu les titres perdre leur display en l'activant, a conclu
+   « incompatible », et l'a retiré : la conclusion était logique, la cause était l'ordre.
+
+   POURQUOI ICI, ET PAS DANS `theme.css`. Les deux fichiers arrivent par des chemins
+   DIFFÉRENTS — celui-ci par un import JS, `theme.css` par le CSS de l'app — et à
+   l'intérieur d'une même couche c'est l'ordre d'INSERTION qui tranche, donc l'ordre des
+   feuilles, donc le bundler. Mesuré : la feuille émise par `theme.css` arrive APRÈS
+   celle-ci. Un preflight posé là-bas s'appliquerait donc APRÈS `tokens/base.css`, et les
+   titres reperdraient leur display — le symptôme d'origine, à l'identique. Ici, même
+   fichier et même couche que `base.css` : l'ordre est garanti par la source, et il n'y a
+   rien à espérer du bundler.
+
+   POURQUOI UNE COPIE VERSÉE, et pas `@import "tailwindcss/preflight.css"` : voir l'en-tête
+   de `tokens/preflight.css`. En deux mots — écrire un specifier `tailwindcss/…` ici fait
+   réclamer tout l'arbre CSS par le compilateur Tailwind, dont la résolution d'`@import`
+   AVALE le `@import url(https://fonts.googleapis.com/…)` du fichier de marque : la police
+   de texte du système n'est plus chargée, en dev comme en production. Et `tailwindcss` est
+   un peer OPTIONNEL : le reset du socle ne peut pas dépendre d'un paquet facultatif.
+
+   CE QUE L'OMISSION COÛTAIT. `tokens/base.css` couvre box-sizing, html, body, h1→h4, p, a,
+   :focus-visible, code/pre/kbd/samp, img, ::selection. N'étaient normalisés NULLE PART :
+   l'APPARENCE de button / input / select / textarea — un `<button>` nu écrit par une app
+   héritait du gris `buttonface`, d'Arial 13,33px et d'un rembourrage de 1px —, les listes
+   (puces et retrait), et table / fieldset / legend / figure / blockquote / hr / dl / dd.
+   C'est cette CLASSE de défauts qui se ferme ici, pas un cas. */
+@import './tokens/preflight.css' layer(base);
+
+/* Le reset va dans `base`, les états de composants dans `components` — leur ordre relatif
+   est inchangé (base reste avant patterns), et TOUS DEUX passent SOUS `utilities`. C'est
+   ce qui permet à un utilitaire Tailwind passé par `className` de l'emporter sur une règle
+   `.ds-*`, exactement comme sous Tailwind v3 où les utilitaires étaient émis hors couche,
+   après ce fichier, et gagnaient à l'ordre de source.
+   Les deux ou aucun : ne couvrir que patterns.css laisserait base.css gagner sur lui. */
+@import './tokens/base.css' layer(base);
+@import './patterns.css' layer(components);
+
+/* LE CRÉNEAU D'ICÔNE — l'enregistrement qui rend les créneaux possibles (v0.3.0).
+   Une icône ou un spinner lit `var(--ds-icon-size, 1.25rem)` ; un créneau (bouton sm,
+   badge dense, pastille de dialogue…) pose la propriété par une règle CSS ; un site
+   d'appel la surcharge en la posant inline via la prop `size`. Voir la section
+   « LES CRÉNEAUX D'ICÔNE » de patterns.css pour les règles et la doctrine.
+
+   `inherits: false` EST LE POINT NON NÉGOCIABLE. Sans lui, une règle posée sur un
+   CONTENEUR descendrait sur tous les svg descendants — `EmptyState` rend une Pastille
+   ET un Button dans son créneau `action` : une règle sur `.ds-empty` grossirait l'icône
+   du bouton, en silence. Avec, une règle mal placée devient INERTE au lieu d'être
+   fuyante : le défaut reprend la main, rien ne ment. Les règles ciblent donc toujours
+   le `svg` (ou le `.ds-spinner`) lui-même, jamais son conteneur.
+
+   `syntax: '*'` SANS `initial-value`, et c'est mesuré au spec : avec la syntaxe
+   universelle, `initial-value` peut être omis et la valeur initiale est alors la
+   guaranteed-invalid value — donc `var(--ds-icon-size, 1.25rem)` prend son REPLI tant
+   que personne n'a posé la propriété. L'universelle est choisie exprès : `<length>`
+   exigerait un `initial-value` (qui tuerait le repli) et refuserait un `size="100%"`
+   en silence à l'usage.
+
+   HORS COUCHE, comme les jetons : un @property est un enregistrement, pas une règle en
+   cascade — il vit ici, dans le fichier d'entrée, pour être chargé partout où le socle
+   l'est. */
+@property --ds-icon-size { syntax: '*'; inherits: false; }
