@@ -1,6 +1,4 @@
 import { Avatar, Halo, Logo } from '@yunary/ds';
-/* Extension MÉTIER, sous-chemin optionnel — la vitrine la rend, une app d'interface non. */
-import { HaloHot } from '@yunary/ds/brand-content';
 import { IDENTITY } from '../identity';
 import { Block, Grid, Row, Section } from '../ui';
 
@@ -28,21 +26,6 @@ export function BrandPage() {
             </div>
             <div className="flex items-center justify-center rounded-xl border border-border p-space-6" style={{ background: 'var(--tone-dark)' }}>
               <Logo variant="wordmark" wordmark={IDENTITY.wordmark} letters="light" height="1.75rem" />
-            </div>
-          </Grid>
-        </Block>
-      </Section>
-
-      <Section title="HaloHot" note="Le halo CHAUD des miniatures — --gradient-thumbnail. EXTENSION MÉTIER : vignettes et cartes motion uniquement, jamais le site, jamais l'UI, jamais les slides. Importé à part, depuis @yunary/ds/brand-content.">
-        <Block label="Sur --tone-deep" hint="Le seul contexte légitime : une surface d'export. Halo, lui, est le halo d'INTERFACE — plus discret, et dans le point d'entrée principal.">
-          <Grid cols={2}>
-            <div className="relative overflow-hidden rounded-xl p-space-7" style={{ background: 'var(--tone-deep)' }}>
-              <HaloHot />
-              <span className="relative mono text-caption" style={{ color: 'var(--tone-light)' }}>HaloHot</span>
-            </div>
-            <div className="relative overflow-hidden rounded-xl p-space-7" style={{ background: 'var(--tone-deep)' }}>
-              <HaloHot intensity={0.5} />
-              <span className="relative mono text-caption" style={{ color: 'var(--tone-light)' }}>intensity=0.5</span>
             </div>
           </Grid>
         </Block>

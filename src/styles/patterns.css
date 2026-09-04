@@ -57,18 +57,24 @@
    créneaux réécrit CES règles — c'est le fichier du projet (voir PORTAGE.md § 5).
    Ces tailles sont des mesures de COMPACITÉ interne, pas d'identité : des littéraux,
    comme les gaps — voir la doctrine en tête de fichier.
-   @tokenref-fallback: --ds-icon-size — le repli EST le défaut : la propriété n'est
-   déclarée nulle part exprès (enregistrée guaranteed-invalid dans core.css), pour que
-   1.25rem reprenne la main partout où ni un créneau ni un site d'appel ne la pose. */
+   @tokenref-fallback: --ds-icon-size — le repli EST le défaut. La propriété est
+   enregistrée guaranteed-invalid dans core.css (syntax '*', inherits:false) et scales.css
+   la pose à `initial` en :root — ce qui ne vaut RIEN pour un descendant, puisqu'elle
+   n'hérite pas : 1.25rem reprend la main partout où ni un créneau ni un site d'appel ne
+   la pose. Les créneaux n'écrivent plus la propriété : ils posent width/height avec leur
+   propre repli, et lisent --ds-icon-size en premier — un site d'appel qui la pose en
+   inline gagne toujours. Même contrat, sans propriété personnalisée sous sélecteur de
+   composant (parité avec l'atelier Claude Design, dont l'indexeur de jetons les lisait
+   comme des déclarations). */
 .ds-icon{width:var(--ds-icon-size,1.25rem);height:var(--ds-icon-size,1.25rem);flex:none;display:block}
-.ds-btn--sm :is(svg,.ds-spinner){--ds-icon-size:1rem}
-.ds-btn--md :is(svg,.ds-spinner){--ds-icon-size:1.125rem}
-.ds-icon-btn--sm svg{--ds-icon-size:1rem}
-.ds-icon-btn--md svg{--ds-icon-size:1.125rem}
-.ds-select__chev,.ds-datepicker__trigger svg{--ds-icon-size:1rem}
-.ds-badge--dense svg{--ds-icon-size:0.75rem}
-.ds-pastille--dialogue svg{--ds-icon-size:1.5rem}
-.ds-pastille--panneau svg{--ds-icon-size:1.5rem}
+.ds-btn--sm :is(svg,.ds-spinner){width:var(--ds-icon-size,1rem);height:var(--ds-icon-size,1rem)}
+.ds-btn--md :is(svg,.ds-spinner){width:var(--ds-icon-size,1.125rem);height:var(--ds-icon-size,1.125rem)}
+.ds-icon-btn--sm svg{width:var(--ds-icon-size,1rem);height:var(--ds-icon-size,1rem)}
+.ds-icon-btn--md svg{width:var(--ds-icon-size,1.125rem);height:var(--ds-icon-size,1.125rem)}
+.ds-select__chev,.ds-datepicker__trigger svg{width:var(--ds-icon-size,1rem);height:var(--ds-icon-size,1rem)}
+.ds-badge--dense svg{width:var(--ds-icon-size,0.75rem);height:var(--ds-icon-size,0.75rem)}
+.ds-pastille--dialogue svg{width:var(--ds-icon-size,1.5rem);height:var(--ds-icon-size,1.5rem)}
+.ds-pastille--panneau svg{width:var(--ds-icon-size,1.5rem);height:var(--ds-icon-size,1.5rem)}
 
 /* ---------- actions: Button ---------- */
 .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:var(--control-md);padding:0.8125rem 1.375rem;font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-semibold);line-height:1;border:none;border-radius:calc(var(--control-md) / 3);cursor:pointer;text-decoration:none;white-space:nowrap;box-sizing:border-box;outline:none;transition:transform var(--duration-fast) var(--ease-standard),box-shadow var(--duration-base) var(--ease-standard),background var(--duration-base) var(--ease-standard),border-color var(--duration-base) var(--ease-standard),filter var(--duration-base) var(--ease-standard)}

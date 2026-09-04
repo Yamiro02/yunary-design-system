@@ -123,7 +123,14 @@ export function FormsPage() {
               value={date}
               onChange={setDate}
               trigger={({ value, triggerProps }) => (
-                <button type="button" className="ds-btn ds-btn--secondary" {...triggerProps}>
+                <button
+                  type="button"
+                  className="ds-btn ds-btn--secondary"
+                  /* Contenu de démo, pas une règle du socle : la date choisie passe en medium,
+                     le placeholder garde le semibold du bouton. */
+                  style={value ? { fontWeight: 'var(--weight-medium)' } : undefined}
+                  {...triggerProps}
+                >
                   {value ? value.toLocaleDateString('fr-FR') : 'Choisir une date'}
                   <Icon name="calendar" />
                 </button>

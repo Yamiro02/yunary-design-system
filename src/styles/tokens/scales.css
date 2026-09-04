@@ -7,6 +7,12 @@
    the shimmer background-position (-560px -> 560px); SVG stroke-width; and the
    fixed export dimensions of canvases. */
 :root{
+  /* Créneau d'icône — guaranteed-invalid, exprès : `var(--ds-icon-size, …)` garde son repli
+     partout où ni un créneau ni un site d'appel ne la pose. Inerte pour les descendants
+     grâce au `@property … inherits:false` de core.css ; la ligne existe pour que la
+     propriété soit DÉCLARÉE (indexeurs de jetons), pas pour porter une valeur. */
+  --ds-icon-size:initial;
+
   /* Spacing — 4px base */
   --space-1:0.25rem;  /* 4  */
   --space-2:0.5rem;   /* 8  */
