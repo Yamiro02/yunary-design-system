@@ -5,7 +5,7 @@ import { Block, Grid, Row, Section } from '../ui';
 export function BrandPage() {
   return (
     <div className="flex flex-col gap-space-7">
-      <Section title="Logo" note="Le mark est rendu en CSS : --font-display + point carré arrondi en --brand-gradient-diagonal, avec --shadow-logo-dot. Casse et graisse suivent --heading-transform / --heading-weight, comme le titrage. Le point garde le dégradé sur tous les fonds ; seules les lettres s'inversent.">
+      <Section title="Logo" note="Le mark est l'icône SVG Yunary — dégradé signature intégré — posée à côté du nom en --font-display. Casse et graisse suivent --heading-transform / --heading-weight, comme le titrage. Seules les lettres s'inversent selon le fond ; l'icône garde son dégradé.">
         <Block label="Variantes">
           <Row label="wordmark"><Logo variant="wordmark" wordmark={IDENTITY.wordmark} height="1.75rem" /></Row>
           <Row label="stacked"><Logo variant="stacked" wordmark={IDENTITY.wordmark} height="1.75rem" /></Row>
