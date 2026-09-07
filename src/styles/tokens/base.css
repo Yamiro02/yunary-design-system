@@ -60,6 +60,13 @@ p{margin:0;text-wrap:pretty}
    second jeton à faire remplir au client. */
 a{color:var(--primary-readable);text-decoration:none;transition:color var(--duration-fast) var(--ease-standard)}
 a:hover{color:color-mix(in srgb,var(--primary-readable) 80%,var(--foreground))}
+/* Le lien TEXTE se souligne au survol (v0.1.1, décision Julien sur A1) — tout lien texte de
+   l'écosystème en hérite. `:where()` ramène la spécificité à celle du seul type (0,0,1) : un
+   composant rendu en <a> qui déclare `text-decoration:none` dans sa classe (.ds-btn, .ds-navlink,
+   .ds-sidenav — 0,1,0) l'emporte sans avoir à écrire une règle de survol. Un utilitaire
+   `no-underline` posé sur un lien texte l'emporterait aussi : ne pas l'écrire, le socle pose
+   déjà `none` au repos. */
+a:where(:hover){text-decoration:underline}
 a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 code,pre,kbd,samp{font-family:var(--font-mono)}
 img{max-width:100%;display:block}

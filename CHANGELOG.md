@@ -30,6 +30,12 @@ Deux manques remontés par le lot de refonte visuelle des écrans (08/09/2026), 
   « petit » sur grand écran à côté des autres apps. Les quatre bandes de zoom ne changent pas.
   Le module n'est plus « outils internes desktop uniquement » : ce sont les apps qui
   l'importent, jamais le site public, les e-mails ni les slides.
+- **Le lien texte se souligne au survol.** `a:where(:hover){text-decoration:underline}` dans
+  `tokens/base.css`, à spécificité de type : les composants rendus en `<a>` qui posent
+  `text-decoration:none` dans leur classe (`.ds-btn`, `.ds-navlink`, `.ds-sidenav`) ne bougent
+  pas. Décision de Julien sur l'écran de connexion, valable pour tout lien texte de l'écosystème.
+  Corollaire pour les apps : ne pas poser `no-underline` sur un lien texte, il neutraliserait le
+  survol.
 
 ---
 
