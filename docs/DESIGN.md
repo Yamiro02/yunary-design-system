@@ -107,6 +107,7 @@ conforme. Voir README-EXPORT § gardes pour les deux paires dont la formule est 
 | `--font-mono` | `'DM Mono',ui-monospace,'Courier New',monospace` | code, méta — même fonderie que DM Sans |
 | `--heading-transform` | `none` | Onest = grotesque classique |
 | `--heading-weight` | `var(--weight-bold)` | gras, casse d'origine |
+| `--heading-xl-weight` | `var(--weight-extrabold)` | le titre de page un cran au-dessus (Onest 800), H2-H4 en 700 |
 
 **Graisses chargées :** Onest 700/800 · DM Sans 400/500/600/700 · DM Mono 400/500 — rien
 d'autre. Chaque app hérite de l'`@import` via le fichier de marque.

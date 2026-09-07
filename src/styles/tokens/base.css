@@ -49,7 +49,11 @@ body{margin:0;background:var(--background);color:var(--foreground);font-family:v
    --font-body, où les capitales sont une convention de taille et de rôle — une
    micro-étiquette de 11 px — pas une règle de la face display. */
 h1,h2,h3,h4{margin:0;font-family:var(--font-display);font-weight:var(--heading-weight);text-transform:var(--heading-transform)}
-h1{font-size:var(--text-heading-xl);letter-spacing:var(--tracking-heading-xl);line-height:var(--leading-display)}
+/* Le titre de PAGE porte sa propre graisse (--heading-xl-weight, marque) — un cran au-dessus des
+   autres titres quand la face le permet (Onest 800). Les paliers text-heading-xl / .display la
+   portent aussi ; text-heading / subheading / heading-sm portent --heading-weight : la graisse
+   suit le PALIER, pas la balise. ADDED v0.1.2 */
+h1{font-size:var(--text-heading-xl);font-weight:var(--heading-xl-weight);letter-spacing:var(--tracking-heading-xl);line-height:var(--leading-display)}
 h2{font-size:var(--text-heading);letter-spacing:var(--tracking-heading);line-height:var(--leading-heading)}
 h3{font-size:var(--text-subheading);letter-spacing:var(--tracking-subheading);line-height:var(--leading-heading)}
 h4{font-size:var(--text-heading-sm);letter-spacing:var(--tracking-heading-sm);line-height:var(--leading-snug)}
@@ -73,9 +77,9 @@ img{max-width:100%;display:block}
 ::selection{background:color-mix(in srgb,var(--primary) 24%,transparent)}
 
 /* Utilitaires display / titre — --font-display, en CAPITALES uniquement */
-.display{font-family:var(--font-display);font-weight:var(--heading-weight);text-transform:var(--heading-transform);font-size:var(--text-display);letter-spacing:var(--tracking-display);line-height:var(--leading-display)}
-.display-xl{font-family:var(--font-display);font-weight:var(--heading-weight);text-transform:var(--heading-transform);font-size:var(--text-display-xl);letter-spacing:var(--tracking-display);line-height:var(--leading-display)}
-.eyebrow{font-family:var(--font-body);font-size:var(--text-eyebrow);font-weight:var(--weight-semibold);text-transform:uppercase;letter-spacing:var(--tracking-eyebrow);line-height:var(--leading-snug);background:var(--brand-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;width:fit-content}
+.display{font-family:var(--font-display);font-weight:var(--heading-xl-weight);text-transform:var(--heading-transform);font-size:var(--text-display);letter-spacing:var(--tracking-display);line-height:var(--leading-display)}
+.display-xl{font-family:var(--font-display);font-weight:var(--heading-xl-weight);text-transform:var(--heading-transform);font-size:var(--text-display-xl);letter-spacing:var(--tracking-display);line-height:var(--leading-display)}
+.eyebrow{font-family:var(--font-body);font-size:var(--text-eyebrow);font-weight:var(--weight-bold);text-transform:uppercase;letter-spacing:var(--tracking-eyebrow);line-height:var(--leading-snug);background:var(--brand-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;width:fit-content}
 .chip{font-family:var(--font-body);font-size:var(--text-chip);font-weight:var(--weight-bold);text-transform:uppercase;letter-spacing:var(--tracking-chip);line-height:1}
 .mono{font-family:var(--font-mono);font-weight:var(--weight-regular)}
 .caption{font-size:var(--text-caption);font-weight:var(--weight-medium);line-height:var(--leading-normal);color:var(--text-muted)}

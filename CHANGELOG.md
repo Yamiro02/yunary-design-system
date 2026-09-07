@@ -14,6 +14,25 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
+## 0.1.2 — en cours (non publié)
+
+- **`--container-dialog` : 27,5 rem (440 px), la carte centrée d'auth ou de dialogue.** Les
+  maquettes A1-A3 posent une carte à 440 px ; le rôle le plus étroit du socle était `narrow`
+  (30 rem, message centré, état vide), jugé trop large à l'écran par Julien sur les quatre
+  écrans d'auth (08/09/2026). Un rôle de plus plutôt qu'un `narrow` resserré, qui aurait bougé
+  les blocs de l'onboarding et du bilan d'audit qui l'emploient. Utilitaire `max-w-dialog`.
+- **Le titre de page reprend son 800.** Nouveau jeton de marque `--heading-xl-weight` (défaut du
+  gabarit : `var(--heading-weight)` ; Yunary : `var(--weight-extrabold)`, 800 ajouté à l'échelle
+  des graisses avec l'utilitaire `font-extrabold`). Lu par `h1`, `.display`, `.display-xl` et par
+  les paliers `text-heading-xl` / `text-display*` ; les paliers `text-heading`, `text-subheading`
+  et `text-heading-sm` portent désormais `--heading-weight` — **la graisse suit le palier, plus la
+  balise**. Constat de Julien sur l'onboarding (08/09/2026) : la v1 titrait ses pages en Onest 800,
+  le DS avait tout ramené à 700.
+- **`.eyebrow` passe de 600 à 700**, dégradé conservé — la v1 le posait en gras, et le dégradé
+  clippé allège déjà un 12 px.
+
+---
+
 ## 0.1.1 — le lockup du logo et l'échelle d'app ouverte aux apps
 
 Deux manques remontés par le lot de refonte visuelle des écrans (08/09/2026), sortis du

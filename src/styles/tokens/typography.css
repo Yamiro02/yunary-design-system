@@ -62,6 +62,9 @@
   --leading-prose:1.7; /* colonne de lecture suivie (légal, article) — FROM APP CODE */
 
   --weight-regular:400; --weight-medium:500; --weight-semibold:600; --weight-bold:700;
+  /* 800 — le titre de PAGE (H1, display) quand la marque veut un cran de plus que ses autres
+     titres ; lu par --heading-xl-weight, réglé par la marque. ADDED v0.1.2 */
+  --weight-extrabold:800;
 }
 /* Responsive heading drop — FROM APP CODE: below Tailwind's lg (64rem) the two
    title tiers step down one notch. Tokens only; desktop is untouched. */

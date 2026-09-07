@@ -148,21 +148,29 @@
   --text-display-xl: var(--text-display-xl);
   --text-display-xl--line-height: var(--leading-display);
   --text-display-xl--letter-spacing: var(--tracking-display);
+  --text-display-xl--font-weight: var(--heading-xl-weight);
   --text-display: var(--text-display);
   --text-display--line-height: var(--leading-display);
   --text-display--letter-spacing: var(--tracking-display);
+  --text-display--font-weight: var(--heading-xl-weight);
   --text-heading-xl: var(--text-heading-xl);
   --text-heading-xl--line-height: var(--leading-display);
   --text-heading-xl--letter-spacing: var(--tracking-heading-xl);
+  /* La GRAISSE suit le palier (v0.1.2) : un <h1 class="text-heading"> rend en --heading-weight,
+     un <h2 class="text-heading-xl"> en --heading-xl-weight — la balise ne décide plus. */
+  --text-heading-xl--font-weight: var(--heading-xl-weight);
   --text-heading: var(--text-heading);
   --text-heading--line-height: var(--leading-heading);
   --text-heading--letter-spacing: var(--tracking-heading);
+  --text-heading--font-weight: var(--heading-weight);
   --text-subheading: var(--text-subheading);
   --text-subheading--line-height: var(--leading-heading);
   --text-subheading--letter-spacing: var(--tracking-subheading);
+  --text-subheading--font-weight: var(--heading-weight);
   --text-heading-sm: var(--text-heading-sm);
   --text-heading-sm--line-height: var(--leading-snug);
   --text-heading-sm--letter-spacing: var(--tracking-heading-sm);
+  --text-heading-sm--font-weight: var(--heading-weight);
   --text-body-lg: var(--text-body-lg);
   --text-body-lg--line-height: var(--leading-body);
   --text-body-lg--letter-spacing: var(--tracking-body-lg);
@@ -193,6 +201,7 @@
   --font-weight-medium: var(--weight-medium);
   --font-weight-semibold: var(--weight-semibold);
   --font-weight-bold: var(--weight-bold);
+  --font-weight-extrabold: var(--weight-extrabold);
 
   /* ---------- Interlettrage ---------- */
   /* Même raison que `--text-*` plus haut, et un incident réel derrière : l'échelle native
@@ -302,6 +311,7 @@
   --container-wide: var(--container-wide);
   --container-read: var(--container-read);
   --container-narrow: var(--container-narrow);
+  --container-dialog: var(--container-dialog);
 
   /* ---------- Motion ---------- */
   --ease-standard: var(--ease-standard);

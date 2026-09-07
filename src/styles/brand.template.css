@@ -180,6 +180,9 @@
      `.ds-logo{text-transform:none}` : le logo lit ces jetons comme le reste du titrage. */
   --heading-transform:none;
   --heading-weight:var(--weight-bold);
+  /* Graisse du titre de PAGE (H1, .display) — égale à --heading-weight par défaut ; une marque
+     dont la face display livre un 800 peut y mettre var(--weight-extrabold). */
+  --heading-xl-weight:var(--heading-weight);
 
   /* Relief de marque — la LUEUR. À distinguer des ombres neutres du socle
      (--shadow-sm/md/lg/knob), qui décrivent une élévation et ne se substituent pas.

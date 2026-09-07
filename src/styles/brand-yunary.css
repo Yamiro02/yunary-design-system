@@ -176,6 +176,9 @@
      Le mot-marque « Yunary » suit (casse mixte, aucun override .ds-logo nécessaire). */
   --heading-transform:none;
   --heading-weight:var(--weight-bold);
+  /* Le titre de page un cran au-dessus (Onest 800, comme la v1) ; H2-H4, titres de carte et
+     mot-marque restent en 700. Décision Julien, 08/09/2026 (v0.1.2). */
+  --heading-xl-weight:var(--weight-extrabold);
 
   /* Relief de marque — la lueur chaude, réservée au CTA primaire et au logo.
      Identique dans les deux thèmes : le dégradé ne bouge pas en sombre. */

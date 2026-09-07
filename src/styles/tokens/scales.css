@@ -130,6 +130,7 @@
   --container-wide:56.25rem;  /* 900 — wide working column */
   --container-read:45rem;     /* 720 — continuous reading column (legal, forms) */
   --container-narrow:30rem;   /* 480 — centred message, empty state */
+  --container-dialog:27.5rem; /* 440 — carte centrée d'auth ou de dialogue (maquettes A1-A3). ADDED v0.1.2 */
 
   /* L'ÉCHELLE DE Z-INDEX — nommée par rôle, jamais une valeur nue dans une règle ou un JSX.
      L'ordre EST le contrat : chaque rang doit passer au-dessus du précédent.

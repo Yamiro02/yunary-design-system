@@ -15,7 +15,7 @@ const RAIL = ['--control-sm', '--control-md', '--control-lg', '--icon-control-sm
 const DIMENSIONS = ['--navbar-h', '--sidebar-w', '--sidebar-w-collapsed', '--sidebar-head-h', '--sidenav-h', '--page-min', '--modal-w', '--modal-close', '--dropdown-w', '--actionsheet-w-panneau', '--toast-w-min', '--toast-w-max', '--choice-box', '--choice-dot', '--progress-h', '--cal-day', '--cal-nav'];
 const DIMENSIONS_RADII = ['--tabs-radius', '--pagination-radius', '--choice-box-radius'];
 const SHADOWS = ['--shadow-sm', '--shadow-md', '--shadow-lg', '--shadow-glow', '--shadow-glow-lg'];
-const WIDTHS = ['--container-shell', '--container-wide', '--container-read', '--container-narrow'];
+const WIDTHS = ['--container-shell', '--container-wide', '--container-read', '--container-narrow', '--container-dialog'];
 
 export function Foundations() {
   return (
