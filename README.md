@@ -58,7 +58,7 @@ sans toucher aux composants.
 Pas de registry : chaque app épingle une version par un tag git.
 
 ```bash
-npm i github:Yamiro02/yunary-design-system#v0.1.0
+npm i github:Yamiro02/yunary-design-system#v0.1.1
 ```
 
 Cinq **peer dependencies**, à la charge de l'app :
@@ -181,15 +181,16 @@ import { Button, Card, Icon } from '@yunary/ds';
 </Card>
 ```
 
-### 4. L'échelle d'app — opt-in, outils internes desktop
+### 4. L'échelle d'app — opt-in, les apps
 
-Les outils internes desktop importent en plus un module d'échelle, qui adapte la taille racine
-par palier de largeur d'écran pour garder une mise en page effective proche de la maquette :
+Les apps importent en plus un module d'échelle, qui adapte la taille racine par palier de
+largeur d'écran pour garder une mise en page effective proche de la maquette 1440 (son
+garde-fou de largeur minimale ne s'applique qu'à partir de 64 rem : le mobile reste fluide) :
 
 ```ts
 import '@yunary/ds/core.css';
 import '@yunary/ds/brand-yunary.css';
-import '@yunary/ds/app-scale.css';   // outils internes desktop uniquement
+import '@yunary/ds/app-scale.css';   // les apps (Hub, Creator, outils internes) — jamais le site public
 ```
 
 Les paliers sont en **%** : ils multiplient la préférence de taille de texte du navigateur au lieu

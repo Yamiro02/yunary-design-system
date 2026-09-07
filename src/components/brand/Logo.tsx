@@ -18,6 +18,12 @@ import { BRAND_WORDMARK_LINES } from '../../brand';
  * défaut — ici l'icône ; false = aucun ; un nœud = le vôtre) mais le mark se place
  * désormais AVANT les lettres. `variant="monogram"` rend l'icône seule.
  *
+ * LE LOCKUP (v0.1.1) : dans `wordmark` et `stacked`, l'icône est PLUS GRANDE que le mot —
+ * 44 px d'icône pour un mot à 30 px sur les maquettes d'auth, soit LOCKUP_MARK_SCALE fois
+ * le corps des lettres — et centrée verticalement sur lui. `height` calibre le MOT (sa
+ * valeur n'a pas bougé d'une version à l'autre) ; l'icône en découle. En `monogram`,
+ * l'icône seule garde exactement sa taille d'avant (les maquettes C1 la posent ainsi).
+ *
  * Le fichier de marque neutralise la pastille du socle (.ds-logo__dot{display:none})
  * pour qu'aucun rendu par défaut ne la réintroduise.
  */
@@ -38,6 +44,10 @@ export interface LogoProps extends HTMLAttributes<HTMLSpanElement> {
   /** Libellé accessible. Défaut : le mot-marque, mots joints par une espace. */
   label?: string;
 }
+
+/* Le ratio du lockup officiel : icône 44 px pour un mot-marque à 1,875 rem (maquettes
+   A1-A4 du Hub). Une seule constante, lue par le seul rendu qui compose icône + mot. */
+const LOCKUP_MARK_SCALE = 44 / 30;
 
 /** L'icône Yunary, inline — viewBox du fichier maître logos/yunary-icon.svg. */
 function IconMark({ style }: { style?: CSSProperties }): JSX.Element {
@@ -76,8 +86,10 @@ export function Logo({
   const accessible = monogram ?? name;
   const color = letters === 'light' ? 'var(--tone-light)' : letters === 'dark' ? 'var(--tone-dark)' : 'var(--foreground)';
   /* dot === undefined = le mark par défaut (l'icône) ; false = aucun ; sinon le nœud fourni. */
+  /* Lockup : l'icône fait LOCKUP_MARK_SCALE fois le corps du mot, écart 0,33 em (10 px pour
+     un mot à 30 px sur la maquette). Elle est centrée sur le mot par le conteneur. */
   const mark = dot === false ? null
-    : dot === undefined ? <IconMark style={{ marginRight: '0.3em' }} />
+    : dot === undefined ? <IconMark style={{ height: LOCKUP_MARK_SCALE + 'em', marginRight: '0.33em' }} />
     : dot;
   const base: CSSProperties = { fontSize: 'calc(' + height + ' * 1.25)', color, ...style };
 
@@ -101,8 +113,10 @@ export function Logo({
       </span>
     );
   }
+  /* `.ds-logo` aligne en bas (flex-end) — juste pour une pastille posée sur la ligne de base ;
+     une icône plus haute que le mot se centre, comme sur les maquettes. */
   return (
-    <span className={cn('ds-logo', className)} style={base} aria-label={name} {...rest}>
+    <span className={cn('ds-logo', className)} style={{ ...base, alignItems: 'center' }} aria-label={name} {...rest}>
       {mark}{words.join(' ')}
     </span>
   );

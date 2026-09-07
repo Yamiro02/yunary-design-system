@@ -14,6 +14,25 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
+## 0.1.1 — le lockup du logo et l'échelle d'app ouverte aux apps
+
+Deux manques remontés par le lot de refonte visuelle des écrans (08/09/2026), sortis du
+`BACKLOG.md`. Aucune rupture d'API.
+
+- **`Logo` : l'icône est plus grande que le mot.** En `wordmark` et `stacked`, l'icône fait
+  désormais 44/30 du corps des lettres et se centre sur elles — le lockup des maquettes d'auth
+  (icône 44 px, mot 1,875 rem). Le composant rendait les deux à la même taille, et le mot
+  sortait trop gros. `height` garde sa valeur pour le mot : seul le mark grandit chez les
+  appelants existants. `monogram` ne bouge pas (les maquettes C1 le posent tel quel).
+- **`app-scale.css` : le garde-fou `min-width` passe sous `@media (min-width: 64rem)`.** Posé
+  hors media query, il forçait un défilement horizontal sur téléphone, ce qui interdisait le
+  module à toute app publique avec du mobile — le Hub restait donc sans échelle et rendait
+  « petit » sur grand écran à côté des autres apps. Les quatre bandes de zoom ne changent pas.
+  Le module n'est plus « outils internes desktop uniquement » : ce sont les apps qui
+  l'importent, jamais le site public, les e-mails ni les slides.
+
+---
+
 ## 0.1.0 — le design system Yunary
 
 Premier lot. Le socle du gabarit (millésime **v0.6.0**) est repris **sans modification**, et la

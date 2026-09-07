@@ -193,6 +193,8 @@ graisse suivent `--heading-transform` / `--heading-weight`, comme tout le titrag
 - Props : `variant` (`wordmark·stacked·monogram`) · `letters` (`dark·light` — force la
   couleur des lettres ; omise, elles suivent `--foreground`) · `height` · `wordmark` ·
   `monogram` · `dot` (`false` = sans pastille ; un nœud la remplace) · `label`.
+- Lockup (v0.1.1) : en `wordmark` / `stacked`, l'icône fait 44/30 du corps du mot et se
+  centre sur lui ; `height` calibre le mot. En `monogram`, l'icône seule.
 - En HTML nu, le même mark existe en `.ds-logo` / `.ds-logo__dot` (tokens/base.css).
 
 ---
