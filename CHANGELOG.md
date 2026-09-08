@@ -14,7 +14,7 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
-## 0.1.2 — en cours (non publié)
+## 0.1.2 — la carte de dialogue, la graisse qui suit le palier, la Sidebar alignée
 
 - **`--container-dialog` : 27,5 rem (440 px), la carte centrée d'auth ou de dialogue.** Les
   maquettes A1-A3 posent une carte à 440 px ; le rôle le plus étroit du socle était `narrow`
@@ -35,6 +35,12 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
   bloc `ds-sidebar__footnav` est encadré de deux filets et respire de `--space-3`, comme le
   maître HubSidebar ; le pied qui le suit ne redouble pas le filet. Le libellé d'une entrée cède
   (ellipse) avant son appoint ; en tiroir, la bascule de repli est masquée.
+- **`Sidebar` : l'en-tête et le pied n'ont plus de gouttière propre.** `.ds-sidebar__head` et
+  `.ds-sidebar__foot` portaient un `padding-inline` de `--space-2` que la nav n'avait pas : le logo
+  et les cartes du pied (crédits, compte) rendaient plus étroits que les entrées, et le logo se
+  décalait à droite de leurs icônes — constat de Julien sur le Hub (08/09/2026). Le maître
+  `HubSidebar` aligne tout sur les mêmes bords ; c'est le **contenu** du slot qui porte son retrait,
+  comme une entrée porte le sien. Un `footer` « avatar + nom » nu perd donc 8 px de retrait.
 
 ---
 

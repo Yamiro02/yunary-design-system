@@ -523,8 +523,10 @@
    v0.14.0) : --space-4 de boîte + --space-2 de contenu. Les 8 px du contenu existent pour
    que la pilule de survol dépasse du texte, et c'est leur seul rôle. */
 .ds-sidebar.is-collapsed{width:var(--sidebar-w-collapsed);padding-inline:var(--space-3)}
-.ds-sidebar__head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);min-height:var(--sidebar-head-h);margin-bottom:var(--space-2);padding-inline:var(--space-2)}
-.ds-sidebar.is-collapsed .ds-sidebar__head{padding-inline:0}
+/* v0.1.2 — l'en-tête et le pied n'ont PLUS de gouttière propre : ils partagent les bords de la nav
+   (maître HubSidebar : logo, entrées, cartes du pied = mêmes bords ; c'est le CONTENU du slot qui
+   porte son retrait, comme une entrée porte le sien). */
+.ds-sidebar__head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);min-height:var(--sidebar-head-h);margin-bottom:var(--space-2)}
 .ds-sidebar.is-collapsed .ds-sidebar__head{flex-direction:column;justify-content:center;gap:var(--space-2)}
 .ds-sidebar__toggle{appearance:none;border:0;background:transparent;color:var(--text-muted);cursor:pointer;display:inline-flex;padding:var(--space-2);border-radius:var(--radius-sm);transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
 .ds-sidebar__toggle:hover{background:var(--surface-alt);color:var(--foreground)}
@@ -571,9 +573,8 @@
 /* Le bloc de pied de nav est encadré de DEUX filets et respire de --space-3 (maître HubSidebar, v0.1.2) ;
    le pied qui le suit ne redouble pas le filet. */
 .ds-sidebar__footnav{display:flex;flex-direction:column;gap:var(--space-1);border-block:1px solid var(--border);padding-block:var(--space-3);margin-top:var(--space-2)}
-.ds-sidebar__foot{display:flex;align-items:center;gap:var(--space-3);border-top:1px solid var(--border);padding:var(--space-3) var(--space-2) 0;margin-top:var(--space-2)}
+.ds-sidebar__foot{display:flex;align-items:center;gap:var(--space-3);border-top:1px solid var(--border);padding:var(--space-3) 0 0;margin-top:var(--space-2)}
 .ds-sidebar__footnav+.ds-sidebar__foot{border-top:0;padding-top:0;margin-top:var(--space-3)}
-.ds-sidebar.is-collapsed .ds-sidebar__foot{padding-inline:0}
 .ds-sidebar.is-collapsed .ds-sidebar__foot{justify-content:center}
 .ds-appshell__scrim{position:fixed;inset:0;z-index:var(--z-scrim);background:color-mix(in srgb,var(--tone-dark) 45%,transparent);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
 @media (min-width:64.0625rem){.ds-appshell__scrim{display:none}}
