@@ -30,6 +30,11 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
   le DS avait tout ramené à 700.
 - **`.eyebrow` passe de 600 à 700**, dégradé conservé — la v1 le posait en gras, et le dégradé
   clippé allège déjà un 12 px.
+- **`Sidebar` : une entrée peut être `disabled` et porter un `badge`** (« Yunary Metrics ·
+  Bientôt » de la coque) — grisée, inerte, l'appoint poussé à droite et masqué en replié. Le
+  bloc `ds-sidebar__footnav` est encadré de deux filets et respire de `--space-3`, comme le
+  maître HubSidebar ; le pied qui le suit ne redouble pas le filet. Le libellé d'une entrée cède
+  (ellipse) avant son appoint ; en tiroir, la bascule de repli est masquée.
 
 ---
 

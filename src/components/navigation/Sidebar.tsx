@@ -15,6 +15,10 @@ export interface SidebarItem {
   href?: string;
   active?: boolean;
   onClick?: MouseEventHandler;
+  /** Entrée annoncée mais pas encore ouverte : grisée, non cliquable (`aria-disabled`). ADDED v0.1.2 */
+  disabled?: boolean;
+  /** Appoint à droite du libellé — un `Badge` « Bientôt », un compteur. Masqué en replié. ADDED v0.1.2 */
+  badge?: ReactNode;
 }
 
 export interface SidebarSection { title?: ReactNode; items: SidebarItem[] }
@@ -90,20 +94,24 @@ export function Sidebar({
   const rendreEntree = (it: SidebarItem): JSX.Element => {
     /* Avec `linkAs`, la destination part en `to` — la prop des routeurs clients. Sans lui,
        on retombe sur `<a href>`, et sans destination du tout sur un `<button>`. */
-    const Tag = (it.href ? (linkAs ?? 'a') : 'button') as ElementType;
-    const destination = it.href
+    /* Désactivée : jamais un lien (rien à suivre), un <button> inerte qui garde sa place. */
+    const Tag = (it.href && !it.disabled ? (linkAs ?? 'a') : 'button') as ElementType;
+    const destination = it.href && !it.disabled
       ? (linkAs ? { to: it.href } : { href: it.href })
       : { type: 'button' as const };
     return (
       <Tag
         key={it.label}
         {...destination}
-        className={cn('ds-sidenav', it.active && 'is-active')}
+        className={cn('ds-sidenav', it.active && 'is-active', it.disabled && 'is-disabled')}
         aria-current={it.active ? 'page' : undefined}
+        aria-disabled={it.disabled || undefined}
+        disabled={it.disabled && Tag === 'button' ? true : undefined}
         title={collapsed ? it.label : undefined}
-        onClick={it.onClick}
+        onClick={it.disabled ? undefined : it.onClick}
       >
         {it.icon}<span className="ds-sidenav__label">{it.label}</span>
+        {it.badge ? <span className="ds-sidenav__badge">{it.badge}</span> : null}
       </Tag>
     );
   };
