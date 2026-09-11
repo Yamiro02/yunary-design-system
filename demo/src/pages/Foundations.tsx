@@ -120,7 +120,7 @@ export function Foundations() {
             ))}
           </div>
         </Block>
-        <Block label="Largeurs de contenu par rôle" hint="Cinq largeurs maximales de colonne, la colonne latérale d'une fiche (--container-aside, w-aside), et une largeur MINIMALE de tuile (--container-tile, 18,75 rem — la carte de la v1), lue par la grille auto-fill ci-dessous.">
+        <Block label="Largeurs de contenu par rôle" hint="Cinq largeurs maximales de colonne, la colonne latérale d'une fiche (--container-aside, w-aside), et une largeur MINIMALE de tuile (--container-tile, 17,75 rem — mesurés : les deux pilules « 999,9 k vues » + « Engagement 99,9 % » de la carte vidéo, padding compris), lue par la grille auto-fill ci-dessous.">
           {WIDTHS.map(t => (
             <Spec key={t} token={t}>
               <span className="h-space-2 w-full rounded-pill bg-accent" style={{ maxWidth: `var(${t})` }} />

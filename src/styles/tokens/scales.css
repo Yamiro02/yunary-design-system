@@ -135,13 +135,18 @@
   --container-read:45rem;     /* 720 — continuous reading column (legal, forms) */
   --container-narrow:30rem;   /* 480 — centred message, empty state */
   --container-dialog:27.5rem; /* 440 — carte centrée d'auth ou de dialogue (maquettes A1-A3). ADDED v0.1.2 */
-  /* 300 — la largeur MINIMALE d'une tuile de grille fluide (une carte vidéo, une vignette), pas
+  /* 284 — la largeur MINIMALE d'une tuile de grille fluide (une carte vidéo, une vignette), pas
      un max-width de colonne comme les cinq autres : c'est le rôle que `grid-cards-tile` lit
      pour poser ses colonnes en auto-fill. La grille gagne des colonnes avec l'écran, jamais
-     une tuile plus étroite que ça. ADDED v0.1.3 à 15rem ; 18.75rem depuis la v0.1.4 — la
-     largeur de carte de la v1, celle où les deux pilules « vues » + « engagement » tiennent
-     sur une ligne de 1280 à 2560 px (audit Creator du 11/09/2026). */
-  --container-tile:18.75rem;
+     une tuile plus étroite que ça. ADDED v0.1.3 à 15rem ; 18.75rem en v0.1.4 (la carte de la
+     v1) ; MESURÉ en v0.1.6 : la plus petite largeur qui garde les deux pilules de la carte vidéo
+     sur une ligne, padding compris — « 999,9 k vues » (97,9 px) + « Engagement 99,9 % »
+     (141,0 px) en .ds-badge (DM Sans 600 12,5 px, padding 4/11), gap 8, padding de carte 16 × 2,
+     bordure 1 × 2 = 281,0 px = 17,56 rem, arrondi au quart de rem supérieur. Ce sont les valeurs
+     les plus longues que les formateurs émettent sous le million (« 12,4 k vues » + « Engagement
+     12,4 % » ne font que 264,7 px = 16,54 rem, mais « 658,2 k vues » existe). Ni la pilule ni son
+     padding ne bougent : c'est la tuile qui s'adapte à elles. */
+  --container-tile:17.75rem;
   /* 320 — la COLONNE LATÉRALE d'une fiche (le bandeau d'informations collé à gauche du contenu,
      v1). Un rôle de colonne, pas un max-width de page : s'écrit `w-aside` sur la colonne ou
      `var(--container-aside)` dans un gabarit de grille. ADDED v0.1.4 */

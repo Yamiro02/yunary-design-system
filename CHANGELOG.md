@@ -14,6 +14,28 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
+## 0.1.6 — l'échelle d'app restaurée, la tuile mesurée
+
+- **⚠ `app-scale.css` reprend les quatre bandes de la 0.1.2** : 103 % sous 1600 px, 112 % à
+  1600, 126 % à 1920, 130 % à 2400 ; garde-fou `min-width: 1133px` (1100 × 1,03) sous
+  `@media (min-width: 64rem)`. Le passage à « 100 / 115 % » de la 0.1.3 était une **erreur de
+  cadrage** prise en amont, pas une demande de Julien : tout rendait trop petit. Rien d'autre ne
+  revient en arrière — le titre de page reste à 36 px, l'état sélectionné en corail, `Card gap`,
+  les gouttières et tous les jetons restent ceux de la 0.1.5. Règle écrite en tête du fichier :
+  on ne touche plus à l'échelle d'app ni aux tailles sans demande explicite de Julien.
+- **`--container-tile` : 18,75 → 17,75 rem (284 px), MESURÉ.** La plus petite largeur qui garde
+  les deux pilules de la carte vidéo sur une ligne, padding compris — « 999,9 k vues » (97,9 px)
+  + « Engagement 99,9 % » (141,0 px) en `.ds-badge` (DM Sans 600 à 12,5 px, padding 4/11), gap 8,
+  padding de carte 16 × 2, bordure 1 × 2 = **281,0 px = 17,56 rem**, arrondi au quart de rem
+  supérieur. Ce sont les valeurs les plus longues que les formateurs émettent sous le million
+  (« 658,2 k vues » est un cas réel, mesuré le 11/09 dans Creator) ; les valeurs de la consigne,
+  « 12,4 k vues » + « Engagement 12,4 % », ne font que 264,7 px = 16,54 rem → 16,75 rem, et
+  laisseraient repasser à la ligne toute vidéo à trois chiffres de k. Ni la pilule ni son
+  padding ne bougent. `grid-cards-tile` rend une colonne de plus qu'en 0.1.5 dès que la largeur
+  le permet.
+
+---
+
 ## 0.1.5 — l'élément sélectionné en corail, comme la v1
 
 Une décision de Julien (11/09/2026), qui renverse la couleur posée par la 0.1.4 sans en toucher

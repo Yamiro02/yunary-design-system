@@ -159,10 +159,10 @@ clippée entre au socle, elle est couverte avant son premier usage.
 
 ## 4 · Une taille de police en pixels ne suit pas l'échelle d'app
 
-**Ce qui casse.** `app-scale.css` change la taille de la **racine** sur très grand écran —
-115 % à partir de 2240 px, soit une racine de 18,4 px. Toute l'interface suit, *parce qu'elle
-est en rem*. Une classe arbitraire en pixels (`text-[15px]`) ne suit pas : elle reste à sa
-valeur pendant que ses voisines grandissent, et elle rétrécit visuellement d'un septième.
+**Ce qui casse.** `app-scale.css` change la taille de la **racine** par bande de largeur
+d'écran — 103 %, 112 %, 126 %, 130 %. Toute l'interface suit, *parce qu'elle est en rem*.
+Une classe arbitraire en pixels (`text-[15px]`) ne suit pas : elle reste à sa valeur
+pendant que ses voisines grandissent, et elle rétrécit visuellement à chaque bande.
 
 **Pourquoi la panne est muette.** Elle est pire que muette, elle est **locale** : sur
 l'écran où on l'a écrite, la valeur est exactement celle de la maquette. Le défaut ne se

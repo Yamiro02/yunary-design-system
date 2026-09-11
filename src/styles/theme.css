@@ -362,8 +362,8 @@
    exactement comme `grid-cols-*` : il se compose — `grid grid-cards-tile gap-space-5`.
 
    Le paramètre est un RÔLE de `--container-*`, jamais une mesure : `--value(--container-*)`
-   résout `grid-cards-tile` sur `--container-tile` (la tuile, 18,75 rem — la carte vidéo de
-   Creator) et `grid-cards-dialog` sur `--container-dialog` (27,5 rem — la carte d'outil du
+   résout `grid-cards-tile` sur `--container-tile` (la tuile, 17,75 rem mesurés — la carte vidéo
+   de Creator) et `grid-cards-dialog` sur `--container-dialog` (27,5 rem — la carte d'outil du
    Hub, qui lisait déjà ce jeton en style inline). Un nouvel usage choisit un rôle existant
    ou en ajoute un dans scales.css ; il n'écrit jamais `grid-cols-[repeat(auto-fill,
    minmax(15rem,1fr))]`, la forme que ceci remplace dans les deux apps.
