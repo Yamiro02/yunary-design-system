@@ -14,6 +14,28 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
+## 0.1.9 — le rythme de la modale, l'alignement du contrôle d'une tuile
+
+Deux corrections.
+
+- **`Modal` : gap interne `--space-5` (24 px) au lieu de 0,875 rem (14).** Entre l'en-tête, le
+  texte, le champ, la ligne de coût et le pied — la maquette 02 dit 22, Julien tranche pour 24,
+  le palier du DS. Le padding ne bouge pas (déjà `--space-5`). Le pied perd sa marge propre de
+  0,25 rem : elle rattrapait le 14 à 18 avant les boutons, avec 24 partout elle aurait fait un 28
+  hors échelle. Mesuré dans la démo : 24 px entre tous les blocs, md (380) et lg (520), avec et
+  sans pastille, champ + aide + ligne de coût + pied.
+- **`ChoiceTile` / `CheckTile` / `RadioTile` : `align="center" | "start"`.** Les trois artboards
+  ne disent pas la même chose — **S2** (sorties : titre + description + coût) et **08** (niches :
+  une ligne) CENTRENT le rond ; **S3c** (propositions de hooks : un texte de deux à quatre lignes
+  sans titre distinct) pose la case sur la PREMIÈRE LIGNE (`align-items:start`, 3 px pour la
+  centrer sur la ligne). Une règle unique aurait trahi l'un des trois : c'est donc une prop.
+  `center` reste le défaut — deux artboards sur trois, et le rendu de la 0.1.4, rien ne bouge
+  sans la prop ; `start` pour S3c. Sans effet sur la tuile à média (0.1.8), centrée par
+  construction : sa vignette impose la hauteur. Mesuré : `start` pose le centre de la case à
+  3 px sous le centre de la première ligne (la maquette), `center` au milieu du contenu.
+
+---
+
 ## 0.1.8 — la tuile à média collée aux bords
 
 Une seule chose : `.ds-tile--media`, la variante de `CheckTile` / `RadioTile` avec `media`.

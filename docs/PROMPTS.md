@@ -590,8 +590,10 @@ l'input, et un `<label>` dans un `<label>` est du HTML invalide.
 - Props : `kind` (`checkbox·radio`, sur `ChoiceTile` seulement) · `title` (requis) ·
   `description` · `meta` (en fin de ligne : coût, compteur, badge) · `media` (vignette 6 rem
   collée aux bords haut, bas et gauche, hauteur de la rangée — `<img>` en cover ou `<span>` à
-  fond ; le titre passe alors en ellipse, v0.1.8) · `children` (sous la description) · tout
-  attribut d'`<input>` —
+  fond ; le titre passe alors en ellipse, v0.1.8) · `align` (`center·start`, v0.1.9 : `center`
+  pour un titre + description ou une ligne — S2, 08 ; `start` pose la case sur la PREMIÈRE ligne
+  d'un texte de plusieurs lignes — S3c ; sans effet avec un média) · `children` (sous la
+  description) · tout attribut d'`<input>` —
   `name`, `value`, `checked`, `defaultChecked`, `onChange`, `disabled`, `required` · `ref`
   → l'input natif · `className` → la tuile.
 - États rendus : repos, survol, cochée, focus-visible (anneau sur la tuile), désactivée, avec
@@ -1030,6 +1032,9 @@ d'actions (c'est `Dropdown` / `ActionSheet`).
   croix reste et le titre passe dessous.
 - **`size="lg"`** (v0.1.4) : 32,5 rem (`--modal-w-lg`), la modale à FORMULAIRE — « Analyser une
   vidéo ». `md` (23,75 rem) reste la confirmation et le résultat. Sans effet sous 64 rem.
+- **Rythme interne `--space-5`** (v0.1.9) : 24 px entre l'en-tête, le texte, les enfants et le
+  pied ; le pied n'a plus de marge propre. Une ligne de coût, un champ : des enfants, le gap fait
+  le reste.
 - **La croix et les gestes de fuite sont découplés** (v0.3.0) : `closeButton={false}`
   retire la croix en gardant Échap et le clic-voile ; `dismissable={false}` fait
   l'inverse — la croix devient le seul geste de fermeture, pour une modale à saisie

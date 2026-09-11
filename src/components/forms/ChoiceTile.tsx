@@ -39,15 +39,23 @@ export interface ChoiceTileProps extends Omit<InputHTMLAttributes<HTMLInputEleme
   media?: ReactNode;
   /** Sous la description : une ligne d'origine, un badge, un « pourquoi ». */
   children?: ReactNode;
+  /**
+   * L'ALIGNEMENT DU CONTRÔLE (v0.1.9). `center` (défaut) : la case ou le rond est au milieu de la
+   * hauteur — les sorties de S2 (titre + description), les niches de 08 (une ligne). `start` : sur
+   * la PREMIÈRE ligne du texte, pour un contenu de plusieurs lignes sans titre distinct — les
+   * propositions de hooks de S3c. Sans effet sur une tuile à média, centrée par construction.
+   */
+  align?: 'center' | 'start';
 }
 
 export const ChoiceTile = forwardRef<HTMLInputElement, ChoiceTileProps>(function ChoiceTile({
-  kind = 'checkbox', title, description, meta, media, children, disabled = false,
+  kind = 'checkbox', title, description, meta, media, children, disabled = false, align = 'center',
   className = '', ...rest
 }: ChoiceTileProps, ref): JSX.Element {
-  /* `className` va sur la tuile (le <label>), comme sur Checkbox et Radio — jamais sur l'input. */
+  /* `className` va sur la tuile (le <label>), comme sur Checkbox et Radio — jamais sur l'input.
+     `align="start"` est ignoré avec un média : la vignette impose la hauteur, le contrôle reste centré. */
   return (
-    <label className={cn('ds-tile', Boolean(media) && 'ds-tile--media', disabled && 'is-disabled', className)}>
+    <label className={cn('ds-tile', Boolean(media) && 'ds-tile--media', !media && align === 'start' && 'ds-tile--start', disabled && 'is-disabled', className)}>
       {media ? <span className="ds-tile__media" aria-hidden="true">{media}</span> : null}
       {/* Le contrôle du socle : l'input y est RÉEL (exposé, focusable), seule la boîte est
           décorative. `.ds-choice` lit l'état de l'input frère, comme dans Checkbox ; l'anneau

@@ -147,6 +147,20 @@ export function FormsPage() {
                 meta={<Badge tone="neutral">Bientôt</Badge>} />
             </div>
           </Block>
+          <Block label="align=start — la case sur la première ligne" hint="Artboard S3c (propositions de hooks) : un texte de deux à quatre lignes sans titre distinct, la case alignée sur la PREMIÈRE ligne (align-items:start, 3 px pour la centrer sur la ligne). center reste le défaut : S2 (titre + description) et 08 (une ligne) centrent le contrôle. Sans effet avec un média.">
+            <div className="grid grid-cols-1 gap-space-3 md:grid-cols-2">
+              <CheckTile name="hook" value="h1" align="start" defaultChecked
+                title={<span className="font-display text-body-lg font-bold leading-snug tracking-heading-sm">Tu postes tous les jours et personne ne regarde ? Ce n'est pas ton contenu, c'est ton emballage.</span>}
+                description="Ouvre sur la douleur et retourne la cause : la promesse arrive avant la troisième seconde." />
+              <CheckTile name="hook" value="h2" align="start"
+                title={<span className="font-display text-body-lg font-bold leading-snug tracking-heading-sm">Trois erreurs qui tuent tes vidéos avant la troisième seconde.</span>}
+                description="Le chiffre annonce une liste courte, la deadline crée l'urgence." />
+              <RadioTile name="align-demo" value="a" title="Des hooks" meta="Dès 2 crédits"
+                description="Centré (défaut) : le rond au milieu du titre et de la description, comme S2." />
+              <RadioTile name="align-demo" value="b" align="start" title="Des hooks" meta="Dès 2 crédits"
+                description="align=start sur le même contenu : le rond monte sur la ligne du titre." />
+            </div>
+          </Block>
           <Block label="États" hint="Repos, survol (filet --input, contrôle --primary), cochée, focus-visible (anneau sur la tuile, pas sur la case), désactivée.">
             <div className="flex flex-col gap-space-3">
               <CheckTile name="etat" value="a" title="Repos" description="Filet --border sur --background." />

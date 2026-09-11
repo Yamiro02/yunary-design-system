@@ -8,6 +8,17 @@ const MENU = [
   { label: 'Voir les stats', icon: <Icon name="trending-up" size="1rem" /> },
 ];
 
+/* La ligne de coût de la maquette 02 — une COMPOSITION d'app (fond --background, radius md,
+   body-sm), pas un composant du socle : elle est là pour recetter le rythme de la modale. */
+function LigneCout() {
+  return (
+    <div className="flex items-center gap-space-3 rounded-md bg-background px-space-4 py-space-3 text-body-sm text-text-secondary">
+      <span className="inline-flex text-primary"><Icon name="zap" size="1rem" /></span>
+      <span>Cette analyse utilisera <span className="mono font-semibold text-foreground">10 crédits</span> · il t'en reste <span className="mono font-semibold text-foreground">37</span></span>
+    </div>
+  );
+}
+
 export function OverlaysPage() {
   const [open, setOpen] = useState(false);
   const [renameOpen, setRenameOpen] = useState(false);
@@ -110,7 +121,7 @@ export function OverlaysPage() {
             footer={<Button size="sm">Se reconnecter</Button>} />
         </Block>
 
-        <Block label="size=lg — la modale à formulaire" hint="32,5 rem (--modal-w-lg), la maquette 02 de Creator. md (23,75 rem) reste la confirmation et le résultat. Sous 64 rem, les deux sont la même feuille en pleine largeur.">
+        <Block label="size=lg — la modale à formulaire" hint="32,5 rem (--modal-w-lg), la maquette 02 de Creator. md (23,75 rem) reste la confirmation et le résultat. Sous 64 rem, les deux sont la même feuille en pleine largeur. Rythme interne : --space-5 (24) entre l'en-tête, le champ, la ligne de coût et le pied (v0.1.9 — la maquette dit 22, l'échelle dit 24).">
           <Row>
             <Button variant="primary" icon={<Icon name="plus" />} onClick={() => setAnalyseOpen(true)}>Analyser une vidéo</Button>
           </Row>
@@ -124,13 +135,32 @@ export function OverlaysPage() {
             <FormField label="Lien de la vidéo" htmlFor="demo-analyse" help="Instagram et TikTok · YouTube arrive bientôt">
               <Input id="demo-analyse" type="url" placeholder="Colle le lien d'un Reel Instagram ou d'un TikTok" />
             </FormField>
+            <LigneCout />
           </Modal>
-          <Modal inline size="lg" onClose={() => undefined} title="Analyser une vidéo"
-            footer={<><Button variant="secondary" size="sm">Annuler</Button><Button size="sm">Lancer l'analyse</Button></>}>
-            <FormField label="Lien de la vidéo" htmlFor="demo-analyse-inline" help="Instagram et TikTok · YouTube arrive bientôt">
-              <Input id="demo-analyse-inline" type="url" placeholder="Colle le lien d'un Reel Instagram ou d'un TikTok" />
-            </FormField>
-          </Modal>
+          <div className="flex flex-wrap items-start gap-space-5">
+            <Modal inline size="lg" onClose={() => undefined} title="Analyser une vidéo"
+              footer={<><Button variant="secondary" size="sm">Annuler</Button><Button size="sm">Lancer l'analyse</Button></>}>
+              <FormField label="Lien de la vidéo" htmlFor="demo-analyse-inline" help="Instagram et TikTok · YouTube arrive bientôt">
+                <Input id="demo-analyse-inline" type="url" placeholder="Colle le lien d'un Reel Instagram ou d'un TikTok" />
+              </FormField>
+              <LigneCout />
+            </Modal>
+            <Modal inline size="lg" onClose={() => undefined} iconVariant="brand" icon={<Icon name="rocket" />} title="Analyser une vidéo"
+              description="Avec pastille : la rangée pastille + croix, le titre dessous, puis le champ."
+              footer={<><Button variant="secondary" size="sm">Annuler</Button><Button size="sm">Lancer l'analyse</Button></>}>
+              <FormField label="Lien de la vidéo" htmlFor="demo-analyse-pastille" help="Instagram et TikTok · YouTube arrive bientôt">
+                <Input id="demo-analyse-pastille" type="url" placeholder="Colle le lien d'un Reel Instagram ou d'un TikTok" />
+              </FormField>
+              <LigneCout />
+            </Modal>
+            <Modal inline onClose={() => undefined} title="Renommer le script"
+              footer={<><Button variant="ghost" size="sm">Annuler</Button><Button size="sm">Renommer</Button></>}>
+              <FormField label="Nom du script" htmlFor="demo-rename-md" help="Visible dans la liste des scripts.">
+                <Input id="demo-rename-md" placeholder="Mon script" />
+              </FormField>
+              <LigneCout />
+            </Modal>
+          </div>
         </Block>
 
         <Block label="Croix et gestes de fuite découplés" hint="closeButton={false} retire la croix en gardant Échap et le clic-voile ; dismissable={false} fait l'inverse — la croix devient le seul geste de fermeture, pour une saisie qu'un clic à côté ne doit pas jeter. Défauts à true : comportement historique.">

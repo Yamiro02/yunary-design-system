@@ -22,9 +22,10 @@
        icône et son libellé : personne ne remplit ce contrat-là ;
      · ce sont des mesures de COMPACITÉ, c'est-à-dire de la structure — et la structure ne
        se substitue pas, c'est la doctrine du dépôt.
-   Trois d'entre elles valent 0.875rem (padding de .ds-input, de .ds-banner, gap de
-   .ds-modal). Ce n'est pas le palier typographique du même nombre : celui-là est devenu
-   --text-body-sm et a quitté ce fichier. Un même nombre, deux métiers. */
+   Deux d'entre elles valent 0.875rem (padding de .ds-input et de .ds-banner — le gap de
+   .ds-modal l'a quitté en v0.1.9 pour --space-5, voir la modale). Ce n'est pas le palier
+   typographique du même nombre : celui-là est devenu --text-body-sm et a quitté ce fichier. Un
+   même nombre, deux métiers. */
 
 /* LA HAUTEUR D'UN CONTRÔLE VIENT DE SON RAIL, PAS DE L'INTERLIGNE DE LA PAGE — v0.10.0.
    Le preflight fait hériter la police ET l'interligne aux contrôles natifs (`font: inherit`
@@ -276,6 +277,15 @@
    que le contenu et le plancher de 6,5 rem décident, en cover. */
 .ds-tile__media>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .ds-tile .ds-choice{pointer-events:none}
+/* L'ALIGNEMENT DU CONTRÔLE — v0.1.9, une prop, parce que les artboards ne disent pas la même
+   chose : S2 (sorties, titre + description) et 08 (niches, une ligne) CENTRENT le rond ; S3c
+   (propositions de hooks, un texte de deux à quatre lignes) pose la case sur la PREMIÈRE LIGNE
+   (align-items:start, margin-top 3 px pour la centrer sur la ligne). `center` reste le défaut :
+   deux artboards sur trois, et c'est le rendu de la 0.1.4 — rien ne bouge sans la prop.
+   `align="start"` ne s'applique qu'aux tuiles sans média : la tuile à média (0.1.8) est
+   centrée par construction, sa vignette impose la hauteur. */
+.ds-tile--start{align-items:start}
+.ds-tile--start .ds-choice{margin-top:0.1875rem}
 .ds-tile__main{display:flex;flex-direction:column;gap:0.3125rem;min-width:0}
 .ds-tile__title{font-size:var(--text-body);font-weight:var(--weight-semibold);line-height:var(--leading-snug)}
 .ds-tile__desc{font-size:var(--text-body-sm);color:var(--text-secondary);line-height:var(--leading-normal)}
@@ -438,7 +448,10 @@
 
 /* ---------- overlays: Modal · Dropdown ---------- */
 .ds-scrim{position:fixed;inset:0;z-index:var(--z-modal);background:color-mix(in srgb,var(--tone-dark) 45%,transparent);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:var(--space-5)}
-.ds-modal{width:var(--modal-w);max-width:100%;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-radius:var(--radius-2xl);box-shadow:var(--shadow-lg);padding:var(--space-5);display:flex;flex-direction:column;gap:0.875rem;box-sizing:border-box}
+.ds-modal{width:var(--modal-w);max-width:100%;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-radius:var(--radius-2xl);box-shadow:var(--shadow-lg);padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-5);box-sizing:border-box}
+/* LE RYTHME INTERNE DE LA MODALE EST SUR L'ÉCHELLE — v0.1.9 : --space-5 (24) entre l'en-tête, le
+   texte, le champ et le pied, là où 0,875 rem (14) serrait tout (audit Creator, maquette 02 :
+   22 ; Julien tranche pour 24, le palier du DS). Le padding ne bouge pas (--space-5 aussi). */
 .ds-modal__close{width:var(--modal-close);height:var(--modal-close);border-radius:var(--radius-sm);border:none;background:transparent;color:var(--muted-foreground);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-left:auto}
 .ds-modal__close:hover:not(:disabled){background:var(--surface-alt);color:var(--foreground)}
 .ds-modal__close:disabled{opacity:.4;cursor:not-allowed;background:transparent;color:var(--muted-foreground)}
@@ -456,7 +469,9 @@
 .ds-modal__text{margin:0}
 /* Modal phases — __desc and __foot officialise Modal.tsx's inline styles, values identical. */
 .ds-modal__desc{font-size:var(--text-body-sm);color:var(--muted-foreground);line-height:1.5;display:flex;flex-direction:column;gap:var(--space-3)}
-.ds-modal__foot{display:flex;gap:0.625rem;justify-content:flex-end;margin-top:0.25rem}
+/* Plus de marge propre sur le pied (0,25 rem, v0.1.9) : elle rattrapait le gap de 14 à 18 avant
+   les boutons ; avec 24 partout elle ferait un 28 hors échelle. */
+.ds-modal__foot{display:flex;gap:0.625rem;justify-content:flex-end}
 .ds-modal__desc--block{display:block}
 .ds-modal__foot--center{justify-content:center}
 .ds-modal__result{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-2);padding-block:var(--space-2)}
