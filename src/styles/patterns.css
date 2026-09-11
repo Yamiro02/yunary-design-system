@@ -147,16 +147,16 @@
 /* LA VARIANTE « SÉLECTIONNÉ DOUX » — v0.3.0. Fond --accent, sans bordure, icône
    --primary-readable : l'état d'un lien-icône ou d'un raccourci actif. Sans elle, une app
    détourne l'aide de démo `is-active` et annule la bordure en style inline — c'est
-   arrivé. L'icône prend LA couleur de l'élément sélectionné du socle (v0.1.4 — elle prenait
-   --primary, à 3,00 sur --accent : au seuil des graphiques, sous celui du texte ; une seule
-   teinte pour tous les états sélectionnés, voir LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ,
-   section navigation). Le survol tire la plaque vers la marque, pas vers --surface-alt : la
-   variante EST une teinte, son survol reste dans la teinte.
+   arrivé. L'icône prend LA couleur de l'élément sélectionné du socle : --primary, le corail
+   (3,00 sur --accent — au seuil des graphiques ; voir LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ,
+   section navigation, et l'écart assumé dans la marque). Le survol tire la plaque vers la
+   marque, pas vers --surface-alt : la variante EST une teinte, son survol reste dans la teinte.
    Button n'a pas ce jumeau, et c'est délibéré : le besoin n'est attesté que sur le
    carré d'icône — on promeut au deuxième appelant, jamais avant. */
-.ds-icon-btn--accent{border:none;background:var(--accent);color:var(--primary-readable)}
+.ds-icon-btn--accent{border:none;background:var(--accent);color:var(--primary)}
 .ds-icon-btn--accent:hover:not(:disabled),.ds-icon-btn--accent.is-hover{background:color-mix(in srgb,var(--primary) 10%,var(--accent))}
-.ds-icon-btn.is-active,.ds-icon-btn--secondary[aria-pressed="true"]{border-color:var(--primary);background:var(--accent);color:var(--primary-readable)}
+/* Le bouton-icône ENFONCÉ (aria-pressed) est un élément sélectionné : la convention, filet --primary en plus. v0.1.5 */
+.ds-icon-btn.is-active,.ds-icon-btn--secondary[aria-pressed="true"]{border-color:var(--primary);background:var(--accent);color:var(--primary)}
 .ds-icon-btn:focus-visible,.ds-icon-btn.is-focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
 .ds-icon-btn:disabled,.ds-icon-btn.is-disabled{opacity:.5;cursor:not-allowed;transform:none}
 
@@ -206,7 +206,7 @@
    où le navigateur le permet : Firefox et Chrome sur Windows/Linux peignent les options ;
    macOS et iOS rendent leur liste système et ignorent ces deux déclarations. Rien à
    rattraper : c'est la liste de la plateforme, jamais un défaut du socle. */
-.ds-select option:checked{background:var(--accent);color:var(--primary-readable)}
+.ds-select option:checked{background:var(--accent);color:var(--primary)}
 .ds-choice{display:inline-flex;align-items:center;gap:0.5625rem;cursor:pointer;font-size:var(--text-body-sm);color:var(--foreground);line-height:var(--leading-snug);position:relative}
 .ds-choice input{position:absolute;opacity:0;width:0;height:0}
 .ds-choice__box{flex:none;display:inline-flex;align-items:center;justify-content:center;width:var(--choice-box);height:var(--choice-box);border:1.5px solid var(--input);background:var(--background);border-radius:var(--choice-box-radius);color:var(--primary-foreground);transition:background var(--duration-fast) var(--ease-standard),border-color var(--duration-fast) var(--ease-standard),box-shadow var(--duration-fast) var(--ease-standard)}
@@ -463,7 +463,7 @@
 .ds-actionsheet__item:hover,.ds-actionsheet__item.is-hover,.ds-actionsheet__item:focus-visible{background:var(--surface-alt);outline:none}
 .ds-actionsheet__item--danger{color:var(--destructive-readable)}
 /* La ligne cochée — jumelle de .ds-dropdown__item.is-checked (v0.1.4), même convention. */
-.ds-actionsheet__item[aria-checked="true"],.ds-actionsheet__item.is-checked{background:var(--accent);color:var(--primary-readable)}
+.ds-actionsheet__item[aria-checked="true"],.ds-actionsheet__item.is-checked{background:var(--accent);color:var(--primary)}
 .ds-actionsheet__label{flex:1;min-width:0}
 .ds-actionsheet__check{display:inline-flex;flex:none;margin-left:auto}
 .ds-actionsheet__note{font-size:var(--text-caption);color:var(--text-muted);line-height:var(--leading-normal);padding:var(--space-1) var(--space-3) var(--space-2)}
@@ -495,9 +495,9 @@
 .ds-dropdown__item{display:flex;align-items:center;gap:0.625rem;width:100%;min-height:var(--dropdown-item-h);padding:0 0.875rem;border:0;background:transparent;color:var(--foreground);font-family:var(--font-body);font-size:var(--text-control);text-align:left;border-radius:var(--radius-sm);cursor:pointer;transition:background var(--duration-fast) var(--ease-standard)}
 .ds-dropdown__item:hover,.ds-dropdown__item.is-hover,.ds-dropdown__item:focus-visible{background:var(--surface-alt);outline:none}
 /* L'ITEM COCHÉ — role="menuitemradio" + aria-checked, la convention de l'élément sélectionné
-   (plaque --accent, texte --primary-readable, MÊME graisse), coche en fin de ligne. Le survol
-   garde la plaque : `.is-checked` est écrit après le survol, à spécificité égale. */
-.ds-dropdown__item[aria-checked="true"],.ds-dropdown__item.is-checked{background:var(--accent);color:var(--primary-readable)}
+   (plaque --accent, texte --primary, MÊME graisse), coche en fin de ligne en currentColor. Le
+   survol garde la plaque : `.is-checked` est écrit après le survol, à spécificité égale. */
+.ds-dropdown__item[aria-checked="true"],.ds-dropdown__item.is-checked{background:var(--accent);color:var(--primary)}
 .ds-dropdown__label{flex:1;min-width:0}
 .ds-dropdown__check{display:inline-flex;flex:none;margin-left:auto}
 .ds-dropdown__item--danger{color:var(--destructive-readable)}
@@ -523,42 +523,49 @@
 .ds-navbar__cta{display:flex;align-items:center;gap:var(--space-3)}
 .ds-navlink{font-size:var(--text-body);font-weight:var(--weight-medium);color:var(--text-secondary);text-decoration:none;padding:var(--space-2) 0;transition:color var(--duration-fast) var(--ease-standard)}
 .ds-navlink:hover,.ds-navlink.is-hover{color:var(--foreground)}
-/* ═══ LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ — v0.1.4, partout dans le socle ═══
-   Le rendu de la v1 (Sidebar.tsx : `bg-accent text-primary`) : plaque --accent, texte de
-   marque, MÊME graisse que les voisins, icône en currentColor. Jamais « noir gras » — c'est la
-   décision de Julien (11/09/2026) : un actif en --foreground + 600 se lisait comme un titre,
-   et chaque composant avait sa propre idée (surface-alt + gras ici, --primary là, --card
-   ailleurs). Une seule teinte : --primary-readable. --primary mesure 3,00 sur --accent en
-   clair — le seuil des graphiques, PAS celui du texte (4,5) — et check-contrast.mjs le refuse
-   pour un libellé ; la consigne prévoyait le jumeau lisible dans ce cas. Il vaut donc aussi
-   pour les Tabs et la pagination, qui posaient --primary avec un écart assumé : une convention
-   à deux couleurs n'en est pas une.
+/* ═══ LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ — v0.1.4, corail depuis la v0.1.5, partout ═══
+   Le rendu de la v1 (Sidebar.tsx : `bg-accent text-primary`), à la lettre : plaque --accent,
+   texte --primary — LE CORAIL —, MÊME graisse que les voisins, icône et coche en currentColor.
+   Jamais « noir gras » — décision de Julien (11/09/2026) : un actif en --foreground + 600 se
+   lisait comme un titre, et chaque composant avait sa propre idée (surface-alt + gras ici,
+   --primary là, --card ailleurs).
+   ⚠️ ÉCART DE CONTRASTE ASSUMÉ, et c'est une décision de marque, pas un oubli : --primary mesure
+   3,00 sur --accent en clair (3,94 en sombre), 3,25 sur --card, 3,28 sur --secondary — le seuil
+   des graphiques, PAS celui du texte (4,5). La v0.1.4 avait posé le jumeau lisible
+   --primary-readable (5,16) pour tenir le seuil ; Julien a tranché pour la fidélité à la v1
+   (11/09/2026) : le corail, et l'écart est ÉCRIT dans la marque (@a11y-assume, brand-yunary.css,
+   un bloc par paire) — check-contrast.mjs le mesure et le laisse passer parce qu'il est déclaré,
+   jamais parce qu'il serait masqué. Ce qui le rend tenable : l'état n'est jamais porté par la
+   couleur seule — la plaque --accent, l'ombre (onglet, page), la coche (menu), l'aria-current /
+   aria-selected / aria-checked, et un libellé de 15/500-600 ; les icônes tiennent leur 3:1.
+   --primary-readable RESTE le jeton des liens, des badges accent, du bandeau info, des erreurs :
+   la convention ne le touche pas.
    Ce qui N'EST PAS un élément sélectionné et ne suit pas : la case cochée, la piste du
-   switch, le jour choisi du calendrier — des CONTRÔLES, ils portent le dégradé plein. */
+   switch, le jour choisi du calendrier — des CONTRÔLES, ils portent le dégradé plein ; et le
+   titre d'une tuile cochée, qui reste en encre. */
 /* Le lien de barre de navigation n'a pas de plaque (c'est du texte nu sur la barre) : il ne
    prend que la couleur, graisse inchangée. */
-.ds-navlink.is-active{color:var(--primary-readable)}
+.ds-navlink.is-active{color:var(--primary)}
 .ds-tabs{display:inline-flex;align-items:center;gap:var(--space-1);padding:var(--space-1);border-radius:var(--tabs-radius);min-height:var(--control-md);box-sizing:border-box;background:var(--secondary);border:1px solid var(--border)}
 .ds-tabs--on-card{background:var(--background)}
 .ds-tab{appearance:none;border:0;background:transparent;color:var(--text-muted);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-semibold);padding:var(--space-2) var(--space-4);border-radius:var(--radius-sm);cursor:pointer;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
 .ds-tab:hover,.ds-tab.is-hover{color:var(--foreground)}
-/* L'ÉLÉMENT SÉLECTIONNÉ PORTE LA PLAQUE DE MARQUE — --accent + --primary-readable (5,16 /
-   5,85 mesurés), la convention ci-dessus. Il posait --primary (3,00 / 3,94) avec un écart
-   assumé « décision de marque » : l'écart tombe avec la v0.1.4, la couleur est celle de tous
-   les autres états sélectionnés. Depuis que --secondary a rejoint le ton carte (régime v0.5 du
-   kit maître), un actif posé en --background n'avait plus que ~1,05 d'écart avec sa barre :
-   invisible. La teinte chaude se lit dans les DEUX thèmes — plus de régime sombre séparé. */
-.ds-tab[aria-selected="true"],.ds-tab.is-selected{background:var(--accent);color:var(--primary-readable);box-shadow:var(--shadow-sm)}
+/* L'ÉLÉMENT SÉLECTIONNÉ PORTE LA PLAQUE DE MARQUE — --accent + --primary (3,00 / 3,94, écart
+   assumé dans la marque), la convention ci-dessus. Depuis que --secondary a rejoint le ton carte
+   (régime v0.5 du kit maître), un actif posé en --background n'avait plus que ~1,05 d'écart avec
+   sa barre : invisible. La teinte chaude se lit dans les DEUX thèmes — plus de régime sombre
+   séparé. */
+.ds-tab[aria-selected="true"],.ds-tab.is-selected{background:var(--accent);color:var(--primary);box-shadow:var(--shadow-sm)}
 /* Sur une carte, la plaque accent se confondrait avec la teinte de la carte : l'actif garde le
    régime historique de SURFACE — fond --card au-dessus de la barre creusée en --background —
    mais son texte suit la convention (v0.1.4 : il était --foreground, le seul sélectionné
-   « noir » qui restait). */
-.ds-tabs--on-card .ds-tab[aria-selected="true"],.ds-tabs--on-card .ds-tab.is-selected{background:var(--card);color:var(--primary-readable)}
+   « noir » qui restait ; 3,25 / 4,12 sur --card, assumé). */
+.ds-tabs--on-card .ds-tab[aria-selected="true"],.ds-tabs--on-card .ds-tab.is-selected{background:var(--card);color:var(--primary)}
 /* La barre d'onglets DÉDUIT la carte comme le champ (même défaut d'opt-in que surface="card") :
    posée dans une carte, elle se creuse en --background et son onglet actif remonte au niveau
    de la carte. La prop onCard reste comme échappatoire explicite. */
 .ds-card .ds-tabs{background:var(--background)}
-.ds-card .ds-tabs .ds-tab[aria-selected="true"],.ds-card .ds-tabs .ds-tab.is-selected{background:var(--card);color:var(--primary-readable)}
+.ds-card .ds-tabs .ds-tab[aria-selected="true"],.ds-card .ds-tabs .ds-tab.is-selected{background:var(--card);color:var(--primary)}
 .ds-tab:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 .ds-footer{border-top:1px solid var(--border);background:var(--background);color:var(--text-secondary)}
 .ds-footer__inner{display:flex;flex-wrap:wrap;gap:var(--space-7);justify-content:space-between;padding-block:var(--space-7)}
@@ -616,7 +623,7 @@
 .ds-pagination{display:inline-flex;align-items:center;gap:var(--space-1);padding:var(--space-1);background:var(--secondary);border:1px solid var(--border);border-radius:var(--pagination-radius);min-height:var(--control-md);box-sizing:border-box}
 .ds-page{appearance:none;border:0;background:transparent;min-width:var(--page-min);min-height:var(--page-min);padding:0 var(--space-2);display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-semibold);color:var(--text-muted);cursor:pointer;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
 .ds-page:hover:not(:disabled):not(.ds-page--ellipsis){color:var(--foreground);background:var(--surface-alt)}
-.ds-page[aria-current="page"]{background:var(--accent);color:var(--primary-readable);box-shadow:var(--shadow-sm)}
+.ds-page[aria-current="page"]{background:var(--accent);color:var(--primary);box-shadow:var(--shadow-sm)}
 .ds-page:disabled{opacity:.5;cursor:not-allowed}
 .ds-page:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 .ds-page--ellipsis{cursor:default;pointer-events:none}
@@ -660,12 +667,12 @@
 .ds-sidebar.is-collapsed .ds-sidebar__title{display:none}
 .ds-sidenav{display:flex;align-items:center;gap:var(--space-3);min-height:var(--sidenav-h);padding:0 var(--space-2);border-radius:var(--radius-sm);border:0;background:transparent;color:var(--text-secondary);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-medium);text-align:left;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
 .ds-sidenav:hover{background:var(--surface-alt);color:var(--foreground)}
-/* L'ENTRÉE ACTIVE : la convention de l'élément sélectionné (v0.1.4) — plaque --accent, libellé
-   --primary-readable, graisse INCHANGÉE (500, comme ses voisines), icône en currentColor. Elle
-   rendait surface-alt + encre + 600 + icône --brand-via (2,29 en clair, assumé) : le « noir
-   gras » que Julien a refusé, et un rendu que ni la v1 ni les maquettes du 11/09 ne montrent. La
-   règle svg est retirée : l'icône hérite, rien à mesurer à part. */
-.ds-sidenav.is-active{background:var(--accent);color:var(--primary-readable)}
+/* L'ENTRÉE ACTIVE : la convention de l'élément sélectionné — plaque --accent, libellé --primary
+   (le corail de la v1, 3,00 assumé), graisse INCHANGÉE (500, comme ses voisines), icône en
+   currentColor. Elle rendait surface-alt + encre + 600 + icône --brand-via (2,29 en clair,
+   assumé) : le « noir gras » que Julien a refusé, et un rendu que ni la v1 ni les maquettes du
+   11/09 ne montrent. La règle svg est retirée : l'icône hérite. */
+.ds-sidenav.is-active{background:var(--accent);color:var(--primary)}
 .ds-sidenav:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 .ds-sidebar.is-collapsed .ds-sidenav{justify-content:center;padding:0}
 .ds-sidebar.is-collapsed .ds-sidenav__label{display:none}

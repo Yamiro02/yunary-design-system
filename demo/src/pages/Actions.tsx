@@ -67,7 +67,7 @@ export function ActionsPage() {
       </Section>
 
       <Section title="IconButton" note="Carré, rayon --radius-md. md fait 2.625rem — la cible de touche minimale. Jamais un pill.">
-        <Block label="Variantes et tailles" hint="Les icônes ne portent aucun size : le créneau les dimensionne (sm 1rem · md 1.125rem). accent = fond --accent, sans bordure, icône --primary-readable — l'état « sélectionné doux » d'un lien-icône. danger-soft = la corbeille : la paire de la pilule danger, sans bordure (v0.1.4).">
+        <Block label="Variantes et tailles" hint="Les icônes ne portent aucun size : le créneau les dimensionne (sm 1rem · md 1.125rem). accent = fond --accent, sans bordure, icône --primary (corail) — l'état « sélectionné doux » d'un lien-icône. danger-soft = la corbeille : la paire de la pilule danger, sans bordure (v0.1.4).">
           {ICON_VARIANTS.map(v => (
             <Row key={v} label={v}>
               <IconButton label="Copier" variant={v} size="sm"><Icon name="copy" /></IconButton>

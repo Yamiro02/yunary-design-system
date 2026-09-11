@@ -14,6 +14,37 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
+## 0.1.5 — l'élément sélectionné en corail, comme la v1
+
+Une décision de Julien (11/09/2026), qui renverse la couleur posée par la 0.1.4 sans en toucher
+la mécanique. Aucune rupture d'API.
+
+- **⚠ L'état actif / sélectionné est en CORAIL : texte `--primary` (`#e85d2f`) sur la plaque
+  `--accent`**, même graisse que les voisins, icône et coche en `currentColor` — à la lettre de
+  la v1 (`Sidebar.tsx` : `bg-accent text-primary`). Toute la convention suit : `.ds-sidenav`,
+  `.ds-tab` (y compris sur une carte, où la plaque reste `--card`), `.ds-page`, `.ds-navlink`,
+  les items cochés de `Dropdown` et d'`ActionSheet`, `option:checked`, `.ds-icon-btn--accent` et
+  le bouton-icône enfoncé (`aria-pressed`). La 0.1.4 avait posé `--primary-readable` (le brique,
+  5,16) pour tenir le seuil du texte ; Julien préfère la fidélité à la v1 et **assume l'écart de
+  contraste** : 3,00 sur `--accent` en clair (3,94 en sombre), 3,25 sur `--card`, 3,28 sur
+  `--secondary` — le seuil des graphiques, pas celui du texte (4,5).
+- **L'écart est ÉCRIT, pas masqué.** `check-contrast.mjs` mesure les huit paires de la convention
+  telles que le CSS les pose (`--primary`, une par composant parce que la taille du texte
+  diffère — `.ds-actionsheet__item[aria-checked]` et `.ds-select option:checked` s'ajoutent) et
+  les refuse tant qu'un bloc manque ; `brand-yunary.css` porte **huit blocs `@a11y-assume`**, un
+  par paire, sous un en-tête qui dit la raison — décision de marque du 11/09/2026, fidélité à la
+  v1 — et ce qui l'atténue : l'état n'est jamais porté par la couleur seule (plaque, ombre,
+  coche, `aria-current` / `aria-selected` / `aria-checked`), libellés courts en 15-16 px et
+  500-600, icônes de la convention à 3:1 (3,00, conformes). 66 paires, 41 conformes, 25 écarts
+  assumés (17 + 8). `docs/accessibilite.md` régénéré, § 3.6 ajouté.
+- **`--primary-readable` ne bouge pas** : liens, badge accent, bandeau info, erreurs, la ligne
+  d'origine d'un modèle. Il reste le jeton de tout texte de marque qui n'est pas un état actif ;
+  seule la convention d'état actif fait exception, et elle le dit.
+- Pour une app : rien à changer par rapport à la 0.1.4 sur le plan du code — la même montée, les
+  mêmes recompositions à retirer ; seule la teinte de l'actif diffère à l'écran.
+
+---
+
 ## 0.1.4 — l'élément sélectionné, la carte qui s'empile, la carte d'état, la tuile cochable
 
 Les corrections remontées par les audits Hub et Creator du 11/09/2026, sur les maquettes mises à

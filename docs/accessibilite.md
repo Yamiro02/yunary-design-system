@@ -10,9 +10,9 @@
 > translucides — pilules, plaques de marque — sont **composités sur leur surface porteuse**
 > avant mesure : c'est la couleur que l'œil reçoit, pas celle qui est écrite.
 >
-> **63 paires × 2 thèmes. 46 conformes, 17 écarts assumés.** Un écart assumé n'est pas un
+> **66 paires × 2 thèmes. 41 conformes, 25 écarts assumés.** Un écart assumé n'est pas un
 > oubli : c'est une décision écrite, déclarée dans `src/styles/brand-yunary.css` par un bloc
-> `@a11y-assume:` avec sa raison. Le build tombe si une **dix-huitième** apparaît.
+> `@a11y-assume:` avec sa raison. Le build tombe si une **vingt-sixième** apparaît.
 
 ---
 
@@ -30,13 +30,16 @@ lisible :
 | `--primary-readable` | `#b23a1c` | `#f0916b` | **5,16 à 5,64** en clair, **5,62 à 7,11** en sombre, sur les six surfaces |
 | `--destructive-readable` | `#a32d2d` | `#ec8f8f` | **6,62 à 6,84** en clair, **5,73 à 6,07** en sombre |
 
-Ce sont eux que prennent les liens, les libellés actifs, les icônes porteuses de sens et les
-messages d'erreur — lignes `a{}`, `.ds-navlink.is-active`, `.ds-sidenav.is-active`,
-`.ds-tab[aria-selected]`, `.ds-page[aria-current]`, `.ds-dropdown__item[aria-checked]`,
-`.ds-badge--accent`, `.ds-banner--info`, `.ds-error` du tableau § 2. Depuis la v0.1.4 c'est
-**la convention de l'élément sélectionné**, partout : plaque `--accent`, texte
-`--primary-readable`, même graisse que les voisins — `--primary` mesure 3,00 sur `--accent`,
-le seuil des graphiques, pas celui du texte.
+Ce sont eux que prennent les liens, les icônes porteuses de sens, le badge accent, le bandeau
+info et les messages d'erreur — lignes `a{}`, `.ds-badge--accent`, `.ds-banner--info`,
+`.ds-error` du tableau § 2.
+
+**L'exception, décidée : l'élément sélectionné est en corail.** La convention d'état actif du
+socle (v0.1.4) pose `--primary` en texte sur la plaque `--accent`, à la lettre de la v1 —
+entrée de Sidebar, onglet, page courante, item de menu coché, lien de barre. 3,00 sur
+`--accent`, le seuil des graphiques, pas celui du texte : huit paires assumées, § 3.6. La
+v0.1.4 avait posé `--primary-readable` (5,16) ; Julien a tranché le 11/09/2026 pour la fidélité
+à la v1 (v0.1.5).
 
 Le survol de lien ne demande pas de troisième jeton : il se **dérive** en tirant le jumeau
 vers `--foreground` (`color-mix(in srgb, var(--primary-readable) 80%, var(--foreground))`),
@@ -52,8 +55,9 @@ La règle se vérifie d'un grep, et c'est ce qui la rend tenable :
 grep -rE '(^|[^-[:alnum:]])color:var\(--(primary|destructive)\)' src/styles/
 ```
 
-Trois sorties aujourd'hui — les deux exceptions ci-dessus, et l'astérisque « requis » d'un
-libellé (`.ds-label__required`), un signe de ponctuation à côté d'un mot en encre.
+Quatorze sorties aujourd'hui : les deux marqueurs du § 3.4, l'astérisque « requis » d'un
+libellé (`.ds-label__required`, un signe de ponctuation à côté d'un mot en encre), et les onze
+règles de la convention d'état actif (§ 3.6) — toutes décidées, aucune par accident.
 
 ---
 
@@ -70,16 +74,11 @@ libellé (`.ds-label__required`), un signe de ponctuation à côté d'un mot en 
 | `a{} au repos sur --background` | 16 / 400 | 4,5 | 5,36 | 7,11 |
 | `a{} au repos sur --card` | 16 / 400 | 4,5 | 5,59 | 6,12 |
 | `a:hover — dérivé vers --foreground` | 16 / 400 | 4,5 | 6,76 | 8,21 |
-| `.ds-navlink.is-active` | 16 / 500 | 4,5 | 5,64 | 6,12 |
-| `.ds-sidenav.is-active` | 15 / 500 | 4,5 | 5,16 | 5,85 |
-| `.ds-tab[aria-selected]` | 15 / 600 | 4,5 | 5,16 | 5,85 |
-| `.ds-tabs--on-card .ds-tab[aria-selected]` | 15 / 600 | 4,5 | 5,59 | 6,12 |
-| `.ds-page[aria-current]` | 15 / 600 | 4,5 | 5,16 | 5,85 |
-| `.ds-dropdown__item[aria-checked]` | 15 / 400 | 4,5 | 5,16 | 5,85 |
+| `.ds-icon-btn--accent — icône` | icône | 3 | 3,00 | 3,94 |
 | `.ds-badge--accent` | 12 / 700 | 4,5 | 5,16 | 5,85 |
 | `.ds-banner--info` | 15 / 400 | 4,5 | 5,16 | 5,85 |
 | `.ds-pastille--brand-solid — glyphe sur --brand-to` | icône | 3 | 3,80 | 3,80 |
-| `.ds-icon-btn[aria-pressed] — icône` | icône | 3 | 5,16 | 5,85 |
+| `.ds-icon-btn[aria-pressed] — icône` | icône | 3 | 3,00 | 3,94 |
 | `.ds-error` | 13 / 500 | 4,5 | 6,62 | 6,07 |
 | `.ds-dropdown__item--danger` | 15 / 400 | 4,5 | 6,84 | 5,73 |
 | `.ds-icon-btn--danger-soft sur --card — glyphe` | icône | 3 | 5,47 | 6,59 |
@@ -112,12 +111,20 @@ libellé (`.ds-label__required`), un signe de ponctuation à côté d'un mot en 
 
 ## 3. Les écarts assumés
 
-17 paires, en cinq familles. Chacune est déclarée dans `src/styles/brand-yunary.css` par un
+25 paires, en six familles. Chacune est déclarée dans `src/styles/brand-yunary.css` par un
 bloc `@a11y-assume:`. Le script porte la mécanique, **la marque porte ses renoncements** : une
 autre marque née de ce socle repart d'une liste vide et n'hérite d'aucune dérogation.
 
 | Paire | contenu | seuil | clair | sombre |
 |---|---|--:|--:|--:|
+| `.ds-navlink.is-active` | 16 / 500 | 4,5 | 3,28 ✗ | 4,12 ✗ |
+| `.ds-sidenav.is-active` | 15 / 500 | 4,5 | 3,00 ✗ | 3,94 ✗ |
+| `.ds-tab[aria-selected]` | 15 / 600 | 4,5 | 3,00 ✗ | 3,94 ✗ |
+| `.ds-tabs--on-card .ds-tab[aria-selected]` | 15 / 600 | 4,5 | 3,25 ✗ | 4,12 ✗ |
+| `.ds-page[aria-current]` | 15 / 600 | 4,5 | 3,00 ✗ | 3,94 ✗ |
+| `.ds-dropdown__item[aria-checked]` | 15 / 400 | 4,5 | 3,00 ✗ | 3,94 ✗ |
+| `.ds-actionsheet__item[aria-checked]` | 15 / 500 | 4,5 | 3,00 ✗ | 3,94 ✗ |
+| `.ds-select option:checked` | 15 / 400 | 4,5 | 3,00 ✗ | 3,94 ✗ |
 | `.ds-cal__day.is-today` | 14 / 700 | 4,5 | 3,25 ✗ | 4,12 ✗ |
 | `.ds-pastille--brand — icône` | icône | 3 | 2,85 ✗ | 3,58 |
 | `.ds-pastille--brand-solid — glyphe sur --brand-from` | icône | 3 | 2,04 ✗ | 2,04 ✗ |
@@ -193,6 +200,24 @@ aucun trait dur. Et aucun de ces cinq traits ne porte seul une information : le 
 délimité par son remplissage **et** son anneau de focus à 3:1 ; la carte porte **aussi** une
 ombre teintée d'encre (`--shadow-sm`) qui fait le détachement ; le séparateur est un filet de
 rythme, non porteur de sens.
+
+### 3.6 · L'élément sélectionné en corail — `3,00` à `3,28` en clair · 8 paires
+
+**L'écart.** La convention d'état actif pose `--primary` (`#e85d2f`) en couleur de **texte** sur
+la plaque `--accent` : **3,00** en clair, 3,94 en sombre — entrée de Sidebar, onglet, page
+courante, item de menu coché, ligne de feuille cochée, option de select ; 3,25 sur `--card`
+pour l'onglet d'une barre posée sur une carte ; 3,28 sur `--secondary` pour le lien actif d'une
+barre de navigation. Le seuil des graphiques, pas celui du texte.
+
+**Pourquoi il est assumé.** Décision de marque de Julien, 11/09/2026 : **le rendu de la v1**
+(`Sidebar.tsx` : `bg-accent text-primary`), le corail et non le brique du jumeau lisible que la
+v0.1.4 avait posé. L'état n'est jamais porté par la couleur seule : la plaque `--accent` (ou
+`--card`), l'ombre `--shadow-sm` de l'onglet et de la page courante, la coche d'un item de menu,
+et l'attribut ARIA (`aria-current`, `aria-selected`, `aria-checked`) — un lecteur d'écran n'a
+pas besoin de la couleur. Les libellés sont courts, en 15-16 px et 500-600 ; les **icônes** de la
+convention (bouton-icône accent, bouton-icône enfoncé) tiennent leur 3:1 à 3,00 et restent
+conformes. `--primary-readable` reste le jeton de tout texte de marque qui n'est pas un état
+actif. Le repli, si la décision est revue : `--primary-readable`, 5,16 / 5,85.
 
 ---
 

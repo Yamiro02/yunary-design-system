@@ -124,7 +124,7 @@ qu'il fait le dit.
 - Props : `variant` (`primary·secondary·ghost·danger·danger-soft·accent`, défaut `ghost`) ·
   `size` (`sm·md·lg`) · `surface` (`auto·page·card`) · `label` (requis) · `as` / `href`.
 - `surface` a le même rôle et les mêmes valeurs que sur `Button` — voir sa section.
-- **`variant="accent"`** (v0.3.0) : fond `--accent`, sans bordure, icône `--primary-readable` —
+- **`variant="accent"`** (v0.3.0) : fond `--accent`, sans bordure, icône `--primary` (le corail) —
   l'état « sélectionné doux » d'un lien-icône ou d'un raccourci. Ne pas le recomposer
   avec `is-active` (une aide de démo) et un style inline : c'est cette fraude que la
   variante remplace.
@@ -887,9 +887,10 @@ Navigation d'app sur `--secondary` : marque en tête, sections titrées, item ac
   · `linkAs`.
 - Chaque section est un **groupe** (v0.3.0) : les groupes se séparent par le gap de la
   nav (16px), avec ou sans titre — deux sections sans titre ne se collent plus.
-- **L'entrée active** (v0.1.4) suit la convention de l'élément sélectionné, partout dans le
-  socle : plaque `--accent`, libellé `--primary-readable`, MÊME graisse que ses voisines, icône
-  en `currentColor`. Jamais « noir gras ». Le rendu de la v1.
+- **L'entrée active** suit la convention de l'élément sélectionné, partout dans le socle :
+  plaque `--accent`, libellé `--primary` (le corail, v0.1.5 — écart de contraste assumé dans la
+  marque), MÊME graisse que ses voisines, icône en `currentColor`. Jamais « noir gras ». Le
+  rendu de la v1 à la lettre.
 - États rendus : dépliée, repliée, item au repos / survolé / actif, tiroir ouvert.
 
 ## Tabs
@@ -946,7 +947,7 @@ signale en console en développement). Au-dessus de 64rem, le même geste ouvre 
 - **Pas de séparateur** (v0.8.0) : l'item `separator` a été retiré, la feuille n'émet plus
   aucun `<hr>`. C'est `Dropdown` qui garde le sien.
 - **`checked`** (v0.1.4) : la ligne cochée d'un menu de CHOIX, jumelle de celle de `Dropdown` —
-  `aria-checked`, plaque `--accent`, texte `--primary-readable`, coche en fin de ligne.
+  `aria-checked`, plaque `--accent`, texte `--primary` (corail), coche en fin de ligne.
 - États rendus : fermée, ouverte (feuille), item au repos / survolé / danger, panneau
   desktop.
 
@@ -985,8 +986,8 @@ sur `--surface-alt`.
   `align="start"` (défaut) aligne les bords gauches, `align="end"` les bords droits (le menu
   d'un bouton en bout de ligne). Avant, sans `top`/`left`, il s'ouvrait à DROITE du bouton.
 - **`checked`** (v0.1.4) : un menu de CHOIX (tri, filtre) — `role="menuitemradio"` +
-  `aria-checked`, plaque `--accent`, texte `--primary-readable` à la MÊME graisse que les
-  autres, coche en fin de ligne. `undefined` = un item d'action, sans coche. Les deux se
+  `aria-checked`, plaque `--accent`, texte `--primary` (corail) à la MÊME graisse que les
+  autres, coche en fin de ligne en `currentColor`. `undefined` = un item d'action, sans coche. Les deux se
   mélangent dans un même menu. Rail d'item à 44 px, texte `--text-control`.
 - États rendus : item au repos, survolé, coché, danger, séparateur ; ancrage start et end.
 

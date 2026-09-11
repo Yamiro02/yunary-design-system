@@ -205,7 +205,7 @@ export function OverlaysPage() {
       </Section>
 
       <Section title="Dropdown" note="Panneau de menu, rayon lg, --shadow-lg. Les items s'éclairent sur --surface-alt ; l'item coché porte la convention de l'élément sélectionné. DESKTOP ONLY — sous 64 rem, c'est l'ActionSheet ci-dessus qui prend le relais.">
-        <Block label="Ancré sous son déclencheur — align=end" hint="Flottant, le panneau se pose juste sous le bouton, dans un parent position:relative (à poser par l'app). align=end colle les bords droits — le menu d'un bouton en bout de ligne. Avant la 0.1.4, sans top/left, il s'ouvrait À DROITE du bouton. Un menu de CHOIX : checked pose role=menuitemradio + aria-checked, texte --primary-readable sur --accent à la même graisse, coche en fin de ligne, rail de 44 px.">
+        <Block label="Ancré sous son déclencheur — align=end" hint="Flottant, le panneau se pose juste sous le bouton, dans un parent position:relative (à poser par l'app). align=end colle les bords droits — le menu d'un bouton en bout de ligne. Avant la 0.1.4, sans top/left, il s'ouvrait À DROITE du bouton. Un menu de CHOIX : checked pose role=menuitemradio + aria-checked, texte --primary (corail) sur --accent à la même graisse, coche en currentColor en fin de ligne, rail de 44 px.">
           <div className="flex justify-end">
             <span className="relative inline-flex">
               <Button variant="secondary" iconRight={<Icon name="chevron-down" />} aria-haspopup="menu" aria-expanded={reseauOpen} onClick={() => setReseauOpen(o => !o)}>

@@ -58,7 +58,7 @@ sans toucher aux composants.
 Pas de registry : chaque app épingle une version par un tag git.
 
 ```bash
-npm i github:Yamiro02/yunary-design-system#v0.1.4
+npm i github:Yamiro02/yunary-design-system#v0.1.5
 ```
 
 Cinq **peer dependencies**, à la charge de l'app :

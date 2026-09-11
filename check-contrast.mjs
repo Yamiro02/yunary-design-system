@@ -151,15 +151,25 @@ function pairs(theme, { ROOT, DARK }, fichier) {
   add('Lien', 'a{} au repos sur --card', g('--primary-readable'), g(C), 4.5, '16 / 400');
   add('Lien', 'a:hover — dérivé vers --foreground', over(g('--primary-readable'), .8, g('--foreground')), g(B), 4.5, '16 / 400');
 
-  add('Marque-contenu', '.ds-navlink.is-active', g('--primary-readable'), g('--secondary'), 4.5, '16 / 500');
-  /* LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ (v0.1.4) : plaque --accent, texte --primary-readable,
-     partout — l'entrée de Sidebar, l'onglet, la page courante, l'item de menu coché. Une seule
-     paire de couleurs, mesurée une fois par composant parce que la TAILLE du texte diffère. */
-  add('Marque-contenu', '.ds-sidenav.is-active', g('--primary-readable'), g('--accent'), 4.5, '15 / 500');
-  add('Marque-contenu', '.ds-tab[aria-selected]', g('--primary-readable'), g('--accent'), 4.5, '15 / 600');
-  add('Marque-contenu', '.ds-tabs--on-card .ds-tab[aria-selected]', g('--primary-readable'), g(C), 4.5, '15 / 600');
-  add('Marque-contenu', '.ds-page[aria-current]', g('--primary-readable'), g('--accent'), 4.5, '15 / 600');
-  add('Marque-contenu', '.ds-dropdown__item[aria-checked]', g('--primary-readable'), g('--accent'), 4.5, '15 / 400');
+  /* LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ (v0.1.4, corail depuis la v0.1.5) : plaque --accent,
+     texte --primary — la couleur de REMPLISSAGE posée en texte, à la lettre de la v1 —, partout :
+     l'entrée de Sidebar, l'onglet (aussi sur carte, où la plaque est --card), la page courante,
+     l'item de menu coché, la ligne de feuille cochée, le lien de barre. Les huit paires sont
+     mesurées telles que le CSS les pose : elles passent SOUS 4,5 dans les deux thèmes, et chacune
+     est un écart ASSUMÉ dans brand-yunary.css (@a11y-assume, un bloc par paire — décision de
+     marque de Julien du 11/09/2026, fidélité à la v1). Le garde ne masque rien : il refuse la
+     première paire dont le bloc manquerait. Une taille de texte par composant, d'où huit lignes. */
+  add('Marque-contenu', '.ds-navlink.is-active', g('--primary'), g('--secondary'), 4.5, '16 / 500');
+  add('Marque-contenu', '.ds-sidenav.is-active', g('--primary'), g('--accent'), 4.5, '15 / 500');
+  add('Marque-contenu', '.ds-tab[aria-selected]', g('--primary'), g('--accent'), 4.5, '15 / 600');
+  add('Marque-contenu', '.ds-tabs--on-card .ds-tab[aria-selected]', g('--primary'), g(C), 4.5, '15 / 600');
+  add('Marque-contenu', '.ds-page[aria-current]', g('--primary'), g('--accent'), 4.5, '15 / 600');
+  add('Marque-contenu', '.ds-dropdown__item[aria-checked]', g('--primary'), g('--accent'), 4.5, '15 / 400');
+  add('Marque-contenu', '.ds-actionsheet__item[aria-checked]', g('--primary'), g('--accent'), 4.5, '15 / 500');
+  add('Marque-contenu', '.ds-select option:checked', g('--primary'), g('--accent'), 4.5, '15 / 400');
+  /* Les ICÔNES de la convention (seuil 3) : le bouton-icône accent et le bouton-icône enfoncé.
+     3,00 en clair — au seuil, pas dessous. */
+  add('Marque-contenu', '.ds-icon-btn--accent — icône', g('--primary'), g('--accent'), 3, 'icône');
   add('Marque-contenu', '.ds-badge--accent', g('--primary-readable'), g('--accent'), 4.5, '12 / 700');
   add('Marque-contenu', '.ds-banner--info', g('--primary-readable'), g('--accent'), 4.5, '15 / 400');
   /* La règle pose `color:var(--primary)` (patterns.css) — pas le jumeau lisible. */
@@ -172,7 +182,7 @@ function pairs(theme, { ROOT, DARK }, fichier) {
      pastille est un graphique non textuel. */
   for (const arret of ['--brand-from', '--brand-via', '--brand-to'])
     add('Marque-contenu', `.ds-pastille--brand-solid — glyphe sur ${arret}`, g('--primary-foreground'), g(arret), 3, 'icône');
-  add('Marque-contenu', '.ds-icon-btn[aria-pressed] — icône', g('--primary-readable'), g('--accent'), 3, 'icône');
+  add('Marque-contenu', '.ds-icon-btn[aria-pressed] — icône', g('--primary'), g('--accent'), 3, 'icône');
   add('Marque-contenu', '.ds-error', g('--destructive-readable'), g(C), 4.5, '13 / 500');
   add('Marque-contenu', '.ds-dropdown__item--danger', g('--destructive-readable'), g('--popover'), 4.5, '15 / 400');
   /* Le danger DOUX du bouton-icône (v0.1.4) : la paire de la pilule danger, sur les deux porteuses. */
