@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import type { JSX, ReactNode } from 'react';
 import { cn } from '../../lib/cn';
+import { Icon } from '../icons/Icon';
 import { useModalSurface } from './useModalSurface';
 
 /* Remplacé par le bundler de l'app (Vite, webpack…), donc le bloc disparaît en
@@ -34,6 +35,12 @@ export interface ActionSheetItem {
   icon?: ReactNode;
   /** Destructive row — --destructive text. */
   danger?: boolean;
+  /**
+   * La ligne COCHÉE (v0.1.4) — le jumeau mobile de `checked` sur `DropdownItem`, même geste sur
+   * deux tailles d'écran : `aria-checked`, plaque --accent, texte --primary-readable, coche en
+   * fin de ligne. `undefined` (défaut) : une ligne d'action, sans coche.
+   */
+  checked?: boolean;
   onSelect?: () => void;
   /** Classes en plus sur le <button> de l'item — les aides d'état de la vitrine
    *  (`is-hover`…) passent par ici. */
@@ -109,10 +116,13 @@ export function ActionSheet({
         <button
           key={i}
           type="button"
+          role={it.checked === undefined ? undefined : 'menuitemradio'}
+          aria-checked={it.checked === undefined ? undefined : it.checked}
           onClick={it.onSelect}
           className={cn('ds-actionsheet__item', it.danger && 'ds-actionsheet__item--danger', it.className)}
         >
-          {it.icon}<span style={{ flex: 1 }}>{it.label}</span>
+          {it.icon}<span className="ds-actionsheet__label">{it.label}</span>
+          {it.checked ? <span className="ds-actionsheet__check" aria-hidden="true"><Icon name="check" size="1rem" /></span> : null}
         </button>
       ))}
       {note ? <div className="ds-actionsheet__note">{note}</div> : null}

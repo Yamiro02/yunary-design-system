@@ -8,12 +8,15 @@ import { cva } from 'class-variance-authority';
  */
 export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /**
-   * `accent` (v0.3.0) : fond `--accent`, sans bordure, icône `--primary` — l'état
+   * `accent` (v0.3.0) : fond `--accent`, sans bordure, icône `--primary-readable` — l'état
    * « sélectionné doux » d'un lien-icône ou d'un raccourci. La variante que les apps
    * recomposaient à la main en détournant l'aide de démo `is-active` et en annulant la
    * bordure en inline.
+   * `danger-soft` (v0.1.4) : la corbeille — fond `--pill-danger-bg`, glyphe `--pill-danger-fg`,
+   * sans bordure. Le `danger` plein reste l'action destructrice UNIQUE d'une vue (une modale de
+   * confirmation) ; à côté de chaque ligne supprimable, c'est le doux.
    */
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'accent';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'danger-soft' | 'accent';
   size?: 'sm' | 'md' | 'lg';
   /**
    * The surface the button sits on — the twin of Button's `surface`, same three values,
@@ -43,6 +46,7 @@ const iconButton = cva('ds-icon-btn', {
       secondary: 'ds-icon-btn--secondary',
       ghost: 'ds-icon-btn--ghost',
       danger: 'ds-icon-btn--danger',
+      'danger-soft': 'ds-icon-btn--danger-soft',
       accent: 'ds-icon-btn--accent',
     },
     size: { sm: 'ds-icon-btn--sm', md: 'ds-icon-btn--md', lg: 'ds-icon-btn--lg' },

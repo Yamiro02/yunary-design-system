@@ -4,7 +4,7 @@ import { Block, Row, Section } from '../ui';
 
 const VARIANTS = ['primary', 'secondary', 'ghost', 'danger'] as const;
 /* `accent` n'existe que sur IconButton — Button attend son deuxième appelant. */
-const ICON_VARIANTS = ['primary', 'secondary', 'ghost', 'danger', 'accent'] as const;
+const ICON_VARIANTS = ['primary', 'secondary', 'ghost', 'danger', 'danger-soft', 'accent'] as const;
 
 export function ActionsPage() {
   return (
@@ -67,7 +67,7 @@ export function ActionsPage() {
       </Section>
 
       <Section title="IconButton" note="Carré, rayon --radius-md. md fait 2.625rem — la cible de touche minimale. Jamais un pill.">
-        <Block label="Variantes et tailles" hint="Les icônes ne portent aucun size : le créneau les dimensionne (sm 1rem · md 1.125rem). accent = fond --accent, sans bordure, icône --primary — l'état « sélectionné doux » d'un lien-icône.">
+        <Block label="Variantes et tailles" hint="Les icônes ne portent aucun size : le créneau les dimensionne (sm 1rem · md 1.125rem). accent = fond --accent, sans bordure, icône --primary-readable — l'état « sélectionné doux » d'un lien-icône. danger-soft = la corbeille : la paire de la pilule danger, sans bordure (v0.1.4).">
           {ICON_VARIANTS.map(v => (
             <Row key={v} label={v}>
               <IconButton label="Copier" variant={v} size="sm"><Icon name="copy" /></IconButton>
@@ -81,6 +81,15 @@ export function ActionsPage() {
           <Row>
             <IconButton label="Boutique" variant="accent" as="a" href="#actions"><Icon name="external-link" /></IconButton>
             <IconButton label="GitHub" variant="secondary" as="a" href="#actions"><Icon name="github" /></IconButton>
+          </Row>
+        </Block>
+
+        <Block label="La corbeille" hint="danger-soft à côté de chaque ligne supprimable ; le danger plein reste l'action destructrice unique d'une vue (la modale de confirmation).">
+          <Row>
+            <IconButton label="Supprimer la vidéo" variant="danger-soft"><Icon name="trash-2" /></IconButton>
+            <IconButton label="Supprimer la vidéo" variant="danger-soft" size="sm"><Icon name="trash-2" /></IconButton>
+            <IconButton label="Supprimer la vidéo" variant="danger-soft" className="is-hover"><Icon name="trash-2" /></IconButton>
+            <IconButton label="Supprimer" variant="danger"><Icon name="trash-2" /></IconButton>
           </Row>
         </Block>
 

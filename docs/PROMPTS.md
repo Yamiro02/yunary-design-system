@@ -121,13 +121,17 @@ qu'il fait le dit.
 <IconButton label="Boutique" variant="accent" as="a" href="/boutique"><Icon name="external-link" /></IconButton>
 ```
 
-- Props : `variant` (`primary·secondary·ghost·danger·accent`, défaut `ghost`) · `size`
-  (`sm·md·lg`) · `surface` (`auto·page·card`) · `label` (requis) · `as` / `href`.
+- Props : `variant` (`primary·secondary·ghost·danger·danger-soft·accent`, défaut `ghost`) ·
+  `size` (`sm·md·lg`) · `surface` (`auto·page·card`) · `label` (requis) · `as` / `href`.
 - `surface` a le même rôle et les mêmes valeurs que sur `Button` — voir sa section.
-- **`variant="accent"`** (v0.3.0) : fond `--accent`, sans bordure, icône `--primary` —
+- **`variant="accent"`** (v0.3.0) : fond `--accent`, sans bordure, icône `--primary-readable` —
   l'état « sélectionné doux » d'un lien-icône ou d'un raccourci. Ne pas le recomposer
   avec `is-active` (une aide de démo) et un style inline : c'est cette fraude que la
   variante remplace.
+- **`variant="danger-soft"`** (v0.1.4) : la corbeille — fond `--pill-danger-bg`, glyphe
+  `--pill-danger-fg`, sans bordure. Le `danger` plein reste l'action destructrice UNIQUE d'une
+  vue ; à côté de chaque ligne supprimable, c'est le doux.
+  `<IconButton label="Supprimer" variant="danger-soft"><Icon name="trash-2" /></IconButton>`
 - **`as="a"` + `href`** (v0.3.0) : un lien-icône reste un LIEN — clic-milieu, « ouvrir
   dans un onglet », annonce correcte au lecteur d'écran. Jumeau du `as` de `Button`.
 - L'icône ne se dimensionne pas au site d'appel : le créneau s'en charge (sm 1rem ·
@@ -238,11 +242,22 @@ sous 1.5rem.
   Contenu sous l'en-tête
 </Card>
 <Card flush><img src="/cover.png" alt="" style={{ width: '100%' }} /></Card>
+<Card gap={4} title="Une pile">
+  <p>Premier bloc</p>
+  <Separator bleed />
+  <p>Second bloc — le filet va de bord à bord</p>
+</Card>
 ```
 
 - Props : `variant` (`default·interactive·feature`) · `size` (`md·lg`) · `flush` (sans
-  padding, media plein bord) · slots d'en-tête `eyebrow` / `icon` / `title` / `subtitle` /
-  `action` · `titleSize` (`sm·lg`) · `headerGap` (`normal·airy`) · `as`.
+  padding, media plein bord) · `gap` (`3·4·5·6`) · slots d'en-tête `eyebrow` / `icon` /
+  `title` / `subtitle` / `action` · `titleSize` (`sm·lg`) · `headerGap` (`normal·airy`) · `as`.
+- **`gap` — la pile, opt-in** (v0.1.4). `.ds-card` est `display:block` : un `gap-space-*`
+  posé en `className` ne rend RIEN (0 px, mesuré sur 23 cartes de Creator). `gap={4}` passe
+  la carte en colonne flex avec `--space-4` entre ses enfants ; l'en-tête cède sa marge basse
+  au gap. Sans `gap`, rien ne change. Quatre paliers, pas de 20 px : l'espacement interne
+  d'une carte reste sur l'échelle, et le padding reste à 24.
+- **Le filet de bord à bord** : `<Separator bleed />` en enfant DIRECT — voir Separator.
 - **L'alignement de l'en-tête est décidé par le socle, jamais par une prop** (v0.4.0) :
   titre simple → rangée **centrée** — icône, titre et action partagent un axe, la langue du design ; titre **et** sous-titre → `flex-start` —
   l'action s'aligne sur la ligne du haut au lieu de flotter entre les deux. `baseline`
@@ -298,9 +313,13 @@ feuille du bas est aérée et parcourue au pouce, le rythme des lignes suffit.
 <Separator />
 <Separator label="Ou" />
 <Separator orientation="vertical" />
+<Card gap={4}>…<Separator bleed />…</Card>
 ```
 
-- Props : `orientation` (`horizontal·vertical`) · `label` (horizontal uniquement).
+- Props : `orientation` (`horizontal·vertical`) · `label` (horizontal uniquement) · `bleed`.
+- **`bleed`** (v0.1.4) : enfant DIRECT d'une `Card`, le filet annule le `--card-pad` (ou
+  `--card-pad-lg`) en marge négative et va du bord gauche au bord droit, sans déborder — aucun
+  `overflow` à poser. Hors d'une carte ou dans un bloc imbriqué, la prop est sans effet.
 
 ## Table
 
@@ -365,8 +384,9 @@ Emplacement vide en pointillés : tuile `Pastille panneau brand outlined`, titre
 display, une description courte, et **le prochain geste**. Toujours donner au lecteur la
 suite.
 
-**Ne pas l'utiliser** pour une erreur (c'est `Banner` ou `Modal` result) ni pour un
-chargement (c'est `Skeleton`).
+**Ne pas l'utiliser** pour une erreur (c'est `Banner` ou `Modal` result), pour un
+chargement (c'est `Skeleton`), ni pour EXPLIQUER un état — l'attente, l'indisponible, le cas
+limite : c'est `StateCard`, une carte pleine, pas un emplacement vide.
 
 ```tsx
 <EmptyState icon={<Icon name="folder" />} title="Aucun build ici"
@@ -379,6 +399,35 @@ chargement (c'est `Skeleton`).
 - Props : `icon` (glyphe nu — la Pastille par défaut l'enveloppe) · `tile` (v0.3.0 : la
   tuile complète, quand `panneau brand outlined` ne convient pas ; `icon` est alors
   ignoré) · `title` (requis) · `description` · `action`.
+
+## StateCard
+
+La carte d'état HÉROS (v0.1.4) : l'attente, l'indisponible, l'erreur, le cas limite — « encore
+un peu de matière », « l'audit n'est pas disponible », « la génération a échoué ». Une `Card lg`
+centrée : pastille héros **outlined et carrée**, titre en subheading, corps muted sur la colonne
+`narrow`, un appoint libre, une action. Deux tons : `brand` (« attends, c'est normal ») annonce
+en `role="status"`, `danger` (« c'est nous, pas toi ») en `role="alert"`.
+
+**Ne pas l'utiliser** pour un emplacement vide qui invite à remplir (c'est `EmptyState`, en
+pointillés) ni pour un message passager (c'est `Banner`).
+
+```tsx
+<StateCard icon={<Icon name="clock" />} title="Encore un peu de matière, et on te dit tout"
+  description="Ton compte a 2 publications récentes, il en faut au moins 3.">
+  <Progress value={2} max={3} />
+</StateCard>
+<StateCard tone="danger" icon={<Icon name="circle-x" />} title="La génération a échoué"
+  description="Rien ne t'a été débité. Réessaie dans un instant."
+  action={<Button variant="primary">Réessayer</Button>} />
+```
+
+- Props : `tone` (`brand·danger`) · `icon` (glyphe nu — la `Pastille heros outlined`
+  l'enveloppe) · `title` (requis) · `description` · `action` · `children` (l'appoint entre le
+  corps et l'action : progression, badge, ligne de rassurance).
+- Promue à la TROISIÈME demande — l'audit d'onboarding de la coque (`AuditStateCard`), puis
+  trois écrans de Creator. La coque et Creator remplacent leur composition par celle-ci à la
+  montée en 0.1.4.
+- États rendus : brand, danger, avec appoint, avec action.
 
 ## Progress
 
@@ -511,6 +560,40 @@ immédiat (c'est `Switch`).
   posée par ref, trait `minus` à la place de la coche, `aria-checked="mixed"`) + les
   attributs natifs (`checked`, `defaultChecked`, `onChange`, `disabled`…).
 - États rendus : décochée, cochée, indéterminée, hover, focus-visible, désactivée.
+
+## ChoiceTile
+
+La tuile cochable (v0.1.4) — UNE anatomie pour tous les choix en tuile : la niche de la coque,
+les sorties et les modèles de Creator. Fond `--background`, radius md, filet 1,5 px ; cochée :
+filet `--primary` + plaque `--accent`, le titre reste en encre à sa graisse. La tuile EST le
+`<label>` : toute sa surface coche, le clavier et le formulaire sont ceux de l'`<input>` natif,
+et le contrôle du socle (case ou rond) rend dedans. `CheckTile` (choix multiple) et `RadioTile`
+(choix unique, même `name`, dans un `role="radiogroup"`) sont les deux formes nommées ;
+`ChoiceTile` est la générique avec `kind`.
+
+**Ne pas** la recomposer avec un `<button role="checkbox">` : la sémantique est celle de
+l'input, et un `<label>` dans un `<label>` est du HTML invalide.
+
+```tsx
+<div role="radiogroup" aria-label="Que veux-tu générer ?" className="flex flex-col gap-space-3">
+  <RadioTile name="sortie" value="hooks" title="Des hooks" meta="Dès 2 crédits par modèle"
+    description="Plusieurs ouvertures pour ton script, calées sur des modèles qui ont fait leurs preuves." />
+  <RadioTile name="sortie" value="both" defaultChecked title="Les deux" meta="Dès 10 crédits"
+    description="Les hooks et la structure d'un coup : la vidéo complète, prête à tourner." />
+</div>
+<CheckTile name="modele" value="miroir" title="Question miroir"
+  description="« Tu fais ça aussi, toi, quand… ? »"
+  media={<span style={{ background: 'var(--brand-gradient)', flex: 1 }} />}
+  meta={<Badge tone="amber">Template Yunary</Badge>} />
+```
+
+- Props : `kind` (`checkbox·radio`, sur `ChoiceTile` seulement) · `title` (requis) ·
+  `description` · `meta` (en fin de ligne : coût, compteur, badge) · `media` (vignette 6 rem
+  collée au bord gauche) · `children` (sous la description) · tout attribut d'`<input>` —
+  `name`, `value`, `checked`, `defaultChecked`, `onChange`, `disabled`, `required` · `ref`
+  → l'input natif · `className` → la tuile.
+- États rendus : repos, survol, cochée, focus-visible (anneau sur la tuile), désactivée, avec
+  média, avec méta.
 
 ## DatePicker
 
@@ -804,6 +887,9 @@ Navigation d'app sur `--secondary` : marque en tête, sections titrées, item ac
   · `linkAs`.
 - Chaque section est un **groupe** (v0.3.0) : les groupes se séparent par le gap de la
   nav (16px), avec ou sans titre — deux sections sans titre ne se collent plus.
+- **L'entrée active** (v0.1.4) suit la convention de l'élément sélectionné, partout dans le
+  socle : plaque `--accent`, libellé `--primary-readable`, MÊME graisse que ses voisines, icône
+  en `currentColor`. Jamais « noir gras ». Le rendu de la v1.
 - États rendus : dépliée, repliée, item au repos / survolé / actif, tiroir ouvert.
 
 ## Tabs
@@ -854,11 +940,13 @@ signale en console en développement). Au-dessus de 64rem, le même geste ouvre 
 
 - Props : `open` · `title` / `subtitle` (en-tête optionnel) · `note` (légende de
   conséquence au-dessus d'Annuler) · `items`
-  (`{label, icon?, danger?, onSelect?, className?}[]`) · `cancelLabel` ·
+  (`{label, icon?, danger?, checked?, onSelect?, className?}[]`) · `cancelLabel` ·
   `onCancel` · `inline` (sans voile) · `panel` (spécimen desktop 20rem — implique
   `inline`).
 - **Pas de séparateur** (v0.8.0) : l'item `separator` a été retiré, la feuille n'émet plus
   aucun `<hr>`. C'est `Dropdown` qui garde le sien.
+- **`checked`** (v0.1.4) : la ligne cochée d'un menu de CHOIX, jumelle de celle de `Dropdown` —
+  `aria-checked`, plaque `--accent`, texte `--primary-readable`, coche en fin de ligne.
 - États rendus : fermée, ouverte (feuille), item au repos / survolé / danger, panneau
   desktop.
 
@@ -871,6 +959,16 @@ sur `--surface-alt`.
 **Ne pas l'utiliser** comme select de formulaire (c'est `Select`).
 
 ```tsx
+<span className="relative inline-flex">
+  <Button variant="secondary" onClick={() => setOpen(o => !o)}>Tous les réseaux</Button>
+  {open ? (
+    <Dropdown align="end" items={[
+      { label: 'Tous les réseaux', checked: true, onSelect: () => choisir('all') },
+      { label: 'Instagram', checked: false, onSelect: () => choisir('ig') },
+      { label: 'TikTok', checked: false, onSelect: () => choisir('tt') },
+    ]} />
+  ) : null}
+</span>
 <Dropdown items={[
   { label: 'Copier le lien', icon: <Icon name="copy" size="1rem" /> },
   { label: 'Ouvrir la vidéo', icon: <Icon name="play" size="1rem" />, hint: '⏎' },
@@ -880,9 +978,17 @@ sur `--surface-alt`.
 <Dropdown inline items={[{ label: 'Spécimen dans le flux' }]} />
 ```
 
-- Props : `items` (`{label, icon?, hint?, danger?, separator?, onSelect?, className?}[]`)
-  · `inline` (rendu dans le flux, sans positionnement absolu).
-- États rendus : item au repos, survolé, danger, séparateur.
+- Props : `items` (`{label, icon?, hint?, danger?, checked?, separator?, onSelect?, className?}[]`)
+  · `align` (`start·end`) · `inline` (rendu dans le flux, sans positionnement absolu).
+- **L'ancrage** (v0.1.4) : flottant, le panneau se pose JUSTE SOUS son déclencheur, dans un
+  parent en `position: relative` — c'est à l'app de le poser sur l'enveloppe du bouton.
+  `align="start"` (défaut) aligne les bords gauches, `align="end"` les bords droits (le menu
+  d'un bouton en bout de ligne). Avant, sans `top`/`left`, il s'ouvrait à DROITE du bouton.
+- **`checked`** (v0.1.4) : un menu de CHOIX (tri, filtre) — `role="menuitemradio"` +
+  `aria-checked`, plaque `--accent`, texte `--primary-readable` à la MÊME graisse que les
+  autres, coche en fin de ligne. `undefined` = un item d'action, sans coche. Les deux se
+  mélangent dans un même menu. Rail d'item à 44 px, texte `--text-control`.
+- États rendus : item au repos, survolé, coché, danger, séparateur ; ancrage start et end.
 
 ## Modal
 
@@ -914,7 +1020,13 @@ d'actions (c'est `Dropdown` / `ActionSheet`).
 - Props : `open` · `icon` + `iconVariant` (`danger·brand·neutral·warning·success` — la
   tuile est une `Pastille dialogue`) · `title` / `description` / `children` · `footer` ·
   `onClose` · `closeButton` · `dismissable` · `phase` (`confirm·loading·result`) ·
-  `result` (`{status, title?, message?, onRetry?}`) · `inline` (spécimen sans voile).
+  `result` (`{status, title?, message?, onRetry?}`) · `size` (`md·lg`) · `inline` (spécimen
+  sans voile).
+- **Sans icône, le titre partage la ligne de la croix**, centré verticalement (v0.1.4) — la
+  croix seule laissait le titre 46-56 px sous le bord. Avec une pastille, la rangée pastille +
+  croix reste et le titre passe dessous.
+- **`size="lg"`** (v0.1.4) : 32,5 rem (`--modal-w-lg`), la modale à FORMULAIRE — « Analyser une
+  vidéo ». `md` (23,75 rem) reste la confirmation et le résultat. Sans effet sous 64 rem.
 - **La croix et les gestes de fuite sont découplés** (v0.3.0) : `closeButton={false}`
   retire la croix en gardant Échap et le clic-voile ; `dismissable={false}` fait
   l'inverse — la croix devient le seul geste de fermeture, pour une modale à saisie

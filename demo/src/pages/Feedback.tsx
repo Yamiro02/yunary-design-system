@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Banner, Button, EmptyState, Icon, Pastille, Progress, Skeleton, SkeletonCard, Spinner, Toast } from '@yunary/ds';
+import { Badge, Banner, Button, EmptyState, Icon, Pastille, Progress, Skeleton, SkeletonCard, Spinner, StateCard, Toast } from '@yunary/ds';
 import { Block, Grid, Row, Section, Stack } from '../ui';
 
 export function FeedbackPage() {
@@ -62,6 +62,40 @@ export function FeedbackPage() {
               title="Aucun résultat"
               description="Essaie un autre mot-clé."
             />
+          </Block>
+        </Grid>
+      </Section>
+
+      <Section title="StateCard" note="La carte d'état héros : l'attente, l'indisponible, l'erreur, le cas limite. Une carte PLEINE qui explique — pastille héros outlined et carrée, titre subheading, corps muted, appoint, action. Ce n'est pas l'EmptyState (un emplacement vide en pointillés).">
+        <Grid cols={2}>
+          <Block label="brand · avec appoint" hint="role=status. L'appoint (children) va entre le corps et l'action : ici la progression de la maquette 09b.">
+            <StateCard
+              icon={<Icon name="clock" />}
+              title="Encore un peu de matière, et on te dit tout"
+              description="Ton compte a 2 publications récentes, il en faut au moins 3 pour un bilan qui veuille dire quelque chose. Continue de publier."
+            >
+              <div className="flex w-full max-w-narrow flex-col gap-space-2 text-left">
+                <Progress value={2} max={3} label="2 publications sur 3" />
+              </div>
+            </StateCard>
+          </Block>
+          <Block label="danger · avec action" hint="role=alert. « C'est nous, pas toi » : la pastille passe au ton danger, outlined comme l'autre.">
+            <StateCard
+              tone="danger"
+              icon={<Icon name="circle-x" />}
+              title="La génération a échoué"
+              description="Rien ne t'a été débité. Réessaie dans un instant — si ça se reproduit, écris-nous."
+              action={<><Button variant="secondary">Retour</Button><Button variant="primary">Réessayer</Button></>}
+            />
+          </Block>
+          <Block label="brand · attente" hint="Le spinner en glyphe : l'audit qui tourne, la vidéo qui s'analyse.">
+            <StateCard
+              icon={<Spinner size="1.625rem" />}
+              title="Audit en cours"
+              description="On lit tes dernières publications. Une minute, pas plus."
+            >
+              <Badge tone="accent">Étape 3 sur 5</Badge>
+            </StateCard>
           </Block>
         </Grid>
       </Section>

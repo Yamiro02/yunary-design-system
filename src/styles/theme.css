@@ -315,6 +315,13 @@
   /* La largeur MINIMALE d'une tuile de grille — lue par `grid-cards-tile` (ci-dessous). Génère
      aussi `max-w-tile`, par construction du namespace ; il n'a pas d'emploi prévu. */
   --container-tile: var(--container-tile);
+  /* La colonne latérale d'une fiche : `w-aside` sur la colonne. v0.1.4 */
+  --container-aside: var(--container-aside);
+
+  /* ---------- Ratios ----------
+     `aspect-video-portrait` — le 9/16 d'une vignette de vidéo verticale. L'échelle native
+     (`aspect-video` 16/9, `aspect-square`) n'est PAS supprimée : elle ne nomme rien de faux. */
+  --aspect-video-portrait: var(--aspect-video-portrait);
 
   /* ---------- Motion ---------- */
   --ease-standard: var(--ease-standard);
@@ -355,7 +362,7 @@
    exactement comme `grid-cols-*` : il se compose — `grid grid-cards-tile gap-space-5`.
 
    Le paramètre est un RÔLE de `--container-*`, jamais une mesure : `--value(--container-*)`
-   résout `grid-cards-tile` sur `--container-tile` (la tuile, 15 rem — la carte vidéo de
+   résout `grid-cards-tile` sur `--container-tile` (la tuile, 18,75 rem — la carte vidéo de
    Creator) et `grid-cards-dialog` sur `--container-dialog` (27,5 rem — la carte d'outil du
    Hub, qui lisait déjà ce jeton en style inline). Un nouvel usage choisit un rôle existant
    ou en ajoute un dans scales.css ; il n'écrit jamais `grid-cols-[repeat(auto-fill,

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { IDENTITY } from '../identity';
-import { Calendar, Checkbox, DatePicker, FormField, Icon, Input, Radio, Select, Switch, Textarea } from '@yunary/ds';
+import { Badge, Calendar, CheckTile, Checkbox, DatePicker, FormField, Icon, Input, Radio, RadioTile, Select, Switch, Textarea } from '@yunary/ds';
 import { Block, Grid, Row, Section, Stack } from '../ui';
 
 const SERIES = [
@@ -12,6 +12,7 @@ const SERIES = [
 export function FormsPage() {
   const [checked, setChecked] = useState(true);
   const [niveau, setNiveau] = useState('debutant');
+  const [sortie, setSortie] = useState<'hooks' | 'structure' | 'both'>('both');
   const [sombre, setSombre] = useState(true);
   const [date, setDate] = useState<Date | undefined>(new Date(2026, 8, 24));
 
@@ -103,6 +104,47 @@ export function FormsPage() {
               <Switch label="Indisponible" disabled />
               <Switch label="Activé et indisponible" disabled defaultChecked />
             </Stack>
+          </Block>
+        </Grid>
+      </Section>
+
+      <Section title="ChoiceTile — CheckTile et RadioTile" note="La tuile cochable : UNE anatomie pour tous les choix en tuile. Fond --background, radius md, filet 1,5 px ; cochée : filet --primary + plaque --accent, le titre reste en encre à sa graisse. La tuile est le label : toute sa surface coche, clavier et formulaire sont ceux de l'input natif, le contrôle du socle rend dedans.">
+        <Grid cols={2}>
+          <Block label="RadioTile — choix unique" hint="Dans un role=radiogroup, même name. La méta (le coût) en fin de ligne. Maquette S2 de Creator.">
+            <div role="radiogroup" aria-label="Que veux-tu générer ?" className="flex flex-col gap-space-3">
+              <RadioTile name="sortie" value="hooks" checked={sortie === 'hooks'} onChange={() => setSortie('hooks')}
+                title="Des hooks" meta="Dès 2 crédits par modèle"
+                description="Plusieurs ouvertures pour ton script, calées sur des modèles qui ont fait leurs preuves." />
+              <RadioTile name="sortie" value="structure" checked={sortie === 'structure'} onChange={() => setSortie('structure')}
+                title="Une structure" meta="Dès 8 crédits par structure"
+                description="Ton script réorganisé, beat par beat, sur une structure qui tient l'attention." />
+              <RadioTile name="sortie" value="both" checked={sortie === 'both'} onChange={() => setSortie('both')}
+                title="Les deux" meta="Dès 10 crédits"
+                description="Les hooks et la structure d'un coup : la vidéo complète, prête à tourner." />
+            </div>
+          </Block>
+          <Block label="CheckTile — choix multiple, avec média" hint="La vignette (media) colle au bord gauche et annule le padding — maquette S3a. children sous la description : l'origine du modèle.">
+            <div className="flex flex-col gap-space-3">
+              <CheckTile name="modele" value="miroir" defaultChecked title="Question miroir"
+                description="« Tu fais ça aussi, toi, quand… ? »"
+                media={<span className="flex-1 bg-brand-gradient" />}
+                meta={<Badge tone="amber">Template Yunary</Badge>} />
+              <CheckTile name="modele" value="chiffre" title="Le chiffre qui pique"
+                description="« 87 % des vidéos meurent avant la troisième seconde. »"
+                media={<span className="flex-1 bg-tone-dark-soft" />}
+                meta={<Badge tone="accent">Importé</Badge>}>
+                <span className="inline-flex items-center gap-space-2 text-caption font-semibold text-primary-readable"><Icon name="video" size="0.875rem" />Issu de « Le déploiement »</span>
+              </CheckTile>
+            </div>
+          </Block>
+          <Block label="États" hint="Repos, survol (filet --input, contrôle --primary), cochée, focus-visible (anneau sur la tuile, pas sur la case), désactivée.">
+            <div className="flex flex-col gap-space-3">
+              <CheckTile name="etat" value="a" title="Repos" description="Filet --border sur --background." />
+              <CheckTile name="etat" value="b" title="Survol" description="Le filet passe à --input, la case à --primary." className="is-hover" />
+              <CheckTile name="etat" value="c" title="Cochée" description="Filet --primary, plaque --accent." defaultChecked />
+              <CheckTile name="etat" value="d" title="Focus" description="L'anneau est porté par la tuile." className="is-focus" />
+              <CheckTile name="etat" value="e" title="Désactivée" description="Inerte, à 50 %." disabled />
+            </div>
           </Block>
         </Grid>
       </Section>

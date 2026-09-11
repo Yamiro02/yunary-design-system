@@ -152,7 +152,14 @@ function pairs(theme, { ROOT, DARK }, fichier) {
   add('Lien', 'a:hover — dérivé vers --foreground', over(g('--primary-readable'), .8, g('--foreground')), g(B), 4.5, '16 / 400');
 
   add('Marque-contenu', '.ds-navlink.is-active', g('--primary-readable'), g('--secondary'), 4.5, '16 / 500');
-  add('Marque-contenu', '.ds-sidenav.is-active', g('--primary-readable'), g('--surface-alt'), 4.5, '15 / 500');
+  /* LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ (v0.1.4) : plaque --accent, texte --primary-readable,
+     partout — l'entrée de Sidebar, l'onglet, la page courante, l'item de menu coché. Une seule
+     paire de couleurs, mesurée une fois par composant parce que la TAILLE du texte diffère. */
+  add('Marque-contenu', '.ds-sidenav.is-active', g('--primary-readable'), g('--accent'), 4.5, '15 / 500');
+  add('Marque-contenu', '.ds-tab[aria-selected]', g('--primary-readable'), g('--accent'), 4.5, '15 / 600');
+  add('Marque-contenu', '.ds-tabs--on-card .ds-tab[aria-selected]', g('--primary-readable'), g(C), 4.5, '15 / 600');
+  add('Marque-contenu', '.ds-page[aria-current]', g('--primary-readable'), g('--accent'), 4.5, '15 / 600');
+  add('Marque-contenu', '.ds-dropdown__item[aria-checked]', g('--primary-readable'), g('--accent'), 4.5, '15 / 400');
   add('Marque-contenu', '.ds-badge--accent', g('--primary-readable'), g('--accent'), 4.5, '12 / 700');
   add('Marque-contenu', '.ds-banner--info', g('--primary-readable'), g('--accent'), 4.5, '15 / 400');
   /* La règle pose `color:var(--primary)` (patterns.css) — pas le jumeau lisible. */
@@ -167,7 +174,13 @@ function pairs(theme, { ROOT, DARK }, fichier) {
     add('Marque-contenu', `.ds-pastille--brand-solid — glyphe sur ${arret}`, g('--primary-foreground'), g(arret), 3, 'icône');
   add('Marque-contenu', '.ds-icon-btn[aria-pressed] — icône', g('--primary-readable'), g('--accent'), 3, 'icône');
   add('Marque-contenu', '.ds-error', g('--destructive-readable'), g(C), 4.5, '13 / 500');
-  add('Marque-contenu', '.ds-dropdown__item--danger', g('--destructive-readable'), g('--popover'), 4.5, '14 / 400');
+  add('Marque-contenu', '.ds-dropdown__item--danger', g('--destructive-readable'), g('--popover'), 4.5, '15 / 400');
+  /* Le danger DOUX du bouton-icône (v0.1.4) : la paire de la pilule danger, sur les deux porteuses. */
+  add('Marque-contenu', '.ds-icon-btn--danger-soft sur --card — glyphe', g('--pill-danger-fg'), on('--pill-danger-bg', C), 3, 'icône');
+  add('Marque-contenu', '.ds-icon-btn--danger-soft sur --background — glyphe', g('--pill-danger-fg'), on('--pill-danger-bg', B), 3, 'icône');
+  /* La tuile cochée (v0.1.4) : son contenu reste en encre sur la plaque, son filet est --primary. */
+  add('Marque-contenu', '.ds-tile cochée — titre sur --accent', g('--foreground'), g('--accent'), 4.5, '16 / 600');
+  add('Marque-contenu', '.ds-tile cochée — description sur --accent', g('--text-secondary'), g('--accent'), 4.5, '14 / 400');
   add('Marque-contenu', '.ds-actionsheet__item--danger', g('--destructive-readable'), g('--popover'), 4.5, '15 / 500');
 
   for (const n of ['coral', 'amber', 'danger', 'warning', 'success', 'neutral']) {
@@ -191,6 +204,8 @@ function pairs(theme, { ROOT, DARK }, fichier) {
   add('Non-texte', '.ds-switch actif — piste --primary', g('--primary'), g(B), 3, 'contrôle');
   add('Non-texte', '.ds-progress__bar sur son rail', g('--primary'), g('--surface-alt'), 3, 'graphique');
   add('Non-texte', '.ds-input.is-error — bordure --destructive', g('--destructive'), g('--secondary'), 3, 'contour 1.5px');
+  add('Non-texte', '.ds-tile cochée — filet --primary vs --card', g('--primary'), g(C), 3, 'contour 1.5px');
+  add('Non-texte', '.ds-tile cochée — filet --primary vs --background', g('--primary'), g(B), 3, 'contour 1.5px');
   add('Non-texte', '.ds-input — bordure --input vs page', g('--input'), g(B), 3, 'contour 1.5px');
   add('Non-texte', '.ds-input — bordure --input vs remplissage', g('--input'), g('--secondary'), 3, 'contour 1.5px');
   add('Non-texte', '.ds-input — remplissage vs page', g('--secondary'), g(B), 3, 'aplat');

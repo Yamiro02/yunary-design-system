@@ -13,6 +13,14 @@ export function OverlaysPage() {
   const [renameOpen, setRenameOpen] = useState(false);
   const [projectName, setProjectName] = useState('');
   const [sheet, setSheet] = useState(false);
+  const [analyseOpen, setAnalyseOpen] = useState(false);
+  const [reseauOpen, setReseauOpen] = useState(false);
+  const [reseau, setReseau] = useState<'all' | 'ig' | 'tt'>('all');
+  const RESEAUX = [
+    { value: 'all' as const, label: 'Tous les réseaux' },
+    { value: 'ig' as const, label: 'Instagram' },
+    { value: 'tt' as const, label: 'TikTok' },
+  ];
   const [phase, setPhase] = useState<'confirm' | 'loading' | 'result'>('confirm');
   const [statut, setStatut] = useState<'success' | 'error'>('success');
   const ouvrir = (p: 'confirm' | 'loading' | 'result', s?: 'success' | 'error') => {
@@ -97,9 +105,32 @@ export function OverlaysPage() {
           </div>
         </Block>
 
-        <Block label="Sans icône, avec fermeture">
+        <Block label="Sans icône, avec fermeture" hint="Sans pastille, le titre partage la ligne de la croix, centré verticalement (v0.1.4) — la croix seule laissait le titre 46-56 px sous le bord.">
           <Modal inline onClose={() => undefined} title="Ta session a expiré" description="Reconnecte-toi pour reprendre là où tu en étais."
             footer={<Button size="sm">Se reconnecter</Button>} />
+        </Block>
+
+        <Block label="size=lg — la modale à formulaire" hint="32,5 rem (--modal-w-lg), la maquette 02 de Creator. md (23,75 rem) reste la confirmation et le résultat. Sous 64 rem, les deux sont la même feuille en pleine largeur.">
+          <Row>
+            <Button variant="primary" icon={<Icon name="plus" />} onClick={() => setAnalyseOpen(true)}>Analyser une vidéo</Button>
+          </Row>
+          <Modal
+            open={analyseOpen}
+            size="lg"
+            onClose={() => setAnalyseOpen(false)}
+            title="Analyser une vidéo"
+            footer={<><Button variant="secondary" onClick={() => setAnalyseOpen(false)}>Annuler</Button><Button onClick={() => setAnalyseOpen(false)}>Lancer l'analyse</Button></>}
+          >
+            <FormField label="Lien de la vidéo" htmlFor="demo-analyse" help="Instagram et TikTok · YouTube arrive bientôt">
+              <Input id="demo-analyse" type="url" placeholder="Colle le lien d'un Reel Instagram ou d'un TikTok" />
+            </FormField>
+          </Modal>
+          <Modal inline size="lg" onClose={() => undefined} title="Analyser une vidéo"
+            footer={<><Button variant="secondary" size="sm">Annuler</Button><Button size="sm">Lancer l'analyse</Button></>}>
+            <FormField label="Lien de la vidéo" htmlFor="demo-analyse-inline" help="Instagram et TikTok · YouTube arrive bientôt">
+              <Input id="demo-analyse-inline" type="url" placeholder="Colle le lien d'un Reel Instagram ou d'un TikTok" />
+            </FormField>
+          </Modal>
         </Block>
 
         <Block label="Croix et gestes de fuite découplés" hint="closeButton={false} retire la croix en gardant Échap et le clic-voile ; dismissable={false} fait l'inverse — la croix devient le seul geste de fermeture, pour une saisie qu'un clic à côté ne doit pas jeter. Défauts à true : comportement historique.">
@@ -161,6 +192,7 @@ export function OverlaysPage() {
             <ActionSheet inline panel items={[
               { label: 'Item au repos', icon: <Icon name="file-text" size="1rem" /> },
               { label: 'Item survolé', icon: <Icon name="file-text" size="1rem" />, className: 'is-hover' },
+              { label: 'Ligne cochée', icon: <Icon name="file-text" size="1rem" />, checked: true },
               { label: 'Supprimer la vidéo', icon: <Icon name="trash-2" size="1rem" />, danger: true }]} />
             <ActionSheet inline panel
               title="Vidéo 3 — le déploiement"
@@ -172,8 +204,24 @@ export function OverlaysPage() {
         </Block>
       </Section>
 
-      <Section title="Dropdown" note="Panneau de menu, rayon 2xl, --shadow-lg. Les items s'éclairent sur --accent. DESKTOP ONLY — sous 64 rem, c'est l'ActionSheet ci-dessus qui prend le relais.">
-        <Block label="inline — rendu dans le flux" hint="Posé à côté de l'ActionSheet ci-dessus, la parenté se voit : mêmes lignes, mêmes tons. Le Dropdown garde son filet — dense, survolé à la souris — là où la feuille du bas l'a perdu.">
+      <Section title="Dropdown" note="Panneau de menu, rayon lg, --shadow-lg. Les items s'éclairent sur --surface-alt ; l'item coché porte la convention de l'élément sélectionné. DESKTOP ONLY — sous 64 rem, c'est l'ActionSheet ci-dessus qui prend le relais.">
+        <Block label="Ancré sous son déclencheur — align=end" hint="Flottant, le panneau se pose juste sous le bouton, dans un parent position:relative (à poser par l'app). align=end colle les bords droits — le menu d'un bouton en bout de ligne. Avant la 0.1.4, sans top/left, il s'ouvrait À DROITE du bouton. Un menu de CHOIX : checked pose role=menuitemradio + aria-checked, texte --primary-readable sur --accent à la même graisse, coche en fin de ligne, rail de 44 px.">
+          <div className="flex justify-end">
+            <span className="relative inline-flex">
+              <Button variant="secondary" iconRight={<Icon name="chevron-down" />} aria-haspopup="menu" aria-expanded={reseauOpen} onClick={() => setReseauOpen(o => !o)}>
+                {RESEAUX.find(r => r.value === reseau)?.label}
+              </Button>
+              {reseauOpen ? (
+                <Dropdown align="end" items={RESEAUX.map(r => ({
+                  label: r.label, checked: r.value === reseau,
+                  onSelect: () => { setReseau(r.value); setReseauOpen(false); },
+                }))} />
+              ) : null}
+            </span>
+          </div>
+        </Block>
+
+        <Block label="inline — rendu dans le flux" hint="Posé à côté de l'ActionSheet ci-dessus, la parenté se voit : mêmes lignes, mêmes tons. Le Dropdown garde son filet — dense, survolé à la souris — là où la feuille du bas l'a perdu. Le troisième mélange choix cochés et action : les deux coexistent dans un même menu.">
           <Row>
             <Dropdown inline items={[
               { label: 'Copier le lien', icon: <Icon name="copy" size="1rem" /> },
@@ -187,6 +235,13 @@ export function OverlaysPage() {
               { label: 'Item survolé', icon: <Icon name="file-text" size="1rem" />, className: 'is-hover' },
               { separator: true },
               { label: 'Action risquée', icon: <Icon name="triangle-alert" size="1rem" />, danger: true },
+            ]} />
+            <Dropdown inline items={[
+              { label: 'Tous les réseaux', checked: true },
+              { label: 'Instagram', checked: false },
+              { label: 'TikTok', checked: false, className: 'is-hover' },
+              { separator: true },
+              { label: 'Réinitialiser les filtres', icon: <Icon name="x" size="1rem" /> },
             ]} />
           </Row>
         </Block>

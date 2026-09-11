@@ -10,7 +10,7 @@
 > translucides — pilules, plaques de marque — sont **composités sur leur surface porteuse**
 > avant mesure : c'est la couleur que l'œil reçoit, pas celle qui est écrite.
 >
-> **53 paires × 2 thèmes. 36 conformes, 17 écarts assumés.** Un écart assumé n'est pas un
+> **63 paires × 2 thèmes. 46 conformes, 17 écarts assumés.** Un écart assumé n'est pas un
 > oubli : c'est une décision écrite, déclarée dans `src/styles/brand-yunary.css` par un bloc
 > `@a11y-assume:` avec sa raison. Le build tombe si une **dix-huitième** apparaît.
 
@@ -32,7 +32,11 @@ lisible :
 
 Ce sont eux que prennent les liens, les libellés actifs, les icônes porteuses de sens et les
 messages d'erreur — lignes `a{}`, `.ds-navlink.is-active`, `.ds-sidenav.is-active`,
-`.ds-badge--accent`, `.ds-banner--info`, `.ds-error` du tableau § 2.
+`.ds-tab[aria-selected]`, `.ds-page[aria-current]`, `.ds-dropdown__item[aria-checked]`,
+`.ds-badge--accent`, `.ds-banner--info`, `.ds-error` du tableau § 2. Depuis la v0.1.4 c'est
+**la convention de l'élément sélectionné**, partout : plaque `--accent`, texte
+`--primary-readable`, même graisse que les voisins — `--primary` mesure 3,00 sur `--accent`,
+le seuil des graphiques, pas celui du texte.
 
 Le survol de lien ne demande pas de troisième jeton : il se **dérive** en tirant le jumeau
 vers `--foreground` (`color-mix(in srgb, var(--primary-readable) 80%, var(--foreground))`),
@@ -48,7 +52,8 @@ La règle se vérifie d'un grep, et c'est ce qui la rend tenable :
 grep -rE '(^|[^-[:alnum:]])color:var\(--(primary|destructive)\)' src/styles/
 ```
 
-Deux sorties aujourd'hui — les deux exceptions ci-dessus, et rien d'autre.
+Trois sorties aujourd'hui — les deux exceptions ci-dessus, et l'astérisque « requis » d'un
+libellé (`.ds-label__required`), un signe de ponctuation à côté d'un mot en encre.
 
 ---
 
@@ -66,13 +71,21 @@ Deux sorties aujourd'hui — les deux exceptions ci-dessus, et rien d'autre.
 | `a{} au repos sur --card` | 16 / 400 | 4,5 | 5,59 | 6,12 |
 | `a:hover — dérivé vers --foreground` | 16 / 400 | 4,5 | 6,76 | 8,21 |
 | `.ds-navlink.is-active` | 16 / 500 | 4,5 | 5,64 | 6,12 |
-| `.ds-sidenav.is-active` | 15 / 500 | 4,5 | 5,16 | 5,62 |
+| `.ds-sidenav.is-active` | 15 / 500 | 4,5 | 5,16 | 5,85 |
+| `.ds-tab[aria-selected]` | 15 / 600 | 4,5 | 5,16 | 5,85 |
+| `.ds-tabs--on-card .ds-tab[aria-selected]` | 15 / 600 | 4,5 | 5,59 | 6,12 |
+| `.ds-page[aria-current]` | 15 / 600 | 4,5 | 5,16 | 5,85 |
+| `.ds-dropdown__item[aria-checked]` | 15 / 400 | 4,5 | 5,16 | 5,85 |
 | `.ds-badge--accent` | 12 / 700 | 4,5 | 5,16 | 5,85 |
 | `.ds-banner--info` | 15 / 400 | 4,5 | 5,16 | 5,85 |
 | `.ds-pastille--brand-solid — glyphe sur --brand-to` | icône | 3 | 3,80 | 3,80 |
 | `.ds-icon-btn[aria-pressed] — icône` | icône | 3 | 5,16 | 5,85 |
 | `.ds-error` | 13 / 500 | 4,5 | 6,62 | 6,07 |
-| `.ds-dropdown__item--danger` | 14 / 400 | 4,5 | 6,84 | 5,73 |
+| `.ds-dropdown__item--danger` | 15 / 400 | 4,5 | 6,84 | 5,73 |
+| `.ds-icon-btn--danger-soft sur --card — glyphe` | icône | 3 | 5,47 | 6,59 |
+| `.ds-icon-btn--danger-soft sur --background — glyphe` | icône | 3 | 5,28 | 7,59 |
+| `.ds-tile cochée — titre sur --accent` | 16 / 600 | 4,5 | 14,38 | 11,95 |
+| `.ds-tile cochée — description sur --accent` | 14 / 400 | 4,5 | 9,51 | 8,82 |
 | `.ds-actionsheet__item--danger` | 15 / 500 | 4,5 | 6,84 | 5,73 |
 | `.ds-badge--coral sur --card` | 12 / 700 | 4,5 | 4,90 | 5,73 |
 | `.ds-badge--coral sur --background` | 12 / 700 | 4,5 | 4,69 | 6,62 |
@@ -92,6 +105,8 @@ Deux sorties aujourd'hui — les deux exceptions ci-dessus, et rien d'autre.
 | `.ds-switch actif — piste --primary` | contrôle | 3 | 3,12 | 4,79 |
 | `.ds-progress__bar sur son rail` | graphique | 3 | 3,00 | 3,78 |
 | `.ds-input.is-error — bordure --destructive` | contour 1.5px | 3 | 3,58 | 3,78 |
+| `.ds-tile cochée — filet --primary vs --card` | contour 1.5px | 3 | 3,25 | 4,12 |
+| `.ds-tile cochée — filet --primary vs --background` | contour 1.5px | 3 | 3,12 | 4,79 |
 
 ---
 

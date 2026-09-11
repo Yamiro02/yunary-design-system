@@ -7,7 +7,7 @@ import { useModalSurface } from './useModalSurface';
 
 /**
  * Dialog on --popover, radius 2xl, --shadow-lg, over a 45% ink scrim with blur(2px).
- * Width 23.75rem at 64rem and up; UNDER 64rem the same modal becomes a bottom sheet
+ * Width 23.75rem at 64rem and up (32.5rem with size="lg"); UNDER 64rem the same modal becomes a bottom sheet
  * (full width, top corners radius-2xl, grip, enter from the bottom) — CSS only, same component.
  * Three phases in ONE dialog: confirm → loading → result.
  *
@@ -51,6 +51,12 @@ export interface ModalProps {
   result?: ModalResult;
   /** Render the panel without the fixed scrim — for specimen cards. */
   inline?: boolean;
+  /**
+   * md (défaut) = --modal-w, 23,75 rem : la confirmation, le résultat. lg (v0.1.4) = --modal-w-lg,
+   * 32,5 rem : la modale à FORMULAIRE (maquette 02 de Creator, « Analyser une vidéo »). Sans
+   * effet sous 64 rem, où les deux sont une feuille en pleine largeur.
+   */
+  size?: 'md' | 'lg';
   className?: string;
   children?: ReactNode;
 }
@@ -62,7 +68,7 @@ const TILE_TONE: Record<string, TileTone> = {
 
 export function Modal({
   open = true, icon, iconVariant = 'danger', title, description, footer,
-  onClose, closeButton = true, dismissable = true, inline = false,
+  onClose, closeButton = true, dismissable = true, inline = false, size = 'md',
   phase = 'confirm', result, className = '', children,
 }: ModalProps): JSX.Element | null {
   const locked = phase === 'loading';
@@ -97,7 +103,7 @@ export function Modal({
   const panel = (
     <div
       ref={panelRef}
-      className={cn('ds-modal', className)}
+      className={cn('ds-modal', size === 'lg' && 'ds-modal--lg', className)}
       role="dialog"
       aria-modal="true"
       aria-busy={locked || undefined}
@@ -131,13 +137,21 @@ export function Modal({
         </>
       ) : (
         <>
-          {(icon || closeBtn) ? (
+          {/* SANS ICÔNE, le titre partage la ligne de la croix, centré verticalement (v0.1.4) :
+              la croix seule laissait le titre 46-56 px sous le bord. AVEC une pastille, la rangée
+              pastille + croix reste et le titre passe dessous — la pastille est le repère. */}
+          {icon ? (
             <div className="ds-modal__head">
-              {icon ? <Pastille size="dialogue" tone={TILE_TONE[iconVariant] ?? 'danger'}>{icon}</Pastille> : null}
+              <Pastille size="dialogue" tone={TILE_TONE[iconVariant] ?? 'danger'}>{icon}</Pastille>
+              {closeBtn}
+            </div>
+          ) : (title || closeBtn) ? (
+            <div className="ds-modal__head ds-modal__head--inline">
+              {title ? <h3 className="ds-modal__title">{title}</h3> : null}
               {closeBtn}
             </div>
           ) : null}
-          {title ? <h3 className="ds-modal__title">{title}</h3> : null}
+          {icon && title ? <h3 className="ds-modal__title">{title}</h3> : null}
           {(description || children) ? (
             <div className="ds-modal__desc">
               {description ? <p className="ds-modal__text">{description}</p> : null}

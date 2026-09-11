@@ -14,6 +14,122 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
+## 0.1.4 — l'élément sélectionné, la carte qui s'empile, la carte d'état, la tuile cochable
+
+Les corrections remontées par les audits Hub et Creator du 11/09/2026, sur les maquettes mises à
+jour le même jour. Deux décisions de Julien en tête : l'espacement interne des cartes RESTE à
+24 px (pas de palier 20), et **l'élément sélectionné n'est jamais en noir gras**.
+
+### ⚠ Ce qui change à l'écran pour une app qui monte
+
+- **⚠ L'état actif / sélectionné change de couleur PARTOUT.** Une convention unique, celle de la
+  v1 (`Sidebar.tsx` : `bg-accent text-primary`) : plaque `--accent`, texte `--primary-readable`,
+  **même graisse** que les éléments non actifs, icône en `currentColor`. Concrètement :
+  `.ds-sidenav.is-active` (rendait surface-alt + encre + 600 + icône `--brand-via`),
+  `.ds-tab[aria-selected]` et `.ds-page[aria-current]` (rendaient `--primary`), l'onglet actif
+  d'une barre posée sur une carte (rendait `--foreground`), `.ds-navlink.is-active` (rendait
+  encre + 600 — texte nu, il ne prend que la couleur), `.ds-icon-btn--accent` (rendait
+  `--primary`), et le nouvel item coché de `Dropdown` / `ActionSheet`. **Pourquoi
+  `--primary-readable` et non `--primary`** : la consigne prévoyait le jumeau lisible « si le
+  contraste l'exige » — `--primary` mesure 3,00 sur `--accent` en clair, le seuil des
+  graphiques, pas celui du texte (4,5) ; `check-contrast.mjs` le refuse pour un libellé. Les
+  Tabs, qui posaient `--primary` avec un écart assumé, passent au jumeau avec tout le reste : une
+  convention à deux couleurs n'en est pas une. Six paires mesurées (5,16 en clair, 5,85 en
+  sombre), plus aucun écart assumé sur un état sélectionné. Une app qui recomposait un actif
+  (`border-primary bg-accent text-foreground` sur une tuile radio, `font-semibold` sur une
+  entrée) retire sa recomposition à la montée.
+- **⚠ `--container-tile` : 15 rem → 18,75 rem (300 px)**, la largeur de carte de la v1. À 15 rem,
+  les deux pilules « vues » + « engagement » d'une carte vidéo passaient à la ligne ; à 18,75 rem
+  elles tiennent sur une ligne de 1280 à 2560 px. `grid-cards-tile` rend donc, à largeur
+  égale, **autant ou moins de colonnes** qu'avant — jamais plus.
+- **⚠ `Dropdown` flottant s'ancre désormais sous son déclencheur** (`top: calc(100% + 6px)`,
+  `left: 0` ; `align="end"` → `right: 0`). Une app qui posait `top`/`right` en style inline pour
+  compenser retire son style ; **le parent doit être en `position: relative`**. Le rail d'item
+  passe de 38 à 44 px (`--dropdown-item-h`) et son texte de body-sm à `--text-control` : un menu
+  est plus haut de 6 px par ligne.
+
+### Card
+
+- **`gap={3|4|5|6}` — la pile, opt-in.** `.ds-card` est `display:block` : un `gap-space-*` posé
+  en `className` ne rend RIEN, et 23 cartes de Creator en portaient un pour 0 px d'écart. La prop
+  passe la carte en colonne flex avec l'écart du palier ; l'en-tête cède sa marge basse au gap.
+  Sans `gap`, DOM et rendu identiques à la 0.1.3. Quatre paliers, pas de 20 : l'espacement
+  interne d'une carte reste sur l'échelle — et le padding reste à 24 (décision Julien).
+- **`<Separator bleed />` — le filet de bord à bord.** Enfant DIRECT d'une carte, il annule le
+  `--card-pad` (ou `--card-pad-lg`, lu par la taille de la carte) en marge négative et s'étire
+  (`width:auto` — `100 %` + marges négatives laisserait un pad à droite). Il reste dans la boîte
+  de bordure : rien ne déborde, aucun `overflow` à poser ; une carte `flush` n'a rien à annuler.
+
+### Modal
+
+- **Sans icône, le titre partage la ligne de la croix**, centré verticalement. La croix seule
+  occupait une rangée de 32 px et le titre tombait 46-56 px sous le bord (audit Creator,
+  maquette 02). Avec une pastille, la rangée pastille + croix reste et le titre passe dessous.
+- **`size="lg"` : 32,5 rem** (`--modal-w-lg`, 520 px), la modale à formulaire — « Analyser une
+  vidéo ». `md` (23,75 rem) reste la confirmation et le résultat. Sans effet sous 64 rem. Jeton
+  proposé au § 4.3 du gabarit.
+
+### Dropdown, ActionSheet
+
+- **`align="start" | "end"`** et l'ancrage sous le déclencheur — voir ⚠ ci-dessus.
+- **`checked` sur un item** : un menu de CHOIX (tri, filtre « Tous les réseaux »).
+  `role="menuitemradio"` + `aria-checked`, la convention de l'élément sélectionné, coche en fin
+  de ligne. `undefined` = un item d'action, sans coche ; les deux se mélangent dans un même menu.
+  `ActionSheet` reçoit le même `checked` — même geste, deux tailles d'écran.
+- Rail d'item à 44 px (`--dropdown-item-h`, § 4.3 du gabarit), texte `--text-control` (maquette 01).
+
+### IconButton
+
+- **`variant="danger-soft"`** — la corbeille : fond `--pill-danger-bg`, glyphe
+  `--pill-danger-fg`, sans bordure (5,47 / 6,59 mesurés). Le `danger` plein reste l'action
+  destructrice UNIQUE d'une vue ; à côté de chaque ligne supprimable, c'est le doux.
+
+### StateCard — nouveau, sorti du BACKLOG à la troisième demande
+
+- La carte d'état HÉROS : l'attente, l'indisponible, l'erreur, le cas limite. `Card lg` centrée,
+  **pastille héros outlined et carrée** (la v1 la faisait ronde ; les maquettes du 11/09 la
+  posent carrée, comme partout), titre subheading, corps muted sur la colonne `narrow`, un
+  appoint libre (`children`), une action. Tons `brand` (`role="status"`) et `danger`
+  (`role="alert"`). Ce n'est pas `EmptyState` (un emplacement vide en pointillés). La coque
+  (`AuditStateCard`) et Creator remplacent leur composition à la montée.
+
+### ChoiceTile — nouveau : `CheckTile`, `RadioTile`
+
+- **Une seule anatomie pour tous les choix en tuile** — la niche de la coque, les sorties et les
+  modèles de Creator en composaient cinq. Fond `--background`, radius md, filet 1,5 px ;
+  cochée : filet `--primary` + plaque `--accent`, le titre reste en encre à sa graisse. **La
+  tuile EST le `<label>`** : toute sa surface coche, clavier et formulaire sont ceux de l'`<input>`
+  natif (`name`, `value`, `required`, la ref de react-hook-form), le contrôle du socle rend
+  dedans (`.ds-choice`, dans un `<span>` — un label imbriqué est du HTML invalide). Colonnes :
+  [`media` optionnel] contrôle · `title` / `description` / `children` · `meta`. `:has()` lit
+  l'état de l'input ; l'anneau de focus est porté par la tuile. Quatre paires mesurées (titre,
+  description, filet sur carte et sur page).
+
+### Jetons
+
+- **`--container-aside` : 20 rem** (320 px) — la colonne latérale d'une fiche, v1. `w-aside`.
+- **`--aspect-video-portrait` : 9 / 16** — `aspect-video-portrait`, le format d'une vignette
+  verticale (sept `aspect-[9/16]` dans Creator). L'échelle native n'est pas supprimée.
+- `--modal-w-lg` (32,5 rem) et `--dropdown-item-h` (2,75 rem), voir ci-dessus. Le § FACULTATIF
+  du gabarit passe à 36 réglages.
+- **`.ds-select option:checked`** suit la convention — là où le navigateur peint les options
+  (Firefox, Chrome Windows/Linux) ; macOS et iOS rendent leur liste système.
+
+### BACKLOG, docs
+
+- Fermées : **carte d'état héros** et **tuile cochable** (+ la **tuile radio** de la coque, même
+  objet) — entrées au socle ; **en-tête accentué sur `Table`** — la maquette est revenue au
+  `framed` standard, sans objet. La ligne « mesures de mise en page sans jeton » ne garde que les
+  gabarits de grille sans mesure. Note en tête : **la pastille de marque est outlined** sur toutes
+  les maquettes du 11/09 (`docs/DESIGN.md` § 6).
+- `check-contrast.mjs` : 63 paires (+10 : la convention par composant, le danger doux, la
+  tuile). 46 conformes, les 17 écarts assumés inchangés. `docs/accessibilite.md` régénéré.
+- Démo : un spécimen par ajout — pile + filet (Data display), modale lg et titre en ligne, menu
+  ancré `align="end"` et items cochés (Overlays), corbeille (Actions), trois StateCard
+  (Feedback), RadioTile / CheckTile avec média et états (Formulaires), jetons (Fondations).
+
+---
+
 ## 0.1.3 — proportions v1 : échelle d'app 100 / 115 %, titre de page 36 px
 
 Un constat de Julien (11/09/2026), l'app refondue posée à côté de la v1 sur le même écran : **trop

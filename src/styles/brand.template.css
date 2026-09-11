@@ -242,7 +242,7 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
    4 · FACULTATIF — LA FORME
    ═══════════════════════════════════════════════════════════════════════════════
-   Trente-quatre réglages qui portent de l'identité sans porter de couleur : la hauteur d'une
+   Trente-six réglages qui portent de l'identité sans porter de couleur : la hauteur d'une
    navbar, la largeur d'un tiroir, l'arrondi d'une barre d'onglets, la taille d'une case à
    cocher — et la taille du titre de page. Le socle les DÉCLARE tous, dans `tokens/scales.css`
    (les mesures) et `tokens/typography.css` (le palier) — ce sont les défauts, et ils sont
@@ -324,8 +324,10 @@
   /* Surfaces flottantes */
   /* --modal-w:23.75rem; */             /* socle : 380. Sans effet sous 64rem, où la modale
                                            devient une feuille en pleine largeur. */
+  /* --modal-w-lg:32.5rem; */           /* socle : 520 — la modale à formulaire (size="lg") */
   /* --modal-close:2rem; */             /* socle : 32 — le carré du bouton de fermeture */
   /* --dropdown-w:14.375rem; */         /* socle : 230 */
+  /* --dropdown-item-h:2.75rem; */      /* socle : 44 — le rail d'un item de menu */
   /* --actionsheet-w-panneau:20rem; */  /* socle : 320 — la variante panneau, au-dessus de
                                            64rem ; la feuille, elle, est en pleine largeur */
   /* --toast-w-min:17.5rem; */          /* socle : 280 */

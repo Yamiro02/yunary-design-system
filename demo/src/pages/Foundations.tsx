@@ -12,10 +12,10 @@ const RAIL = ['--control-sm', '--control-md', '--control-lg', '--icon-control-sm
    de cette page : ce Block est un miroir du socle, pas une troisième source qui pourrait
    diverger de lui. Les trois derniers sont des ARRONDIS propres à un composant — ils ne
    suivent pas l'échelle --radius-*, d'où le rendu séparé. */
-const DIMENSIONS = ['--navbar-h', '--sidebar-w', '--sidebar-w-collapsed', '--sidebar-head-h', '--sidenav-h', '--page-min', '--modal-w', '--modal-close', '--dropdown-w', '--actionsheet-w-panneau', '--toast-w-min', '--toast-w-max', '--choice-box', '--choice-dot', '--progress-h', '--cal-day', '--cal-nav'];
+const DIMENSIONS = ['--navbar-h', '--sidebar-w', '--sidebar-w-collapsed', '--sidebar-head-h', '--sidenav-h', '--page-min', '--modal-w', '--modal-w-lg', '--modal-close', '--dropdown-w', '--dropdown-item-h', '--actionsheet-w-panneau', '--toast-w-min', '--toast-w-max', '--choice-box', '--choice-dot', '--progress-h', '--cal-day', '--cal-nav'];
 const DIMENSIONS_RADII = ['--tabs-radius', '--pagination-radius', '--choice-box-radius'];
 const SHADOWS = ['--shadow-sm', '--shadow-md', '--shadow-lg', '--shadow-glow', '--shadow-glow-lg'];
-const WIDTHS = ['--container-shell', '--container-wide', '--container-read', '--container-narrow', '--container-dialog', '--container-tile'];
+const WIDTHS = ['--container-shell', '--container-wide', '--container-read', '--container-narrow', '--container-dialog', '--container-aside', '--container-tile'];
 
 export function Foundations() {
   return (
@@ -120,7 +120,7 @@ export function Foundations() {
             ))}
           </div>
         </Block>
-        <Block label="Largeurs de contenu par rôle" hint="Cinq largeurs maximales de colonne, et une largeur MINIMALE de tuile (--container-tile), lue par la grille auto-fill ci-dessous.">
+        <Block label="Largeurs de contenu par rôle" hint="Cinq largeurs maximales de colonne, la colonne latérale d'une fiche (--container-aside, w-aside), et une largeur MINIMALE de tuile (--container-tile, 18,75 rem — la carte de la v1), lue par la grille auto-fill ci-dessous.">
           {WIDTHS.map(t => (
             <Spec key={t} token={t}>
               <span className="h-space-2 w-full rounded-pill bg-accent" style={{ maxWidth: `var(${t})` }} />
@@ -136,6 +136,12 @@ export function Foundations() {
           </Spec>
           <Spec token="grid-cards-dialog · minmax(min(--container-dialog, 100%), 1fr)">
             <div className="grid w-full grid-cards-dialog gap-space-3"><Tiles n={4} /></div>
+          </Spec>
+        </Block>
+        <Block label="Ratios" hint="--aspect-video-portrait, le 9/16 d'une vignette de vidéo verticale : aspect-video-portrait. L'échelle native (aspect-video 16/9, aspect-square) reste disponible.">
+          <Spec token="aspect-video-portrait · 9 / 16">
+            <span className="flex w-space-8 aspect-video-portrait items-center justify-center rounded-md border border-border bg-background"><span className="mono text-caption text-text-muted">9:16</span></span>
+            <span className="flex w-space-8 aspect-video items-center justify-center rounded-md border border-border bg-background"><span className="mono text-caption text-text-muted">16:9</span></span>
           </Spec>
         </Block>
       </Section>

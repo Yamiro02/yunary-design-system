@@ -136,9 +136,20 @@ l'échelle `--radius-*`.
 **Le dégradé :** CTA primaire + un mot de titre. 90°/135° du socle.
 **La lueur :** `--shadow-glow*` chaude, réservée au CTA primaire. Identique dans les deux thèmes.
 **L'ombre :** trois niveaux teintés de `--tone-dark`, jamais du noir pur en clair.
-**La sélection :** plaque `--accent` + texte `--primary` (+ ombre) pour l'onglet actif et la
-page courante d'une barre posée sur la page ; dans une carte, l'actif reprend `--card` +
-`--foreground`. Les toasts et bandeaux centrent leur icône verticalement.
+**La sélection — UNE convention, partout (v0.1.4) :** plaque `--accent` + texte
+`--primary-readable`, **même graisse** que les voisins, icône en `currentColor` — l'entrée de
+Sidebar, l'onglet actif, la page courante, l'item de menu coché, la tuile cochée (dont le titre
+reste en encre). Jamais « noir gras » (décision Julien, 11/09/2026 — le rendu de la v1,
+`bg-accent text-primary`). `--primary-readable` et non `--primary` : 3,00 sur `--accent`, le
+seuil des graphiques, pas celui du texte. Dans une carte, l'onglet actif garde `--card` comme
+surface et prend la même couleur de texte. Les contrôles cochés (case, switch, jour choisi) ne
+suivent pas : ils portent le dégradé plein. Les toasts et bandeaux centrent leur icône
+verticalement.
+**La pastille de marque est outlined**, carrée, sur toutes les maquettes du 11/09/2026 —
+`Pastille tone="brand" outlined` : état vide, carte d'état héros, en-tête de carte. Pleine ou
+ronde, c'est un écart aux maquettes.
+**L'espacement interne d'une carte** reste à 24 px (`--card-pad`), et sa pile sur l'échelle
+`--space-*` (`Card gap={3|4|5|6}`) — pas de palier 20 (décision Julien, 11/09/2026).
 
 **Un motif qu'on refuse :** le glassmorphism, les fonds photographiques, les textures.
 

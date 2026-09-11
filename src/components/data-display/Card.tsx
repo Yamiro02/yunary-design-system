@@ -29,6 +29,14 @@ export interface CardProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   titleSize?: 'sm' | 'lg';
   /** normal = --space-4 gutter under the header · airy = --space-6, for a card of blocks. */
   headerGap?: 'normal' | 'airy';
+  /**
+   * LA PILE — opt-in (v0.1.4). `.ds-card` est `display:block`, donc un `gap-*` posé en
+   * `className` ne rend RIEN (0 px sur 23 cartes de Creator). `gap` passe la carte en colonne
+   * flex avec l'écart du palier --space-N ; l'en-tête cède alors sa marge basse au gap. Sans
+   * `gap`, rien ne change : DOM et rendu identiques à la v0.1.3. Quatre paliers, exprès — pas
+   * de 20 px : l'espacement interne d'une carte reste sur l'échelle.
+   */
+  gap?: 3 | 4 | 5 | 6;
   as?: keyof JSX.IntrinsicElements;
   children?: ReactNode;
 }
@@ -43,12 +51,16 @@ const card = cva('ds-card', {
 });
 
 export function Card({
-  variant = 'default', size = 'md', as, flush = false,
+  variant = 'default', size = 'md', as, flush = false, gap,
   eyebrow, icon, title, subtitle, action, titleSize = 'sm', headerGap = 'normal',
   className = '', children, ...rest
 }: CardProps): JSX.Element {
   const Tag = (as ?? 'div') as ElementType;
-  const cls = [card({ variant, size, flush }), className].filter(Boolean).join(' ');
+  const cls = [
+    card({ variant, size, flush }),
+    gap ? `ds-card--stack ds-card--gap-${gap}` : '',
+    className,
+  ].filter(Boolean).join(' ');
   /* Aucun slot passé = aucun noeud d'en-tête émis. C'est la condition de non-régression :
      le DOM d'une Card sans en-tête est identique à celui d'avant la v0.4. */
   const hasHeader = Boolean(eyebrow || icon || title || subtitle || action);

@@ -42,6 +42,8 @@ export { Switch } from './components/forms/Switch';
 export type { SwitchProps } from './components/forms/Switch';
 export { FormField } from './components/forms/FormField';
 export type { FormFieldProps } from './components/forms/FormField';
+export { ChoiceTile, CheckTile, RadioTile } from './components/forms/ChoiceTile';
+export type { ChoiceTileProps, CheckTileProps, RadioTileProps } from './components/forms/ChoiceTile';
 
 /* data-display */
 export { Card } from './components/data-display/Card';
@@ -64,6 +66,8 @@ export { Banner } from './components/feedback/Banner';
 export type { BannerProps } from './components/feedback/Banner';
 export { EmptyState } from './components/feedback/EmptyState';
 export type { EmptyStateProps } from './components/feedback/EmptyState';
+export { StateCard } from './components/feedback/StateCard';
+export type { StateCardProps } from './components/feedback/StateCard';
 export { Skeleton } from './components/feedback/Skeleton';
 export type { SkeletonProps } from './components/feedback/Skeleton';
 export { SkeletonCard } from './components/feedback/SkeletonCard';

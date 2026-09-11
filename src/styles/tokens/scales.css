@@ -105,8 +105,12 @@
   --sidenav-h:2.75rem;            /* 44 — .ds-sidenav */
   --modal-w:23.75rem;             /* 380 — .ds-modal. Ignoré sous 64rem : la modale y est
                                      une feuille en width:100%. */
+  --modal-w-lg:32.5rem;           /* 520 — .ds-modal--lg, la modale à formulaire (maquette 02 de
+                                     Creator : « Analyser une vidéo »). Même sort sous 64rem. ADDED v0.1.4 */
   --modal-close:2rem;             /* 32 — .ds-modal__close, carré */
   --dropdown-w:14.375rem;         /* 230 — .ds-dropdown */
+  --dropdown-item-h:2.75rem;      /* 44 — .ds-dropdown__item : le rail d'un item de menu, au seuil
+                                     tactile, comme --sidenav-h (maquette 01 de Creator). ADDED v0.1.4 */
   --actionsheet-w-panneau:20rem;  /* 320 — .ds-actionsheet--panneau (spécimen desktop) */
   --toast-w-min:17.5rem;          /* 280 — .ds-toast */
   --toast-w-max:26rem;            /* 416 — .ds-toast */
@@ -131,11 +135,22 @@
   --container-read:45rem;     /* 720 — continuous reading column (legal, forms) */
   --container-narrow:30rem;   /* 480 — centred message, empty state */
   --container-dialog:27.5rem; /* 440 — carte centrée d'auth ou de dialogue (maquettes A1-A3). ADDED v0.1.2 */
-  /* 240 — la largeur MINIMALE d'une tuile de grille fluide (une carte vidéo, une vignette), pas
+  /* 300 — la largeur MINIMALE d'une tuile de grille fluide (une carte vidéo, une vignette), pas
      un max-width de colonne comme les cinq autres : c'est le rôle que `grid-cards-tile` lit
      pour poser ses colonnes en auto-fill. La grille gagne des colonnes avec l'écran, jamais
-     une tuile plus étroite que ça. ADDED v0.1.3 */
-  --container-tile:15rem;
+     une tuile plus étroite que ça. ADDED v0.1.3 à 15rem ; 18.75rem depuis la v0.1.4 — la
+     largeur de carte de la v1, celle où les deux pilules « vues » + « engagement » tiennent
+     sur une ligne de 1280 à 2560 px (audit Creator du 11/09/2026). */
+  --container-tile:18.75rem;
+  /* 320 — la COLONNE LATÉRALE d'une fiche (le bandeau d'informations collé à gauche du contenu,
+     v1). Un rôle de colonne, pas un max-width de page : s'écrit `w-aside` sur la colonne ou
+     `var(--container-aside)` dans un gabarit de grille. ADDED v0.1.4 */
+  --container-aside:20rem;
+
+  /* LE FORMAT D'UNE VIDÉO VERTICALE — un ratio nommé, dans le namespace `--aspect-*` de Tailwind
+     (qui n'a de natif que `video` 16/9 et `square`). Sept vignettes de Creator l'écrivaient en
+     `aspect-[9/16]`. `aspect-video-portrait` en utilitaire. ADDED v0.1.4 */
+  --aspect-video-portrait:9 / 16;
 
   /* L'ÉCHELLE DE Z-INDEX — nommée par rôle, jamais une valeur nue dans une règle ou un JSX.
      L'ordre EST le contrat : chaque rang doit passer au-dessus du précédent.

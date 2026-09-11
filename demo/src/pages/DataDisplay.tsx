@@ -48,6 +48,29 @@ export function DataDisplayPage() {
           </Grid>
         </Block>
 
+        <Block label="La pile et le filet de bord à bord" hint="gap={3|4|5|6} passe la carte en colonne flex avec l'écart du palier — sans lui, .ds-card est display:block et un gap-* en className rend 0 px. Separator bleed, enfant direct, annule le --card-pad et va d'un bord à l'autre sans déborder ; en lg il lit --card-pad-lg.">
+          <Grid cols={3}>
+            <Card gap={4} title="gap={4}" subtitle="--space-4 entre les blocs">
+              <p className="caption">Premier bloc</p>
+              <Separator bleed />
+              <p className="caption">Second bloc — le filet touche les deux bords</p>
+              <Separator bleed />
+              <Button variant="secondary" size="sm">Action</Button>
+            </Card>
+            <Card gap={6} size="lg" title="gap={6} · lg" subtitle="--space-6, filet sur --card-pad-lg">
+              <p className="caption">Premier bloc</p>
+              <Separator bleed />
+              <p className="caption">Second bloc</p>
+            </Card>
+            <Card className="flex flex-col gap-space-4">
+              <h4>Sans gap : className</h4>
+              <p className="caption">Ce qu'écrivaient les apps — flex + gap posés en utilitaires. Ça marche parce que layer(utilities) gagne, mais c'est la carte qui doit le savoir : gap={4}.</p>
+              <Separator />
+              <p className="caption">Un Separator SANS bleed s'arrête au padding.</p>
+            </Card>
+          </Grid>
+        </Block>
+
         <Block label="En-tête à slots" hint="eyebrow · icon · title · subtitle · action, tous optionnels. Aucun slot passé = AUCUN noeud d'en-tête émis. L'ALIGNEMENT est décidé par le socle, jamais par une prop : titre simple = rangée centrée ; titre + sous-titre = flex-start, l'action s'aligne sur le titre au lieu de flotter entre les deux lignes.">
           <Grid cols={2}>
             <Card

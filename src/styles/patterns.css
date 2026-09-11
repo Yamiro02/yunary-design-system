@@ -38,7 +38,9 @@
    de texte. Les autres contrôles natifs du système ne sont PAS ici : leur boîte est calée
    par une hauteur fixe ou un min-height (--control-md, --page-min, --cal-day, --modal-close),
    leur géométrie ne bouge pas d'un pixel, et l'héritage y fait même CONVERGER les rendus
-   <a> et <button> de .ds-sidenav, qui divergeaient.
+   <a> et <button> de .ds-sidenav, qui divergeaient. (L'item de menu tient depuis la v0.1.4
+   un min-height de rail, --dropdown-item-h : la ligne ne décide plus sa hauteur, elle reste
+   pour la parité avec le champ et l'onglet.)
    `.ds-btn` déclare déjà la sienne (line-height:1) et `.ds-textarea` la sienne
    (--leading-normal) : toutes deux sont plus bas dans le fichier, elles restent maîtres. */
 .ds-input,.ds-tab,.ds-dropdown__item{line-height:normal}
@@ -136,17 +138,23 @@
 .ds-icon-btn--primary:hover:not(:disabled),.ds-icon-btn--primary.is-hover{box-shadow:var(--shadow-glow-lg);transform:translateY(-1px)}
 .ds-icon-btn--danger{border:none;background:var(--destructive);color:var(--destructive-foreground)}
 .ds-icon-btn--danger:hover:not(:disabled),.ds-icon-btn--danger.is-hover{filter:brightness(.93)}
+/* LE DANGER DOUX — v0.1.4 : la corbeille d'une ligne, d'une carte, d'une pièce jointe. La paire
+   de la pilule danger (fond translucide + texte lisible ≥ 4,5), sans bordure : un aplat
+   --destructive à côté de chaque élément supprimable ferait de la page un champ de mines. Le
+   survol tire la plaque vers le rouge plein sans l'atteindre — même logique que --accent. */
+.ds-icon-btn--danger-soft{border:none;background:var(--pill-danger-bg);color:var(--pill-danger-fg)}
+.ds-icon-btn--danger-soft:hover:not(:disabled),.ds-icon-btn--danger-soft.is-hover{background:color-mix(in srgb,var(--destructive) 12%,var(--pill-danger-bg))}
 /* LA VARIANTE « SÉLECTIONNÉ DOUX » — v0.3.0. Fond --accent, sans bordure, icône
-   --primary : l'état d'un lien-icône ou d'un raccourci actif. Sans elle, une app
+   --primary-readable : l'état d'un lien-icône ou d'un raccourci actif. Sans elle, une app
    détourne l'aide de démo `is-active` et annule la bordure en style inline — c'est
-   arrivé. L'icône est DÉCORATIVE et de marque : elle prend --primary, comme la pastille
-   (règle consolidée au-dessus de .ds-pastille--brand) — à vérifier au portage : le
-   couple --primary / --accent doit tenir le seuil 3:1 des graphiques non textuels,
-   check-contrast le mesure. Le survol tire la plaque vers la marque, pas vers
-   --surface-alt : la variante EST une teinte, son survol reste dans la teinte.
+   arrivé. L'icône prend LA couleur de l'élément sélectionné du socle (v0.1.4 — elle prenait
+   --primary, à 3,00 sur --accent : au seuil des graphiques, sous celui du texte ; une seule
+   teinte pour tous les états sélectionnés, voir LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ,
+   section navigation). Le survol tire la plaque vers la marque, pas vers --surface-alt : la
+   variante EST une teinte, son survol reste dans la teinte.
    Button n'a pas ce jumeau, et c'est délibéré : le besoin n'est attesté que sur le
    carré d'icône — on promeut au deuxième appelant, jamais avant. */
-.ds-icon-btn--accent{border:none;background:var(--accent);color:var(--primary)}
+.ds-icon-btn--accent{border:none;background:var(--accent);color:var(--primary-readable)}
 .ds-icon-btn--accent:hover:not(:disabled),.ds-icon-btn--accent.is-hover{background:color-mix(in srgb,var(--primary) 10%,var(--accent))}
 .ds-icon-btn.is-active,.ds-icon-btn--secondary[aria-pressed="true"]{border-color:var(--primary);background:var(--accent);color:var(--primary-readable)}
 .ds-icon-btn:focus-visible,.ds-icon-btn.is-focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
@@ -194,6 +202,11 @@
 .ds-select{position:relative;display:block}
 .ds-select select{appearance:none;-webkit-appearance:none;padding-right:var(--space-7);cursor:pointer}
 .ds-select__chev{position:absolute;right:var(--space-4);top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted)}
+/* L'option cochée d'un select NATIF suit la convention de l'élément sélectionné (v0.1.4) — là
+   où le navigateur le permet : Firefox et Chrome sur Windows/Linux peignent les options ;
+   macOS et iOS rendent leur liste système et ignorent ces deux déclarations. Rien à
+   rattraper : c'est la liste de la plateforme, jamais un défaut du socle. */
+.ds-select option:checked{background:var(--accent);color:var(--primary-readable)}
 .ds-choice{display:inline-flex;align-items:center;gap:0.5625rem;cursor:pointer;font-size:var(--text-body-sm);color:var(--foreground);line-height:var(--leading-snug);position:relative}
 .ds-choice input{position:absolute;opacity:0;width:0;height:0}
 .ds-choice__box{flex:none;display:inline-flex;align-items:center;justify-content:center;width:var(--choice-box);height:var(--choice-box);border:1.5px solid var(--input);background:var(--background);border-radius:var(--choice-box-radius);color:var(--primary-foreground);transition:background var(--duration-fast) var(--ease-standard),border-color var(--duration-fast) var(--ease-standard),box-shadow var(--duration-fast) var(--ease-standard)}
@@ -234,6 +247,33 @@
 .ds-switch input:checked+.ds-switch__track .ds-switch__knob,.ds-switch.is-checked .ds-switch__knob{transform:translateX(calc(var(--switch-w) - var(--switch-knob) - var(--switch-inset) * 2))}
 .ds-switch input:focus-visible+.ds-switch__track,.ds-switch.is-focus .ds-switch__track{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
 .ds-switch.is-disabled{opacity:.5;cursor:not-allowed}
+/* ---------- forms: ChoiceTile — la tuile cochable ---------- */
+/* UNE SEULE ANATOMIE POUR TOUS LES CHOIX EN TUILE (v0.1.4) : la niche de la coque, les sorties
+   et les modèles de Creator — cinq compositions différentes pour le même objet. La tuile EST
+   le <label> : toute sa surface coche, le clavier et le formulaire sont ceux de l'<input> natif
+   (name, value, required, react-hook-form), et le contrôle du socle (.ds-choice__box, case ou
+   rond) rend DEDANS — un <span class="ds-choice">, pas un second <label>, un label imbriqué est
+   du HTML invalide. Fond --background, radius md, filet 1,5 px ; cochée : filet --primary +
+   plaque --accent (la convention de l'élément sélectionné, le titre RESTE en encre et à sa
+   graisse). `:has()` lit l'état de l'input ; les aides .is-checked/.is-focus servent la vitrine.
+   Colonnes : [média optionnel] contrôle · contenu · méta — le média (vignette 96 px, maquette
+   S3a) colle au bord gauche et annule le padding. Le titre est --text-body/600 parce que c'est
+   un LIBELLÉ de choix, pas un titre de section : pas de face display. */
+.ds-tile{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--space-4);padding:1.125rem 1.25rem;box-sizing:border-box;border:1.5px solid var(--border);border-radius:var(--radius-md);background:var(--background);color:var(--foreground);font-family:var(--font-body);text-align:left;cursor:pointer;position:relative;transition:border-color var(--duration-base) var(--ease-standard),background var(--duration-base) var(--ease-standard),box-shadow var(--duration-base) var(--ease-standard)}
+.ds-tile--media{grid-template-columns:auto auto minmax(0,1fr) auto;padding-left:0;overflow:hidden}
+.ds-tile__media{align-self:stretch;width:6rem;min-height:6.5rem;background:var(--muted);background-size:cover;background-position:center;display:flex}
+.ds-tile .ds-choice{pointer-events:none}
+.ds-tile__main{display:flex;flex-direction:column;gap:0.3125rem;min-width:0}
+.ds-tile__title{font-size:var(--text-body);font-weight:var(--weight-semibold);line-height:var(--leading-snug)}
+.ds-tile__desc{font-size:var(--text-body-sm);color:var(--text-secondary);line-height:var(--leading-normal)}
+.ds-tile__meta{font-size:var(--text-caption);color:var(--text-muted);white-space:nowrap}
+.ds-tile:hover,.ds-tile.is-hover{border-color:var(--input)}
+.ds-tile:hover .ds-choice__box,.ds-tile.is-hover .ds-choice__box{border-color:var(--primary)}
+.ds-tile:has(input:checked),.ds-tile.is-checked{border-color:var(--primary);background:var(--accent)}
+.ds-tile:has(input:focus-visible),.ds-tile.is-focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+/* Le contrôle interne ne porte pas son propre anneau : c'est la tuile qui le porte. */
+.ds-tile .ds-choice input:focus-visible+.ds-choice__box{box-shadow:none}
+.ds-tile:has(input:disabled),.ds-tile.is-disabled{opacity:.5;cursor:not-allowed}
 
 /* ---------- data-display: Card · Badge · Tooltip ---------- */
 /* Card — header slots. Passing no slot renders exactly as before. */
@@ -259,6 +299,27 @@
 .ds-card{background:var(--card);color:var(--card-foreground);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--card-pad);box-shadow:var(--shadow-sm);box-sizing:border-box}
 .ds-card--lg{border-radius:var(--radius-xl);padding:var(--card-pad-lg)}
 .ds-card--flush{padding:0;overflow:hidden}
+/* LA PILE — OPT-IN, v0.1.4. `.ds-card` est `display:block` : un `gap-*` posé dessus ne rend RIEN,
+   et vingt-trois cartes de Creator en portaient un pour 0 px d'écart (audit du 11/09/2026). La
+   prop `gap` passe la carte en colonne flex et pose l'écart du palier. Opt-in : une carte sans
+   `gap` garde son DOM et son rendu au pixel. L'en-tête cède sa marge basse au gap — sinon les
+   deux s'ajoutaient. QUATRE paliers, pas de « 20 » : l'espacement interne d'une carte reste sur
+   l'échelle --space-* (décision Julien, 11/09/2026 — le 24 du padding ne bouge pas non plus). */
+.ds-card--stack{display:flex;flex-direction:column}
+.ds-card--stack>.ds-card__header{margin-bottom:0}
+.ds-card--gap-3{gap:var(--space-3)}
+.ds-card--gap-4{gap:var(--space-4)}
+.ds-card--gap-5{gap:var(--space-5)}
+.ds-card--gap-6{gap:var(--space-6)}
+/* LE FILET DE BORD À BORD — v0.1.4. Un `<Separator bleed>` enfant DIRECT d'une carte annule le
+   --card-pad en marge négative et s'étire (width:auto, pas 100 % : 100 % + marges négatives
+   laisserait un pad à droite). Il reste DANS la boîte de bordure : rien ne déborde, pas
+   d'overflow à poser. Le padding est lu par la taille de la carte, jamais deviné ; une carte
+   flush n'a pas de pad à annuler. Enfant direct seulement — dans un bloc imbriqué, le pad à
+   annuler n'est plus celui de la carte. */
+.ds-card>.ds-sep--bleed{width:auto;margin-inline:calc(-1 * var(--card-pad))}
+.ds-card--lg>.ds-sep--bleed{margin-inline:calc(-1 * var(--card-pad-lg))}
+.ds-card--flush>.ds-sep--bleed{margin-inline:0}
 .ds-card--interactive{cursor:pointer;transition:box-shadow var(--duration-base) var(--ease-standard),transform var(--duration-base) var(--ease-standard)}
 .ds-card--interactive:hover,.ds-card--interactive.is-hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
 .ds-card--interactive:active,.ds-card--interactive.is-active{transform:translateY(0);box-shadow:var(--shadow-sm)}
@@ -341,6 +402,22 @@
 /* 20rem : largeur max d'une colonne de texte courte — une mesure de LISIBILITÉ, pas
    d'identité. Littéral structurel, comme les micro-espacements (voir la doctrine en tête). */
 .ds-empty__desc{max-width:20rem;color:var(--muted-foreground);font-size:var(--text-body-sm);line-height:var(--leading-normal)}
+/* ---------- feedback: StateCard — la carte d'état héros ---------- */
+/* LA TROISIÈME DEMANDE, promue (v0.1.4) : l'attente, l'indisponible, l'erreur, le cas limite —
+   l'audit d'onboarding de la coque, puis trois écrans de Creator (S1b, S3g, 09b). Ce n'est pas
+   l'EmptyState : celui-là est un emplacement VIDE en pointillés qui invite à remplir ; celle-ci
+   est une carte PLEINE qui explique un état. Anatomie de la v1 et des maquettes du 11/09 :
+   .ds-card--lg centrée, pastille HÉROS outlined et CARRÉE (la v1 la faisait ronde — les
+   maquettes du 11/09 la posent carrée, comme partout ailleurs), titre --text-subheading, corps
+   body-sm muted sur la colonne --container-narrow (le rôle « message centré, état vide » ;
+   la maquette 09b dit 520, le rôle dit 480 — le jeton fait foi), appoint, action. Les tons : brand (« attends, c'est normal ») et danger (« c'est nous, pas toi »). Le
+   composant pose role="status" ou "alert" selon le ton : l'état se lit, il s'annonce aussi. */
+.ds-state-card{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-5);padding:var(--space-7)}
+.ds-state-card__main{display:flex;flex-direction:column;gap:var(--space-2);max-width:var(--container-narrow)}
+.ds-state-card__title{margin:0;text-wrap:balance}
+.ds-state-card__desc{margin:0;color:var(--text-muted);font-size:var(--text-body-sm);line-height:var(--leading-normal);text-wrap:pretty}
+.ds-state-card__action{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-3)}
+
 /* Le point haut du shimmer prend --surface-alt, pas --accent : c'est un écart de
    SURFACE, pas une teinte. Sur --accent il valait --muted en sombre — dégradé plat,
    squelette immobile. */
@@ -354,6 +431,14 @@
 .ds-modal__close:disabled{opacity:.4;cursor:not-allowed;background:transparent;color:var(--muted-foreground)}
 .ds-modal__head{display:flex;align-items:flex-start;justify-content:space-between}
 .ds-modal__head--end{justify-content:flex-end}
+/* SANS ICÔNE, LE TITRE PARTAGE LA LIGNE DE LA CROIX — v0.1.4. La croix seule occupait une rangée
+   de 32 px et le titre tombait 46-56 px sous le bord (audit Creator, maquette 02). Avec une
+   pastille, la rangée pastille + croix reste, le titre en dessous : la pastille est le repère. */
+.ds-modal__head--inline{align-items:center;gap:var(--space-3)}
+.ds-modal__head--inline .ds-modal__title{flex:1;min-width:0}
+/* La modale à FORMULAIRE : 32,5 rem (maquette 02 « Analyser une vidéo »). Sous 64 rem, même
+   sort que --modal-w — la feuille est en pleine largeur, la règle @media ci-dessous gagne. */
+.ds-modal--lg{width:var(--modal-w-lg)}
 .ds-modal__title{margin:0}
 .ds-modal__text{margin:0}
 /* Modal phases — __desc and __foot officialise Modal.tsx's inline styles, values identical. */
@@ -377,6 +462,10 @@
 .ds-actionsheet__item{display:flex;align-items:center;gap:0.625rem;min-height:var(--control-md);padding:0 var(--space-3);border:0;background:transparent;color:var(--foreground);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-medium);text-align:left;border-radius:var(--radius-sm);cursor:pointer;transition:background var(--duration-fast) var(--ease-standard)}
 .ds-actionsheet__item:hover,.ds-actionsheet__item.is-hover,.ds-actionsheet__item:focus-visible{background:var(--surface-alt);outline:none}
 .ds-actionsheet__item--danger{color:var(--destructive-readable)}
+/* La ligne cochée — jumelle de .ds-dropdown__item.is-checked (v0.1.4), même convention. */
+.ds-actionsheet__item[aria-checked="true"],.ds-actionsheet__item.is-checked{background:var(--accent);color:var(--primary-readable)}
+.ds-actionsheet__label{flex:1;min-width:0}
+.ds-actionsheet__check{display:inline-flex;flex:none;margin-left:auto}
 .ds-actionsheet__note{font-size:var(--text-caption);color:var(--text-muted);line-height:var(--leading-normal);padding:var(--space-1) var(--space-3) var(--space-2)}
 /* PAS DE FILET DANS UNE FEUILLE D'ACTION — v0.8.0. La règle .ds-actionsheet__sep a été
    retirée, et ActionSheet n'émet plus de <hr>. Un menu de BUREAU (.ds-dropdown) garde le
@@ -392,10 +481,25 @@
    rayon 2xl, bordure complète, pas de poignée, largeur nommée --actionsheet-w-panneau. */
 .ds-actionsheet--panneau{width:var(--actionsheet-w-panneau);max-width:100%;border:1px solid var(--border);border-radius:var(--radius-2xl);padding-bottom:var(--space-2)}
 .ds-actionsheet--panneau .ds-grip{display:none}
-.ds-dropdown--floating{position:absolute;z-index:var(--z-popover)}
+/* LE PANNEAU S'ANCRE SOUS SON DÉCLENCHEUR — v0.1.4. Sans `top`/`left`, un `position:absolute`
+   reste à sa place statique : dans un conteneur `inline-flex`, c'est À DROITE du bouton, et
+   c'est ce que rendaient les menus de Creator (audit du 11/09/2026). Le parent porte
+   `position:relative` (le composant ne peut pas le poser pour lui) ; `align="end"` colle le
+   bord droit du panneau à celui du déclencheur — le menu d'un bouton en bout de ligne. Les
+   6 px d'écart sont ceux de la maquette 01. */
+.ds-dropdown--floating{position:absolute;z-index:var(--z-popover);top:calc(100% + 0.375rem);left:0}
+.ds-dropdown--floating.ds-dropdown--end{left:auto;right:0}
 .ds-dropdown{width:var(--dropdown-w);padding:0.375rem;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;gap:0.125rem;box-sizing:border-box}
-.ds-dropdown__item{display:flex;align-items:center;gap:0.625rem;width:100%;padding:0.5625rem 0.6875rem;border:0;background:transparent;color:var(--foreground);font-family:var(--font-body);font-size:var(--text-body-sm);text-align:left;border-radius:var(--radius-sm);cursor:pointer;transition:background var(--duration-fast) var(--ease-standard)}
+/* L'item est sur le rail de 44 (--dropdown-item-h) et en --text-control, comme une entrée de
+   Sidebar (v0.1.4 — il rendait 38 px en body-sm, un cran sous tout ce qui se clique). */
+.ds-dropdown__item{display:flex;align-items:center;gap:0.625rem;width:100%;min-height:var(--dropdown-item-h);padding:0 0.875rem;border:0;background:transparent;color:var(--foreground);font-family:var(--font-body);font-size:var(--text-control);text-align:left;border-radius:var(--radius-sm);cursor:pointer;transition:background var(--duration-fast) var(--ease-standard)}
 .ds-dropdown__item:hover,.ds-dropdown__item.is-hover,.ds-dropdown__item:focus-visible{background:var(--surface-alt);outline:none}
+/* L'ITEM COCHÉ — role="menuitemradio" + aria-checked, la convention de l'élément sélectionné
+   (plaque --accent, texte --primary-readable, MÊME graisse), coche en fin de ligne. Le survol
+   garde la plaque : `.is-checked` est écrit après le survol, à spécificité égale. */
+.ds-dropdown__item[aria-checked="true"],.ds-dropdown__item.is-checked{background:var(--accent);color:var(--primary-readable)}
+.ds-dropdown__label{flex:1;min-width:0}
+.ds-dropdown__check{display:inline-flex;flex:none;margin-left:auto}
 .ds-dropdown__item--danger{color:var(--destructive-readable)}
 /* Le hint d'un item — le raccourci, la méta. Était couleur + taille inline dans
    Dropdown.tsx : une décision du socle qu'aucun sélecteur ne pouvait viser (v0.3.0). */
@@ -419,30 +523,42 @@
 .ds-navbar__cta{display:flex;align-items:center;gap:var(--space-3)}
 .ds-navlink{font-size:var(--text-body);font-weight:var(--weight-medium);color:var(--text-secondary);text-decoration:none;padding:var(--space-2) 0;transition:color var(--duration-fast) var(--ease-standard)}
 .ds-navlink:hover,.ds-navlink.is-hover{color:var(--foreground)}
-/* L'item actif se signale par sa GRAISSE, pas par un libellé coloré : l'orange est
-   rationné, et le lien actif cessait d'être lisible comme du texte. */
-.ds-navlink.is-active{color:var(--foreground);font-weight:var(--weight-semibold)}
+/* ═══ LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ — v0.1.4, partout dans le socle ═══
+   Le rendu de la v1 (Sidebar.tsx : `bg-accent text-primary`) : plaque --accent, texte de
+   marque, MÊME graisse que les voisins, icône en currentColor. Jamais « noir gras » — c'est la
+   décision de Julien (11/09/2026) : un actif en --foreground + 600 se lisait comme un titre,
+   et chaque composant avait sa propre idée (surface-alt + gras ici, --primary là, --card
+   ailleurs). Une seule teinte : --primary-readable. --primary mesure 3,00 sur --accent en
+   clair — le seuil des graphiques, PAS celui du texte (4,5) — et check-contrast.mjs le refuse
+   pour un libellé ; la consigne prévoyait le jumeau lisible dans ce cas. Il vaut donc aussi
+   pour les Tabs et la pagination, qui posaient --primary avec un écart assumé : une convention
+   à deux couleurs n'en est pas une.
+   Ce qui N'EST PAS un élément sélectionné et ne suit pas : la case cochée, la piste du
+   switch, le jour choisi du calendrier — des CONTRÔLES, ils portent le dégradé plein. */
+/* Le lien de barre de navigation n'a pas de plaque (c'est du texte nu sur la barre) : il ne
+   prend que la couleur, graisse inchangée. */
+.ds-navlink.is-active{color:var(--primary-readable)}
 .ds-tabs{display:inline-flex;align-items:center;gap:var(--space-1);padding:var(--space-1);border-radius:var(--tabs-radius);min-height:var(--control-md);box-sizing:border-box;background:var(--secondary);border:1px solid var(--border)}
 .ds-tabs--on-card{background:var(--background)}
 .ds-tab{appearance:none;border:0;background:transparent;color:var(--text-muted);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-semibold);padding:var(--space-2) var(--space-4);border-radius:var(--radius-sm);cursor:pointer;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
 .ds-tab:hover,.ds-tab.is-hover{color:var(--foreground)}
 /* L'ÉLÉMENT SÉLECTIONNÉ PORTE LA PLAQUE DE MARQUE — --accent + --primary-readable (5,16 /
-   5,85 mesurés), le même état « sélectionné doux » que .ds-icon-btn--accent et le badge
-   accent — le TEXTE actif prend --primary, comme les icônes de marque (⚠ 2,86/3,49 sur
-   la plaque : sous 4,5 — décision de marque, texte 15/600 ; la sélection est aussi
-   portée par la plaque, l'ombre et la graisse). Depuis que --secondary a rejoint le ton carte (régime v0.5 du kit maître), un
-   actif posé en --background n'avait plus que ~1,05 d'écart avec sa barre : invisible.
-   La teinte chaude se lit dans les DEUX thèmes — plus de régime sombre séparé. */
-.ds-tab[aria-selected="true"],.ds-tab.is-selected{background:var(--accent);color:var(--primary);box-shadow:var(--shadow-sm)}
-/* Sur une carte, la plaque accent se confondrait avec la teinte de la carte : l'actif
-   reprend le régime historique — fond --card, texte --foreground — au-dessus de la barre
-   creusée en --background. */
-.ds-tabs--on-card .ds-tab[aria-selected="true"],.ds-tabs--on-card .ds-tab.is-selected{background:var(--card);color:var(--foreground)}
+   5,85 mesurés), la convention ci-dessus. Il posait --primary (3,00 / 3,94) avec un écart
+   assumé « décision de marque » : l'écart tombe avec la v0.1.4, la couleur est celle de tous
+   les autres états sélectionnés. Depuis que --secondary a rejoint le ton carte (régime v0.5 du
+   kit maître), un actif posé en --background n'avait plus que ~1,05 d'écart avec sa barre :
+   invisible. La teinte chaude se lit dans les DEUX thèmes — plus de régime sombre séparé. */
+.ds-tab[aria-selected="true"],.ds-tab.is-selected{background:var(--accent);color:var(--primary-readable);box-shadow:var(--shadow-sm)}
+/* Sur une carte, la plaque accent se confondrait avec la teinte de la carte : l'actif garde le
+   régime historique de SURFACE — fond --card au-dessus de la barre creusée en --background —
+   mais son texte suit la convention (v0.1.4 : il était --foreground, le seul sélectionné
+   « noir » qui restait). */
+.ds-tabs--on-card .ds-tab[aria-selected="true"],.ds-tabs--on-card .ds-tab.is-selected{background:var(--card);color:var(--primary-readable)}
 /* La barre d'onglets DÉDUIT la carte comme le champ (même défaut d'opt-in que surface="card") :
    posée dans une carte, elle se creuse en --background et son onglet actif remonte au niveau
    de la carte. La prop onCard reste comme échappatoire explicite. */
 .ds-card .ds-tabs{background:var(--background)}
-.ds-card .ds-tabs .ds-tab[aria-selected="true"],.ds-card .ds-tabs .ds-tab.is-selected{background:var(--card);color:var(--foreground)}
+.ds-card .ds-tabs .ds-tab[aria-selected="true"],.ds-card .ds-tabs .ds-tab.is-selected{background:var(--card);color:var(--primary-readable)}
 .ds-tab:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 .ds-footer{border-top:1px solid var(--border);background:var(--background);color:var(--text-secondary)}
 .ds-footer__inner{display:flex;flex-wrap:wrap;gap:var(--space-7);justify-content:space-between;padding-block:var(--space-7)}
@@ -500,7 +616,7 @@
 .ds-pagination{display:inline-flex;align-items:center;gap:var(--space-1);padding:var(--space-1);background:var(--secondary);border:1px solid var(--border);border-radius:var(--pagination-radius);min-height:var(--control-md);box-sizing:border-box}
 .ds-page{appearance:none;border:0;background:transparent;min-width:var(--page-min);min-height:var(--page-min);padding:0 var(--space-2);display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-semibold);color:var(--text-muted);cursor:pointer;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
 .ds-page:hover:not(:disabled):not(.ds-page--ellipsis){color:var(--foreground);background:var(--surface-alt)}
-.ds-page[aria-current="page"]{background:var(--accent);color:var(--primary);box-shadow:var(--shadow-sm)}
+.ds-page[aria-current="page"]{background:var(--accent);color:var(--primary-readable);box-shadow:var(--shadow-sm)}
 .ds-page:disabled{opacity:.5;cursor:not-allowed}
 .ds-page:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 .ds-page--ellipsis{cursor:default;pointer-events:none}
@@ -544,21 +660,12 @@
 .ds-sidebar.is-collapsed .ds-sidebar__title{display:none}
 .ds-sidenav{display:flex;align-items:center;gap:var(--space-3);min-height:var(--sidenav-h);padding:0 var(--space-2);border-radius:var(--radius-sm);border:0;background:transparent;color:var(--text-secondary);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-medium);text-align:left;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
 .ds-sidenav:hover{background:var(--surface-alt);color:var(--foreground)}
-/* L'item actif se signale par sa GRAISSE et son ICÔNE, pas par un libellé coloré.
-   L'orange est rationné : une icône de 20 px le porte, une ligne de texte entière le
-   gaspille — et un libellé en encre pleine sur la plaque tient bien mieux son contraste.
-   L'icône, elle, est de MARQUE : elle prend --brand-via — voir la règle et son écart
-   assumé juste en dessous. (La phrase qui tenait ici — « le jumeau lisible
-   --primary-readable, jamais --primary » — ne décrit aucune des deux valeurs.) */
-.ds-sidenav.is-active{background:var(--surface-alt);color:var(--foreground);font-weight:var(--weight-semibold)}
-/* L'ICÔNE de l'item actif porte --brand-via, l'arrêt MÉDIAN du dégradé.
-   ⚠️ ÉCART DE CONTRASTE ASSUMÉ, mesuré : 2,29:1 en clair sur --surface-alt, 5,34:1 en
-   sombre. En clair, l'icône est donc PÂLE — c'est un choix de marque, pas un oubli.
-   Ce qu'il faut savoir avant de le « corriger » : l'état actif est déjà porté par le FOND
-   et par la GRAISSE du libellé, et le libellé lui-même reste en --foreground. L'icône est
-   un renfort décoratif, jamais le seul porteur de l'information — c'est ce qui rend
-   l'écart tenable. Le jour où il déplaît, --primary-readable (5,09) est le repli. */
-.ds-sidenav.is-active svg{color:var(--brand-via)}
+/* L'ENTRÉE ACTIVE : la convention de l'élément sélectionné (v0.1.4) — plaque --accent, libellé
+   --primary-readable, graisse INCHANGÉE (500, comme ses voisines), icône en currentColor. Elle
+   rendait surface-alt + encre + 600 + icône --brand-via (2,29 en clair, assumé) : le « noir
+   gras » que Julien a refusé, et un rendu que ni la v1 ni les maquettes du 11/09 ne montrent. La
+   règle svg est retirée : l'icône hérite, rien à mesurer à part. */
+.ds-sidenav.is-active{background:var(--accent);color:var(--primary-readable)}
 .ds-sidenav:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 .ds-sidebar.is-collapsed .ds-sidenav{justify-content:center;padding:0}
 .ds-sidebar.is-collapsed .ds-sidenav__label{display:none}
