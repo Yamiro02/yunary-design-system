@@ -88,8 +88,9 @@ export function App() {
           <div className="page pb-space-3">
             <p className="caption">
               Module opt-in <span className="mono">app-scale.css</span> actif · racine {scaleLabel(width)} ·
-              largeur effective ≈ {Math.round(width / factor(width))} px. Réservé aux outils internes
-              desktop — jamais le site, les e-mails ni les slides.
+              largeur effective ≈ {Math.round(width / factor(width))} px. Les proportions de la v1 :
+              le rem natif, +15 % à partir de 2240 px. Pour les apps — jamais le site, les e-mails
+              ni les slides.
             </p>
           </div>
         ) : null}
@@ -117,7 +118,7 @@ export function App() {
 }
 
 /* Paliers lus dans app-scale.css — aucune valeur n'est décidée ici. */
-function factor(w: number) { return w >= 2400 ? 1.30 : w >= 1920 ? 1.26 : w >= 1600 ? 1.12 : 1.03; }
+function factor(w: number) { return w >= 2240 ? 1.15 : 1; }
 function scaleLabel(w: number) { return Math.round(factor(w) * 100) + ' %'; }
 
 function Panel({ label, dark, children }: { label: string; dark?: boolean; children: React.ReactNode }) {

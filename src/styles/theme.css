@@ -312,6 +312,9 @@
   --container-read: var(--container-read);
   --container-narrow: var(--container-narrow);
   --container-dialog: var(--container-dialog);
+  /* La largeur MINIMALE d'une tuile de grille — lue par `grid-cards-tile` (ci-dessous). Génère
+     aussi `max-w-tile`, par construction du namespace ; il n'a pas d'emploi prévu. */
+  --container-tile: var(--container-tile);
 
   /* ---------- Motion ---------- */
   --ease-standard: var(--ease-standard);
@@ -343,3 +346,26 @@
 }
 /* L'utilitaire métier `bg-thumbnail` n'est pas ici : il est parti avec l'extension
    optionnelle `brand-content.css`. */
+
+/* LA GRILLE DE CARTES EN AUTO-FILL — un utilitaire PARAMÉTRÉ PAR RÔLE (v0.1.3).
+   `grid-cards-<rôle>` pose `grid-template-columns: repeat(auto-fill, minmax(min(<largeur du
+   rôle>, 100%), 1fr))` : la grille gagne des colonnes avec l'écran, aucune carte ne descend
+   sous la largeur du rôle, et le `min(…, 100%)` empêche une carte de déborder d'un conteneur
+   plus étroit qu'elle (un téléphone, une colonne latérale). Il ne pose PAS `display: grid`,
+   exactement comme `grid-cols-*` : il se compose — `grid grid-cards-tile gap-space-5`.
+
+   Le paramètre est un RÔLE de `--container-*`, jamais une mesure : `--value(--container-*)`
+   résout `grid-cards-tile` sur `--container-tile` (la tuile, 15 rem — la carte vidéo de
+   Creator) et `grid-cards-dialog` sur `--container-dialog` (27,5 rem — la carte d'outil du
+   Hub, qui lisait déjà ce jeton en style inline). Un nouvel usage choisit un rôle existant
+   ou en ajoute un dans scales.css ; il n'écrit jamais `grid-cols-[repeat(auto-fill,
+   minmax(15rem,1fr))]`, la forme que ceci remplace dans les deux apps.
+
+   Pourquoi un `@utility` et pas un jeton `--grid-template-columns-*` par usage : le jeton
+   fixerait UNE largeur par nom (`grid-cols-cards` = 15 rem, et il en faudrait un second pour
+   27,5), alors qu'ici la largeur est déjà nommée par son rôle — un seul mécanisme, zéro
+   valeur en double. `100%` et `1fr` ne sont pas des valeurs de design : c'est la structure
+   de la formule, au même titre que `repeat` ou `minmax`. */
+@utility grid-cards-* {
+  grid-template-columns: repeat(auto-fill, minmax(min(--value(--container-*), 100%), 1fr));
+}

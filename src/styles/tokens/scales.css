@@ -131,6 +131,11 @@
   --container-read:45rem;     /* 720 — continuous reading column (legal, forms) */
   --container-narrow:30rem;   /* 480 — centred message, empty state */
   --container-dialog:27.5rem; /* 440 — carte centrée d'auth ou de dialogue (maquettes A1-A3). ADDED v0.1.2 */
+  /* 240 — la largeur MINIMALE d'une tuile de grille fluide (une carte vidéo, une vignette), pas
+     un max-width de colonne comme les cinq autres : c'est le rôle que `grid-cards-tile` lit
+     pour poser ses colonnes en auto-fill. La grille gagne des colonnes avec l'écran, jamais
+     une tuile plus étroite que ça. ADDED v0.1.3 */
+  --container-tile:15rem;
 
   /* L'ÉCHELLE DE Z-INDEX — nommée par rôle, jamais une valeur nue dans une règle ou un JSX.
      L'ordre EST le contrat : chaque rang doit passer au-dessus du précédent.

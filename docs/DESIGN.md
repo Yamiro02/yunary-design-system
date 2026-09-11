@@ -108,6 +108,7 @@ conforme. Voir README-EXPORT § gardes pour les deux paires dont la formule est 
 | `--heading-transform` | `none` | Onest = grotesque classique |
 | `--heading-weight` | `var(--weight-bold)` | gras, casse d'origine |
 | `--heading-xl-weight` | `var(--weight-extrabold)` | le titre de page un cran au-dessus (Onest 800), H2-H4 en 700 |
+| `--text-heading-xl` | `2.25rem` | le titre de page à 36 px, la valeur de la v1 (socle : 40) ; le palier mobile du socle (28 sous 64 rem) est répété dans la marque, sinon la redéclaration l'écraserait |
 
 **Graisses chargées :** Onest 700/800 · DM Sans 400/500/600/700 · DM Mono 400/500 — rien
 d'autre. Chaque app hérite de l'`@import` via le fichier de marque.

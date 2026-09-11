@@ -15,7 +15,7 @@ const RAIL = ['--control-sm', '--control-md', '--control-lg', '--icon-control-sm
 const DIMENSIONS = ['--navbar-h', '--sidebar-w', '--sidebar-w-collapsed', '--sidebar-head-h', '--sidenav-h', '--page-min', '--modal-w', '--modal-close', '--dropdown-w', '--actionsheet-w-panneau', '--toast-w-min', '--toast-w-max', '--choice-box', '--choice-dot', '--progress-h', '--cal-day', '--cal-nav'];
 const DIMENSIONS_RADII = ['--tabs-radius', '--pagination-radius', '--choice-box-radius'];
 const SHADOWS = ['--shadow-sm', '--shadow-md', '--shadow-lg', '--shadow-glow', '--shadow-glow-lg'];
-const WIDTHS = ['--container-shell', '--container-wide', '--container-read', '--container-narrow', '--container-dialog'];
+const WIDTHS = ['--container-shell', '--container-wide', '--container-read', '--container-narrow', '--container-dialog', '--container-tile'];
 
 export function Foundations() {
   return (
@@ -120,12 +120,23 @@ export function Foundations() {
             ))}
           </div>
         </Block>
-        <Block label="Largeurs de contenu par rôle">
+        <Block label="Largeurs de contenu par rôle" hint="Cinq largeurs maximales de colonne, et une largeur MINIMALE de tuile (--container-tile), lue par la grille auto-fill ci-dessous.">
           {WIDTHS.map(t => (
             <Spec key={t} token={t}>
               <span className="h-space-2 w-full rounded-pill bg-accent" style={{ maxWidth: `var(${t})` }} />
             </Spec>
           ))}
+        </Block>
+        <Block label="Grille de cartes en auto-fill" hint="grid-cards-<rôle> : autant de colonnes que l'écran en tient, aucune carte sous la largeur du rôle, jamais de débordement. À composer avec `grid` et un gap — il ne pose pas display:grid, comme grid-cols-*.">
+          {/* Les deux rôles lus aujourd'hui : la tuile (Creator, cartes vidéo) et la carte de
+              dialogue (Hub, cartes d'outil). Classes écrites EN CLAIR, pas interpolées : c'est
+              ainsi que check-classes.mjs vérifie que l'utilitaire paramétré produit sa règle. */}
+          <Spec token="grid-cards-tile · minmax(min(--container-tile, 100%), 1fr)">
+            <div className="grid w-full grid-cards-tile gap-space-3"><Tiles n={8} /></div>
+          </Spec>
+          <Spec token="grid-cards-dialog · minmax(min(--container-dialog, 100%), 1fr)">
+            <div className="grid w-full grid-cards-dialog gap-space-3"><Tiles n={4} /></div>
+          </Spec>
         </Block>
       </Section>
 
@@ -152,5 +163,19 @@ export function Foundations() {
         </Block>
       </Section>
     </div>
+  );
+}
+
+/* Les cases numérotées d'un spécimen de grille — le contenu le plus neutre possible, pour que
+   seul le comportement des colonnes se lise. */
+function Tiles({ n }: { n: number }) {
+  return (
+    <>
+      {Array.from({ length: n }, (_, i) => (
+        <span key={i} className="flex h-space-7 items-center justify-center rounded-md border border-border bg-background">
+          <span className="mono text-caption text-text-muted">{i + 1}</span>
+        </span>
+      ))}
+    </>
   );
 }

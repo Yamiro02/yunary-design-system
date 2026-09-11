@@ -3,24 +3,28 @@
    rem natif. Une app l'active en important ce fichier après le socle et sa marque.
    Paliers en % — ils MULTIPLIENT la préférence de taille du navigateur au lieu de
    l'écraser (l'interdit « jamais de font-size px sur html » reste respecté).
-   Logique : largeur effective (physique ÷ facteur) ≈ 1440–1600, pour montrer à peu
-   près ce que montre la maquette 1440 sur tout écran. VALEURS DU CODE APP (08/2026).
-   Palier haut dézoomé de 10 % (144 → 130) : constat terrain sur 30 pouces. */
-html{font-size:103%}                             /* < 1600 — plancher, mise en page effective ~1398 */
-@media (min-width:1600px){html{font-size:112%}}  /* 1600–1919 — ~1500 */
-@media (min-width:1920px){html{font-size:126%}}  /* 1920–2399 — ~1524 */
-@media (min-width:2400px){html{font-size:130%}}  /* ≥ 2400 — ~1969, prix assumé du dézoom */
-/* Garde-fou desktop : 1100 × 1.03, en px VOLONTAIREMENT pour ne pas bouger avec le facteur.
+
+   LES PROPORTIONS DE LA V1, et rien d'autre (v0.1.3). Une version précédente tenait quatre
+   bandes (103 / 112 / 126 / 130 %) pour ramener la largeur effective vers la maquette 1440 sur
+   tout écran. À l'usage, constat de Julien (11/09/2026) : l'app refondue rendait trop GROSSE
+   et trop AÉRÉE à côté de la v1, sur le même écran — le facteur grossissait tout ce que la v1
+   montrait à l'échelle 1. La v1 (legacy-v1/app/src/index.css) n'avait que deux états : le rem
+   natif, et +15 % à partir de 2240 px « sur très grands écrans (un seul palier) ». Ce sont ces
+   deux états qui reviennent ici, à la valeur près. La maquette 1440 reste la référence de
+   DESSIN ; elle ne dicte plus un zoom. */
+html{font-size:100%}                             /* le rem natif — écrit pour que le plancher soit lu, pas déduit */
+@media (min-width:2240px){html{font-size:115%}}  /* ≥ 2240 — le seul palier, celui de la v1 */
+/* Garde-fou desktop : 1100 × 1.00, en px VOLONTAIREMENT pour ne pas bouger avec le facteur.
    Sous le seuil mobile du socle (64 rem, celui du tiroir, de l'ActionSheet et des cibles
    tactiles) il ne s'applique PAS (v0.1.1) : posé hors media query, il forçait un défilement
    horizontal sur téléphone et rendait le module inutilisable par une app publique — le Hub
-   restait sans échelle et rendait « petit » sur grand écran. Entre 64 rem et 1133 px, le
+   restait sans échelle et rendait « petit » sur grand écran. Entre 64 rem et 1100 px, le
    défilement horizontal reste : c'est le rôle du garde-fou, une mise en page desktop ne
    s'écrase pas. */
-@media (min-width:64rem){body{min-width:1133px}}
+@media (min-width:64rem){body{min-width:1100px}}
 
 /* ── Aucune retouche de palier typographique ici, et c'est le POINT ────────────
-   Ce fichier ne contient QUE les quatre bandes de zoom ci-dessus. Tout étant en rem,
+   Ce fichier ne contient QUE les deux états de racine ci-dessus. Tout étant en rem,
    changer la racine suffit : l'interface entière suit, sans qu'aucun palier n'ait à
    être repris. Retoucher trois paliers par bande reviendrait à dire que le facteur ne
    fait pas son travail.
@@ -32,7 +36,7 @@ html{font-size:103%}                             /* < 1600 — plancher, mise en
 
    LES SEULES media queries légitimes du socle sont celles du seuil MOBILE (64 rem), et
    elles répondent à des contraintes que le rem ne peut pas résoudre : la largeur physique
-   d'un écran et la taille d'un doigt. Un titre de 40 px sur un téléphone de 390 px passe
+   d'un écran et la taille d'un doigt. Un titre de 36 px sur un téléphone de 390 px passe
    à la ligne quatre fois, quelle que soit la racine. C'est le même seuil que celui de
    l'ActionSheet, de la Modal en feuille du bas et des cibles tactiles à 44 px.
 

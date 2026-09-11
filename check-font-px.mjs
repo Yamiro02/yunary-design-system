@@ -3,12 +3,12 @@
  * Filet des TAILLES DE POLICE EN PIXELS — aucune classe arbitraire `text-[…px]`.
  *
  * LE DÉFAUT QU'IL FERME, et il est structurel, pas une préférence de style.
- * `app-scale.css` change la taille de la RACINE par palier de largeur d'écran — mesuré à
- * 16,48px sur un poste de travail, pas 16. Toute l'interface suit, PARCE QU'ELLE EST EN
- * REM. Une taille arbitraire en pixels posée au milieu ne suit pas : elle reste à sa
- * valeur pendant que ses voisines grandissent, et elle rétrécit visuellement à chaque
- * palier. **Le défaut est invisible sur l'écran où on l'a écrit** — c'est ce qui le rend
- * méchant : il ne se voit que chez quelqu'un d'autre, sur une autre largeur.
+ * `app-scale.css` change la taille de la RACINE sur très grand écran — 115 % à partir de
+ * 2240 px, soit 18,4px et non 16. Toute l'interface suit, PARCE QU'ELLE EST EN REM. Une
+ * taille arbitraire en pixels posée au milieu ne suit pas : elle reste à sa valeur pendant
+ * que ses voisines grandissent, et elle rétrécit visuellement d'un septième. **Le défaut
+ * est invisible sur l'écran où on l'a écrit** — c'est ce qui le rend méchant : il ne se
+ * voit que chez quelqu'un d'autre, sur une autre largeur.
  *
  * Toute valeur px d'une maquette se convertit en rem (÷ 16). `text-[0.9375rem]` passe.
  *

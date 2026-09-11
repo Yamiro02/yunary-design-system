@@ -14,6 +14,56 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
+## 0.1.3 — proportions v1 : échelle d'app 100 / 115 %, titre de page 36 px
+
+Un constat de Julien (11/09/2026), l'app refondue posée à côté de la v1 sur le même écran : **trop
+grosse et trop aérée**. Deux causes, deux retours à la valeur de la v1. Aucune rupture d'API ; le
+rendu de toute app qui importe `app-scale.css` change, c'est le but.
+
+- **`app-scale.css` : les proportions de la v1.** Racine à **100 %**, et **115 % à partir de
+  2240 px** — le seul palier, celui de `legacy-v1/app/src/index.css`. Les quatre bandes
+  (103 / 112 / 126 / 130 %) visaient une largeur effective proche de la maquette 1440 sur tout
+  écran ; à l'usage elles grossissaient tout ce que la v1 montrait à l'échelle 1. La maquette
+  reste la référence de dessin, elle ne dicte plus un zoom. Le garde-fou desktop suit :
+  `min-width: 1100px` (1100 × 1,00), toujours sous `@media (min-width: 64rem)`. Sur un écran
+  courant, une app rend désormais **exactement** ce que rend le site : la différence ne se voit
+  plus qu'au-delà de 2240 px.
+- **Le titre de page revient à 36 px** (`--text-heading-xl: 2.25rem`, la valeur de la v1 ; le
+  socle dit 40). Réglé **dans la marque**, pas dans le socle : le 40 est le défaut du gabarit, le
+  36 est un choix de Yunary — même mécanisme que `--card-pad` ou `--sidebar-w` (redéclaration en
+  `:root` après `core.css`). Le piège, et il est écrit à côté de la ligne : le palier mobile
+  (28 px sous 64 rem) vit dans une media query du socle, qu'une redéclaration nue aurait écrasée —
+  la media query est **répétée dans `brand-yunary.css`**, le mobile ne bouge pas. Le gabarit
+  `brand.template.css` gagne un § 4.4 qui propose ce seul palier, avec le piège ; les autres
+  paliers ne sont pas proposés, exprès.
+- **`grid-cards-<rôle>` : la grille de cartes en auto-fill, sortie du `BACKLOG.md`.** Creator
+  (vidéos, `grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]`) et le Hub (outils,
+  `repeat(auto-fill, minmax(min(var(--container-dialog), 100%), 1fr))` en style inline) écrivaient
+  la même formule chacun de leur côté. Le choix retenu, entre « un jeton par usage » et « un
+  utilitaire paramétrable » : **l'utilitaire paramétré par un rôle de largeur**. `@utility
+  grid-cards-*` lit `--value(--container-*)` et pose
+  `grid-template-columns: repeat(auto-fill, minmax(min(<rôle>, 100%), 1fr))` — `grid-cards-tile`
+  pour Creator, `grid-cards-dialog` pour le Hub, dont le jeton existait déjà. Un jeton par usage
+  aurait fixé une largeur par nom (`grid-cols-cards` = 15 rem, et un second pour 27,5) alors que
+  la largeur est déjà nommée par son rôle : un seul mécanisme, aucune valeur en double, et un
+  futur usage choisit un rôle au lieu d'inventer une mesure. Il ne pose pas `display: grid`,
+  comme `grid-cols-*` : `grid grid-cards-tile gap-space-5`. Le `min(…, 100%)` empêche une carte
+  de déborder d'un conteneur plus étroit qu'elle.
+- **`--container-tile` : 15 rem (240 px), la largeur MINIMALE d'une tuile de grille** — le
+  sixième rôle de `--container-*`, et le premier qui soit un minimum plutôt qu'un maximum de
+  colonne. Le `BACKLOG.md` proposait `--container-card` : renommé, parce que « card » aurait
+  désigné la largeur du composant `Card`, qui n'en a pas. Génère `max-w-tile` par construction,
+  sans emploi prévu.
+- **`BACKLOG.md`** : les huit demandes remontées par les lots Creator et Hub sont versées
+  (carte d'état héros au seuil de promotion, hôte de toasts, tuile cochable, barre d'étapes
+  segmentée, en-tête accentué de `Table`, icône de tête sur `Input`, `as` de `Card`, mesures de
+  mise en page sans jeton) ; la famille (b) de cette dernière — la grille auto-fill — en sort.
+- Démo : la page Fondations rend `--container-tile` et un spécimen des deux grilles, classes
+  écrites en clair pour que `check-classes.mjs` prouve que l'utilitaire paramétré émet sa règle.
+  `docs/PIEGES.md` § 4 et l'en-tête de `check-font-px.mjs` parlent du nouveau palier.
+
+---
+
 ## 0.1.2 — la carte de dialogue, la graisse qui suit le palier, la Sidebar alignée
 
 - **`--container-dialog` : 27,5 rem (440 px), la carte centrée d'auth ou de dialogue.** Les

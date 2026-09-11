@@ -58,7 +58,7 @@ sans toucher aux composants.
 Pas de registry : chaque app épingle une version par un tag git.
 
 ```bash
-npm i github:Yamiro02/yunary-design-system#v0.1.2
+npm i github:Yamiro02/yunary-design-system#v0.1.3
 ```
 
 Cinq **peer dependencies**, à la charge de l'app :
@@ -183,9 +183,9 @@ import { Button, Card, Icon } from '@yunary/ds';
 
 ### 4. L'échelle d'app — opt-in, les apps
 
-Les apps importent en plus un module d'échelle, qui adapte la taille racine par palier de
-largeur d'écran pour garder une mise en page effective proche de la maquette 1440 (son
-garde-fou de largeur minimale ne s'applique qu'à partir de 64 rem : le mobile reste fluide) :
+Les apps importent en plus un module d'échelle, aux proportions de la v1 : le rem natif partout,
+et **+15 % à partir de 2240 px** — un seul palier. Son garde-fou de largeur minimale (1100 px) ne
+s'applique qu'à partir de 64 rem : le mobile reste fluide.
 
 ```ts
 import '@yunary/ds/core.css';
@@ -193,7 +193,7 @@ import '@yunary/ds/brand-yunary.css';
 import '@yunary/ds/app-scale.css';   // les apps (Hub, Creator, outils internes) — jamais le site public
 ```
 
-Les paliers sont en **%** : ils multiplient la préférence de taille de texte du navigateur au lieu
+Le palier est en **%** : il multiplie la préférence de taille de texte du navigateur au lieu
 de l'écraser — l'interdit « jamais de `font-size` px sur `html` » reste respecté. **Le site public,
 les e-mails et les slides ne l'importent jamais** : le socle et la marque, rien de plus.
 
@@ -221,7 +221,8 @@ Une section ink au milieu d'une page crème adopte le scope, elle ne peint pas u
 | Ombres | `shadow-sm` `shadow-md` `shadow-lg` `shadow-glow` `shadow-glow-lg` |
 | Typo | `font-display` `font-body` `font-mono` · `text-display-xl` `text-display` `text-heading-xl` `text-heading` `text-subheading` `text-heading-sm` `text-body-lg` `text-body` `text-body-sm` `text-control` `text-caption` `text-eyebrow` `text-chip` |
 | Espacement | `gap-space-1` … `gap-space-8` · `h-control-sm/md/lg` · `w-icon-control-sm/md/lg` · `p-card-pad` `p-card-pad-lg` — **rail unique** : tous les contrôles s'alignent sur `--control-md`, qui descend à 2.75rem sous 64rem |
-| Largeurs | `max-w-shell` `max-w-wide` `max-w-read` `max-w-narrow` `max-w-page` |
+| Largeurs | `max-w-shell` `max-w-wide` `max-w-read` `max-w-narrow` `max-w-dialog` `max-w-page` — et `--container-tile`, la largeur **minimale** d'une tuile de grille, lue par la grille ci-dessous |
+| Grilles | `grid-cards-tile` `grid-cards-dialog` — `grid-cards-<rôle>` pose des colonnes en `auto-fill` dont aucune ne descend sous la largeur du rôle `--container-<rôle>` (`minmax(min(…, 100%), 1fr)`). À composer avec `grid` et un gap, comme `grid-cols-*` ; un `@utility` paramétré, donc variantable |
 | Motion | `ease-standard` |
 
 L'échelle d'espacement est **nommée** (`space-5`, pas `5`) : elle n'écrase pas l'échelle numérique
