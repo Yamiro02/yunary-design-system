@@ -14,6 +14,28 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
+## 0.1.7 — la tuile calculée pour quatre colonnes à 1440
+
+Une seule chose. Rien d'autre ne bouge — aucun jeton d'espacement, pas de pilule retouchée.
+
+- **`--container-tile` : 17,75 → 15,75 rem (252 px), CALCULÉ.** À 17,75 rem, `grid-cards-tile`
+  rendait trois colonnes à 1440 et des cartes trop grosses ; la référence est la maquette 01
+  Vidéos, **quatre colonnes à 1440 × 900**. Avec l'échelle d'app restaurée (103 % → racine
+  16,48 px), la barre latérale à sa largeur réelle (`--sidebar-w` = clamp(15rem, 11rem + 5vw,
+  18rem) → 253,3 px), les gouttières et le gap de grille à `--space-5` : zone utile 1137 px,
+  quatre colonnes exigent une tuile ≤ 16,13 rem — **≤ 15,91 rem avec une barre de défilement
+  classique de 15 px**. 16 rem retombe à trois colonnes dès qu'une barre s'affiche ; 15,75 rem
+  tient les deux cas. Colonnes obtenues : **3 à 1280 · 4 à 1440 · 4 à 1512 · 4 à 1920** (échelle
+  126 %) **· 6 à 2560** (130 %).
+- **Les pilules tiennent** parce que Creator passe ses chiffres à trois caractères. Mesuré à
+  103 % : « 658 k vues » + « Engagement 12 % » = 262,2 px de carte (padding 16 × 2 et bordure
+  compris) pour 265,8 px de carte à 1440 (262,2 avec barre de 15 px : au pixel). Le pire cas
+  « 999 k vues » + « Engagement 99 % » fait 267,1 px et **déborde de 1,3 px** — rogné par le
+  `flush` de la carte, invisible ; la largeur de carte à quatre colonnes ne dépend pas de la
+  tuile, seul le padding des pilules pourrait y changer quelque chose, et il ne bouge pas.
+
+---
+
 ## 0.1.6 — l'échelle d'app restaurée, la tuile mesurée
 
 - **⚠ `app-scale.css` reprend les quatre bandes de la 0.1.2** : 103 % sous 1600 px, 112 % à

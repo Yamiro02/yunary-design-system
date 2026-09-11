@@ -135,18 +135,24 @@
   --container-read:45rem;     /* 720 — continuous reading column (legal, forms) */
   --container-narrow:30rem;   /* 480 — centred message, empty state */
   --container-dialog:27.5rem; /* 440 — carte centrée d'auth ou de dialogue (maquettes A1-A3). ADDED v0.1.2 */
-  /* 284 — la largeur MINIMALE d'une tuile de grille fluide (une carte vidéo, une vignette), pas
+  /* 252 — la largeur MINIMALE d'une tuile de grille fluide (une carte vidéo, une vignette), pas
      un max-width de colonne comme les cinq autres : c'est le rôle que `grid-cards-tile` lit
      pour poser ses colonnes en auto-fill. La grille gagne des colonnes avec l'écran, jamais
-     une tuile plus étroite que ça. ADDED v0.1.3 à 15rem ; 18.75rem en v0.1.4 (la carte de la
-     v1) ; MESURÉ en v0.1.6 : la plus petite largeur qui garde les deux pilules de la carte vidéo
-     sur une ligne, padding compris — « 999,9 k vues » (97,9 px) + « Engagement 99,9 % »
-     (141,0 px) en .ds-badge (DM Sans 600 12,5 px, padding 4/11), gap 8, padding de carte 16 × 2,
-     bordure 1 × 2 = 281,0 px = 17,56 rem, arrondi au quart de rem supérieur. Ce sont les valeurs
-     les plus longues que les formateurs émettent sous le million (« 12,4 k vues » + « Engagement
-     12,4 % » ne font que 264,7 px = 16,54 rem, mais « 658,2 k vues » existe). Ni la pilule ni son
-     padding ne bougent : c'est la tuile qui s'adapte à elles. */
-  --container-tile:17.75rem;
+     une tuile plus étroite que ça.
+     CALCULÉE en v0.1.7 sur la référence de la maquette 01 Vidéos : QUATRE colonnes à 1440 × 900.
+     Avec l'échelle d'app (103 % → racine 16,48 px), la barre latérale à sa largeur réelle
+     (--sidebar-w = 253,3 px à 1440), les gouttières et le gap de grille à --space-5 : la zone
+     utile fait 1137 px, et quatre colonnes exigent une tuile ≤ 16,13 rem — ≤ 15,91 rem avec une
+     barre de défilement classique de 15 px. 16 rem retombe à trois colonnes dès qu'une barre
+     s'affiche ; 15,75 rem tient les deux cas. Colonnes obtenues : 3 à 1280 · 4 à 1440 · 4 à 1512
+     · 4 à 1920 (échelle 126 %) · 6 à 2560 (130 %).
+     Les pilules de la carte vidéo tiennent parce que Creator les passe à trois caractères
+     (« 658 k vues », « Engagement 12 % ») : mesuré à 103 %, ce cas fait 262,2 px de carte,
+     pour 265,8 px de carte à 1440 — le pire cas « 999 k vues » + « Engagement 99 % » fait
+     267,1 px et déborde de 1,3 px (rogné par le flush de la carte, invisible).
+     Historique : 15rem (v0.1.3), 18.75rem (v0.1.4), 17.75rem mesurés sur des pilules à quatre
+     caractères (v0.1.6). Ni la pilule ni son padding ne bougent. */
+  --container-tile:15.75rem;
   /* 320 — la COLONNE LATÉRALE d'une fiche (le bandeau d'informations collé à gauche du contenu,
      v1). Un rôle de colonne, pas un max-width de page : s'écrit `w-aside` sur la colonne ou
      `var(--container-aside)` dans un gabarit de grille. ADDED v0.1.4 */
