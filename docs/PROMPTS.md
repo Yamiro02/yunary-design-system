@@ -589,7 +589,9 @@ l'input, et un `<label>` dans un `<label>` est du HTML invalide.
 
 - Props : `kind` (`checkbox·radio`, sur `ChoiceTile` seulement) · `title` (requis) ·
   `description` · `meta` (en fin de ligne : coût, compteur, badge) · `media` (vignette 6 rem
-  collée au bord gauche) · `children` (sous la description) · tout attribut d'`<input>` —
+  collée aux bords haut, bas et gauche, hauteur de la rangée — `<img>` en cover ou `<span>` à
+  fond ; le titre passe alors en ellipse, v0.1.8) · `children` (sous la description) · tout
+  attribut d'`<input>` —
   `name`, `value`, `checked`, `defaultChecked`, `onChange`, `disabled`, `required` · `ref`
   → l'input natif · `className` → la tuile.
 - États rendus : repos, survol, cochée, focus-visible (anneau sur la tuile), désactivée, avec

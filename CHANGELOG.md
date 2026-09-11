@@ -14,6 +14,28 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
+## 0.1.8 — la tuile à média collée aux bords
+
+Une seule chose : `.ds-tile--media`, la variante de `CheckTile` / `RadioTile` avec `media`.
+
+- **La vignette touche les bords haut, bas et gauche** (maquettes S3a / S3b). La tuile perd son
+  padding vertical — `0 / 1,25 / 0 / 0` rem — et la zone de contenu le reprend (`1 rem` haut et
+  bas) ; la vignette (6 rem de large) s'étire à la hauteur de la rangée, au moins 6,5 rem, et le
+  rognage de la tuile (`overflow:hidden`) lui donne le rayon. En 0.1.4 la tuile gardait son
+  1,125 rem vertical et la vignette flottait à 18 px des bords. Mesuré : vignette à 1 px des
+  trois bords (la bordure), 104 px de haut sur une tuile courte, la hauteur du contenu sur une
+  tuile longue.
+- **Le titre tient sur une ligne, en ellipse**, sur cette variante seulement (la maquette) : la
+  vignette impose sa hauteur, un titre qui se replie la ferait grandir.
+- **Une `<img>` remplit la vignette en `cover`, hors flux** : en flux, sa hauteur intrinsèque (une
+  vignette 9/16 à 96 px de large fait 171 px) dictait la hauteur de la rangée — mesuré. Absolue,
+  elle remplit la boîte que le contenu et le plancher de 6,5 rem décident.
+- Filet, état coché (plaque `--accent`, filet `--primary`) et désactivé inchangés ; la tuile sans
+  média garde son padding `1,125 / 1,25`. Démo : vignette dégradé, vignette image, titre long,
+  tuile désactivée.
+
+---
+
 ## 0.1.7 — la tuile calculée pour quatre colonnes à 1440
 
 Une seule chose. Rien d'autre ne bouge — aucun jeton d'espacement, pas de pilule retouchée.

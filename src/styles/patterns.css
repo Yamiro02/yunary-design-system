@@ -260,8 +260,21 @@
    S3a) colle au bord gauche et annule le padding. Le titre est --text-body/600 parce que c'est
    un LIBELLÉ de choix, pas un titre de section : pas de face display. */
 .ds-tile{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--space-4);padding:1.125rem 1.25rem;box-sizing:border-box;border:1.5px solid var(--border);border-radius:var(--radius-md);background:var(--background);color:var(--foreground);font-family:var(--font-body);text-align:left;cursor:pointer;position:relative;transition:border-color var(--duration-base) var(--ease-standard),background var(--duration-base) var(--ease-standard),box-shadow var(--duration-base) var(--ease-standard)}
-.ds-tile--media{grid-template-columns:auto auto minmax(0,1fr) auto;padding-left:0;overflow:hidden}
-.ds-tile__media{align-self:stretch;width:6rem;min-height:6.5rem;background:var(--muted);background-size:cover;background-position:center;display:flex}
+/* LA TUILE À MÉDIA — v0.1.8, maquettes S3a / S3b : la vignette est COLLÉE aux bords haut, bas et
+   gauche. Le padding vertical quitte la tuile (0 / 1,25 / 0 / 0) et passe sur la zone de contenu
+   (1 rem haut et bas) ; la vignette s'étire à la hauteur de la rangée (align-self:stretch sur une
+   grille centrée), au moins 6,5 rem, et le rognage de la tuile (overflow:hidden) lui donne le
+   rayon. En 0.1.4 la tuile gardait son 1,125 rem vertical : la vignette flottait à 18 px des
+   bords. Le titre y est sur UNE ligne, en ellipse (maquette) — la vignette impose sa hauteur, un
+   titre qui se replie la ferait grandir. Une <img> remplit la vignette en cover. */
+.ds-tile--media{grid-template-columns:auto auto minmax(0,1fr) auto;padding:0 1.25rem 0 0;overflow:hidden}
+.ds-tile--media>.ds-tile__main{padding-block:1rem}
+.ds-tile--media .ds-tile__title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ds-tile__media{position:relative;align-self:stretch;width:6rem;min-height:6.5rem;background:var(--muted);background-size:cover;background-position:center;display:flex}
+/* L'image est SORTIE du flux : en flux, sa hauteur intrinsèque (une vignette 9/16 à 96 px de
+   large fait 171 px) dicterait la hauteur de la rangée — mesuré. Absolue, elle remplit la boîte
+   que le contenu et le plancher de 6,5 rem décident, en cover. */
+.ds-tile__media>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .ds-tile .ds-choice{pointer-events:none}
 .ds-tile__main{display:flex;flex-direction:column;gap:0.3125rem;min-width:0}
 .ds-tile__title{font-size:var(--text-body);font-weight:var(--weight-semibold);line-height:var(--leading-snug)}

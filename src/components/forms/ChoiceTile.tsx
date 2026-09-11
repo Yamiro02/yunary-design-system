@@ -16,7 +16,8 @@ import { Icon } from '../icons/Icon';
  * sur un `<button>` — la sémantique est celle de l'input.
  *
  * Colonnes : [média optionnel] contrôle · contenu · méta. `media` (la vignette d'une vidéo,
- * maquette S3a) colle au bord gauche et annule le padding.
+ * maquettes S3a / S3b) colle aux bords haut, bas et gauche : la tuile perd son padding vertical,
+ * la zone de contenu le reprend (1 rem), le titre passe en ellipse.
  *
  * `CheckTile` et `RadioTile` sont les deux formes nommées ; `ChoiceTile` est la générique, avec
  * `kind`. Un `RadioTile` va dans un `role="radiogroup"` avec le même `name`, comme un `Radio`.
@@ -30,7 +31,11 @@ export interface ChoiceTileProps extends Omit<InputHTMLAttributes<HTMLInputEleme
   description?: ReactNode;
   /** La méta en fin de ligne : un coût, un compteur, un badge. */
   meta?: ReactNode;
-  /** Un média collé au bord gauche (vignette 6 rem) — un `<img>`, ou un `<span>` à fond. */
+  /**
+   * Un média collé aux bords haut, bas et gauche (vignette 6 rem de large, hauteur de la rangée,
+   * au moins 6,5 rem) — un `<img>` (rendu en cover), ou un `<span>` à fond. Le padding vertical
+   * passe alors sur la zone de contenu et le titre tient sur une ligne, en ellipse (v0.1.8).
+   */
   media?: ReactNode;
   /** Sous la description : une ligne d'origine, un badge, un « pourquoi ». */
   children?: ReactNode;

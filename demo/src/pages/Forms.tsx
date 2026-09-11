@@ -3,6 +3,12 @@ import { IDENTITY } from '../identity';
 import { Badge, Calendar, CheckTile, Checkbox, DatePicker, FormField, Icon, Input, Radio, RadioTile, Select, Switch, Textarea } from '@yunary/ds';
 import { Block, Grid, Row, Section, Stack } from '../ui';
 
+/* Une vignette IMAGE de recette : un SVG en data-URI (aucun fichier, aucune requête), au format
+   vertical d'une vidéo pour que le `cover` ait quelque chose à rogner. */
+const VIGNETTE = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 160"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a4a3f"/><stop offset="1" stop-color="#1f1e1c"/></linearGradient></defs><rect width="90" height="160" fill="url(#g)"/><circle cx="45" cy="60" r="22" fill="#f08029" opacity=".9"/><rect x="18" y="104" width="54" height="8" rx="4" fill="#f6f2ec" opacity=".8"/><rect x="26" y="120" width="38" height="6" rx="3" fill="#f6f2ec" opacity=".5"/></svg>',
+);
+
 const SERIES = [
   { value: 'build', label: 'Build' },
   { value: 'tuto', label: 'Tuto' },
@@ -123,18 +129,22 @@ export function FormsPage() {
                 description="Les hooks et la structure d'un coup : la vidéo complète, prête à tourner." />
             </div>
           </Block>
-          <Block label="CheckTile — choix multiple, avec média" hint="La vignette (media) colle au bord gauche et annule le padding — maquette S3a. children sous la description : l'origine du modèle.">
+          <Block label="CheckTile — choix multiple, avec média" hint="La vignette (media) est collée aux bords haut, bas et gauche : la tuile perd son padding vertical, la zone de contenu le reprend (1 rem), la vignette s'étire à la hauteur de la rangée (au moins 6,5 rem) et le rognage de la tuile lui donne le rayon — maquettes S3a / S3b (v0.1.8). Le titre tient sur une ligne, en ellipse. Vignette dégradé, vignette image (<img> en cover), puis cochée / non cochée / désactivée.">
             <div className="flex flex-col gap-space-3">
               <CheckTile name="modele" value="miroir" defaultChecked title="Question miroir"
                 description="« Tu fais ça aussi, toi, quand… ? »"
                 media={<span className="flex-1 bg-brand-gradient" />}
                 meta={<Badge tone="amber">Template Yunary</Badge>} />
-              <CheckTile name="modele" value="chiffre" title="Le chiffre qui pique"
+              <CheckTile name="modele" value="chiffre" title="Le chiffre qui pique — un titre de modèle assez long pour dépasser la largeur de la tuile et finir en ellipse"
                 description="« 87 % des vidéos meurent avant la troisième seconde. »"
-                media={<span className="flex-1 bg-tone-dark-soft" />}
+                media={<img src={VIGNETTE} alt="" />}
                 meta={<Badge tone="accent">Importé</Badge>}>
                 <span className="inline-flex items-center gap-space-2 text-caption font-semibold text-primary-readable"><Icon name="video" size="0.875rem" />Issu de « Le déploiement »</span>
               </CheckTile>
+              <CheckTile name="modele" value="off" disabled title="Plafond atteint"
+                description="Décoche un modèle pour en choisir un autre."
+                media={<span className="flex-1 bg-tone-dark-soft" />}
+                meta={<Badge tone="neutral">Bientôt</Badge>} />
             </div>
           </Block>
           <Block label="États" hint="Repos, survol (filet --input, contrôle --primary), cochée, focus-visible (anneau sur la tuile, pas sur la case), désactivée.">
