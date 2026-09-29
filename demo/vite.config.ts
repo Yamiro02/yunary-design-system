@@ -13,12 +13,10 @@ export default defineConfig({
          préfixe la requête. */
       /* LE MONTAGE DE LA VITRINE. Une seule entrée : socle + marque, comme une app.
          Pour essayer une autre marque sans toucher au socle, repointez l'import de
-         `brand-entry.css` — c'est la seule ligne concernée. */
+         `brand-yunary-entry.css` — c'est la seule ligne concernée. */
       'virtual:ds-entry': fileURLToPath(new URL('./brand-yunary-entry.css', import.meta.url)),
       '@yunary/ds/core.css': fileURLToPath(new URL('../src/styles/core.css', import.meta.url)),
       '@yunary/ds/brand-yunary.css': fileURLToPath(new URL('../src/styles/brand-yunary.css', import.meta.url)),
-      '@yunary/ds/brand-content.css': fileURLToPath(new URL('../src/styles/brand-content.css', import.meta.url)),
-      '@yunary/ds/brand-content': fileURLToPath(new URL('../src/brand-content.tsx', import.meta.url)),
       '@yunary/ds/theme.css': fileURLToPath(new URL('../src/styles/theme.css', import.meta.url)),
       '@yunary/ds': fileURLToPath(new URL('../src/index.ts', import.meta.url)),
     },

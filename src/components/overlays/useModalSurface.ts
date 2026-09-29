@@ -17,8 +17,8 @@ export interface ModalSurfaceOptions {
    * `container` (default) — the panel itself. It carries `role="dialog"`, `aria-modal` and an
    * accessible name, so a screen reader announces the dialog and reads its content. That is what
    * `Modal` needs: on a destructive confirmation, the TEXT must be heard before the action.
-   * `first` — the first focusable child. That is what `ActionSheet` needs: a list of actions with
-   * no message to hear, where the first row is the right destination.
+   * `first` — the first focusable child. For a sheet of actions with no message to hear, where
+   * the first row is the right destination.
    *
    * Not a detail: in `Modal` the close button precedes the title in DOM order, so `first` would
    * land on « Fermer » before the question has been read out.
@@ -33,7 +33,7 @@ export interface ModalSurfaceOptions {
    `overflow:hidden` et non `position:fixed` : le premier CONSERVE la position de
    défilement, le second l'écrase et impose une restauration qui scintille.
    La largeur de la barre est compensée, sinon la page saute de ~15 px à l'ouverture.
-   Compteur : Modal et ActionSheet peuvent coexister, on ne déverrouille qu'au dernier.
+   Compteur : plusieurs surfaces modales peuvent coexister, on ne déverrouille qu'à la dernière.
    LIMITE CONNUE : sur iOS Safari, `overflow:hidden` sur `body` laisse passer le
    défilement par inertie dans certains cas. Le remède fiable est `position:fixed`,
    qui coûte le saut de position. Assumé et documenté plutôt que masqué.
@@ -64,7 +64,7 @@ function deverrouiller(): void {
 /**
  * The system's ONE modal-surface behaviour: focus moved in, focus trapped, Escape closes,
  * focus restored to the opener on unmount, document scroll locked while open.
- * `locked` keeps the trap and kills Escape. Shared — ActionSheet reuses this, it never rolls its own.
+ * `locked` keeps the trap and kills Escape. Shared — any modal surface reuses this, it never rolls its own.
  */
 export function useModalSurface({
   open = true, locked = false, onClose, inline = false, initialFocus = 'container',

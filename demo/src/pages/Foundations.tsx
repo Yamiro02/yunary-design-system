@@ -12,10 +12,10 @@ const RAIL = ['--control-sm', '--control-md', '--control-lg', '--icon-control-sm
    de cette page : ce Block est un miroir du socle, pas une troisième source qui pourrait
    diverger de lui. Les trois derniers sont des ARRONDIS propres à un composant — ils ne
    suivent pas l'échelle --radius-*, d'où le rendu séparé. */
-const DIMENSIONS = ['--navbar-h', '--sidebar-w', '--sidebar-w-collapsed', '--sidebar-head-h', '--sidenav-h', '--page-min', '--modal-w', '--modal-w-lg', '--modal-close', '--dropdown-w', '--dropdown-item-h', '--actionsheet-w-panneau', '--toast-w-min', '--toast-w-max', '--choice-box', '--choice-dot', '--progress-h', '--cal-day', '--cal-nav'];
+const DIMENSIONS = ['--navbar-h', '--sidebar-w', '--sidebar-w-collapsed', '--sidebar-head-h', '--sidenav-h', '--page-min', '--modal-w', '--modal-w-lg', '--modal-close', '--dropdown-w', '--dropdown-item-h', '--toast-w-min', '--toast-w-max', '--choice-box', '--choice-dot', '--progress-h', '--cal-day', '--cal-nav'];
 const DIMENSIONS_RADII = ['--tabs-radius', '--pagination-radius', '--choice-box-radius'];
 const SHADOWS = ['--shadow-sm', '--shadow-md', '--shadow-lg', '--shadow-glow', '--shadow-glow-lg'];
-const WIDTHS = ['--container-shell', '--container-wide', '--container-read', '--container-narrow', '--container-dialog', '--container-aside', '--container-tile'];
+const WIDTHS = ['--container-shell', '--container-wide', '--container-read', '--container-narrow', '--container-dialog', '--container-aside'];
 
 export function Foundations() {
   return (
@@ -46,16 +46,11 @@ export function Foundations() {
             {PILLS.map(t => <Swatch key={t} token={t} border />)}
           </div>
         </Block>
-        <Block label="Noir profond" hint="--tone-deep est le plus profond du système, réservé aux surfaces d'export — vignettes, cartes motion. Jamais un fond d'interface. Jeton de l'extension métier.">
-          <Spec token="--tone-deep">
-            <span className="h-space-7 w-full rounded-md border border-border" style={{ background: 'var(--tone-deep)' }} />
-          </Spec>
-        </Block>
       </Section>
 
       <Section title="Typographie" note="--font-display sur tous les titres, avec la casse et la graisse de --heading-transform / --heading-weight. --font-body pour le corps et l'UI. --font-mono pour le code et les métadonnées techniques.">
         <Block label="Affiche et titres">
-          <Spec token="--text-display-xl · miniature et motion"><span className="display-xl">On build une app</span></Spec>
+          <Spec token="--text-display-xl · affiche"><span className="display-xl">On build une app</span></Spec>
           <Spec token="--text-display · hero du site"><span className="display">On build une app</span></Spec>
           <Spec token="--text-heading-xl · h1"><h1>Le résultat, pas l'outil</h1></Spec>
           <Spec token="--text-heading · h2"><h2>La simplicité, pas la technique</h2></Spec>
@@ -120,7 +115,7 @@ export function Foundations() {
             ))}
           </div>
         </Block>
-        <Block label="Largeurs de contenu par rôle" hint="Cinq largeurs maximales de colonne, la colonne latérale d'une fiche (--container-aside, w-aside), et une largeur MINIMALE de tuile (--container-tile, 15,75 rem — calculée pour quatre colonnes de cartes vidéo à 1440 avec l'échelle d'app, la barre latérale et les gouttières réelles), lue par la grille auto-fill ci-dessous.">
+        <Block label="Largeurs de contenu par rôle" hint="Cinq largeurs maximales de colonne et la colonne latérale (--container-aside, w-aside). Chacune peut aussi servir de largeur MINIMALE à la grille auto-fill ci-dessous.">
           {WIDTHS.map(t => (
             <Spec key={t} token={t}>
               <span className="h-space-2 w-full rounded-pill bg-accent" style={{ maxWidth: `var(${t})` }} />
@@ -128,20 +123,10 @@ export function Foundations() {
           ))}
         </Block>
         <Block label="Grille de cartes en auto-fill" hint="grid-cards-<rôle> : autant de colonnes que l'écran en tient, aucune carte sous la largeur du rôle, jamais de débordement. À composer avec `grid` et un gap — il ne pose pas display:grid, comme grid-cols-*.">
-          {/* Les deux rôles lus aujourd'hui : la tuile (Creator, cartes vidéo) et la carte de
-              dialogue (Hub, cartes d'outil). Classes écrites EN CLAIR, pas interpolées : c'est
-              ainsi que check-classes.mjs vérifie que l'utilitaire paramétré produit sa règle. */}
-          <Spec token="grid-cards-tile · minmax(min(--container-tile, 100%), 1fr)">
-            <div className="grid w-full grid-cards-tile gap-space-3"><Tiles n={8} /></div>
-          </Spec>
+          {/* Classes écrites EN CLAIR, pas interpolées : c'est ainsi que check-classes.mjs
+              vérifie que l'utilitaire paramétré produit sa règle. */}
           <Spec token="grid-cards-dialog · minmax(min(--container-dialog, 100%), 1fr)">
             <div className="grid w-full grid-cards-dialog gap-space-3"><Tiles n={4} /></div>
-          </Spec>
-        </Block>
-        <Block label="Ratios" hint="--aspect-video-portrait, le 9/16 d'une vignette de vidéo verticale : aspect-video-portrait. L'échelle native (aspect-video 16/9, aspect-square) reste disponible.">
-          <Spec token="aspect-video-portrait · 9 / 16">
-            <span className="flex w-space-8 aspect-video-portrait items-center justify-center rounded-md border border-border bg-background"><span className="mono text-caption text-text-muted">9:16</span></span>
-            <span className="flex w-space-8 aspect-video items-center justify-center rounded-md border border-border bg-background"><span className="mono text-caption text-text-muted">16:9</span></span>
           </Spec>
         </Block>
       </Section>

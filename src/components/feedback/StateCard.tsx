@@ -4,9 +4,8 @@ import { Card } from '../data-display/Card';
 import { Pastille } from '../data-display/Pastille';
 
 /**
- * LA CARTE D'ÉTAT HÉROS — l'attente, l'indisponible, l'erreur, le cas limite (v0.1.4).
- * Promue à la troisième demande : l'audit d'onboarding de la coque (`AuditStateCard`), puis trois
- * écrans de Creator (Générateur vide, échec de génération, audit non évaluable).
+ * LA CARTE D'ÉTAT HÉROS — l'attente, l'indisponible, l'erreur, le cas limite : un audit qui
+ * tourne, une génération qui échoue, un compte non évaluable.
  *
  * Ce n'est PAS `EmptyState` : celui-là est un emplacement VIDE en pointillés qui invite à
  * remplir ; celle-ci est une carte PLEINE (`Card lg`) qui explique un état — pastille HÉROS

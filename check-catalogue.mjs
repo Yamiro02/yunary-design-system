@@ -8,7 +8,7 @@
  * citaient des icônes sorties du type — un agent qui les recopiait produisait du code qui
  * ne compile pas.
  *
- * CINQ VÉRITÉS, vérifiées à chaque `npm run lint` :
+ * SIX VÉRITÉS, vérifiées à chaque `npm run lint` :
  *   1. chaque composant exporté par src/index.ts a sa section `## <Nom>` dans
  *      docs/PROMPTS.md — un composant non documenté ne sera jamais bien utilisé ;
  *   2. chaque section de docs/PROMPTS.md correspond à un export réel — une section
@@ -20,6 +20,9 @@
  *      du type IconName. Le point 3 vérifiait que chaque icône CITÉE existe, jamais le
  *      COMPTE : trois lignes ont annoncé 47 pour 48 glyphes pendant deux versions, dans
  *      les deux dépôts. Une liste dont on annonce la taille doit voir sa taille vérifiée.
+ *   6. aucun élément RETIRÉ ne revient — composant, sous-chemin, jeton ou classe. Un portage
+ *      depuis une maquette ou un autre gabarit les réintroduit sans bruit : ils compilent,
+ *      ils rendent, et plus personne ne sait qu'ils avaient été retirés exprès.
  *
  * « Composant » = le FICHIER : les sous-exports d'un même fichier (THead, Tr, Td…)
  * appartiennent à la section de leur composant (Table) et n'exigent pas la leur.
@@ -101,6 +104,40 @@ for (const f of ['README.md', 'docs/PROMPTS.md']) {
       + `      Un compte faux fait chercher un glyphe qui n'existe pas — ou en rate un.`);
   }
 }
+
+/* ── 6 · rien de ce qui a été retiré ne revient ──────────────────────────────── */
+/* La liste fait autorité : un élément n'en sort que sur décision de Julien, écrite au
+   CHANGELOG. `.ds-tile*`, `.ds-choice*` et `.ds-dropdown*` NE SONT PAS dedans : seuls leurs
+   composants React sont retirés, les classes restent (le site les emploie). */
+const RETIRES = {
+  composants: ['ChoiceTile', 'CheckTile', 'RadioTile', 'ActionSheet', 'Dropdown', 'HaloHot', 'ContentIcon'],
+  fichiers: ['src/brand-content.tsx', 'src/styles/brand-content.css', 'src/components/forms/ChoiceTile.tsx',
+             'src/components/overlays/ActionSheet.tsx', 'src/components/overlays/Dropdown.tsx'],
+  /* motifs cherchés dans le CSS du paquet, commentaires retirés */
+  css: [/--tone-deep\b/, /--gradient-thumbnail\b/, /--shadow-accent-hot\b/, /\.accent-hot\b/, /\bbg-thumbnail\b/,
+        /--container-tile\b/, /--aspect-video-portrait\b/, /\.ds-actionsheet/, /--actionsheet-/, /\.ds-scrim--sheet\b/],
+};
+for (const c of RETIRES.composants) {
+  if (new RegExp(`\\b${c}\\b`).test(index)) erreurs.push(
+    `« ${c} » est de nouveau exporté par src/index.ts — il a été RETIRÉ en 0.2.0 (voir CHANGELOG).\n`
+    + `      Un composant retiré ne revient que sur décision explicite : retire l'export.`);
+}
+for (const f of RETIRES.fichiers) {
+  if (fs.existsSync(f)) erreurs.push(
+    `${f} existe de nouveau — il a été RETIRÉ en 0.2.0 (voir CHANGELOG). Supprime-le.`);
+}
+if (/brand-content/.test(lire('package.json'))) erreurs.push(
+  `package.json expose de nouveau le sous-chemin brand-content — retiré en 0.2.0. Retire l'entrée d'exports.`);
+(function scanCss(dir) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, e.name);
+    if (e.isDirectory()) { scanCss(full); continue; }
+    if (!e.name.endsWith('.css')) continue;
+    const src = lire(full).replace(/\/\*[\s\S]*?\*\//g, '');
+    for (const motif of RETIRES.css) if (motif.test(src)) erreurs.push(
+      `${full} déclare de nouveau ${motif.source.replace(/\\b/g, '').replace(/\\/g, '')} — retiré en 0.2.0 (voir CHANGELOG).`);
+  }
+})('src/styles');
 
 /* ── verdict ──────────────────────────────────────────────────────────────── */
 if (erreurs.length) {

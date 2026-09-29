@@ -65,9 +65,8 @@ Deux cas attestés, dans deux apps :
   valeurs voisines, **c'est le signe inverse** : le socle pose `-0.02em` (une display est
   serrée), le plus large de l'échelle native vaut `+0.1em`. Il n'existe aucune valeur
   « proche » à choisir — quelle que soit la police que la marque installe ;
-- `tracking-normal` écrit pour « remettre à zéro ». C'était vrai jusqu'à la 0.2.0 ; depuis,
-  l'échelle native est supprimée **entière**, `normal` compris. La classe ne remet plus rien
-  à zéro, elle laisse hériter.
+- `tracking-normal` écrit pour « remettre à zéro ». L'échelle native est supprimée
+  **entière**, `normal` compris : la classe ne remet rien à zéro, elle laisse hériter.
 
 **⚠️ Ce qui survit, et qu'on croit mort à tort.** L'inverse coûte aussi cher — on réécrit
 du code correct :
@@ -81,8 +80,7 @@ du code correct :
 
 **La parade.** Prendre le palier du système (`text-body`, `text-heading`, `text-caption`,
 `tracking-display`, `rounded-lg`…). Quand aucun palier ne dit ce qu'on veut, écrire la
-valeur en littéral : `tracking-[0em]` est la seule façon d'obtenir `letter-spacing: 0`
-depuis la 0.2.0.
+valeur en littéral : `tracking-[0em]` est la seule façon d'obtenir `letter-spacing: 0`.
 
 **Le garde.** `node check-dead-utilities.mjs [dossier…]` — il **dérive** la liste à chaque
 appel (entrées natives moins entrées redéclarées), il ne la recopie pas. Une app le pointe
@@ -183,14 +181,14 @@ le palier nommé du socle quand il existe, il porte déjà son interligne et son
 ## 5 · Il n'y a pas de portail — un flottant vit dans le flux
 
 **Ce qui casse.** Aucun composant du système ne monte dans un portail (`createPortal` n'est
-utilisé nulle part). Les trois flottants — le panneau de `Dropdown`
+utilisé nulle part). Les trois flottants — le menu déroulant
 (`.ds-dropdown--floating`), le popover de `DatePicker` (`.ds-datepicker__pop`) et la bulle
 de `Tooltip` (`.ds-tooltip__bubble`) — sont en `position: absolute` **dans le flux du
 parent**.
 
 Or `.ds-card--flush` pose `overflow: hidden` (c'est ce qui fait tenir un tableau à ras dans
-le rayon de la carte). Un `Dropdown` ouvert dans une `Card flush` est donc **coupé au bord
-de la carte**.
+le rayon de la carte). Un menu déroulant ouvert dans une `Card flush` est donc **coupé au
+bord de la carte**.
 
 **Pourquoi la panne est muette.** Rien n'échoue : le panneau est monté, il est dans le DOM,
 il a ses dimensions. Il est simplement rogné — et souvent de manière partielle, ce qui se
@@ -229,8 +227,9 @@ un menu custom.** Le piège n'est pas le choix, c'est de découvrir en cours d'�
 peut pas styler la liste.
 
 **La parade.** Quand la liste doit vraiment être composée — icône par item, description,
-séparateurs —, ce n'est plus un `Select` : c'est un `Dropdown` déclenché par un bouton, et
-l'app en porte l'état et l'ARIA. Voir alors le piège 5 : ce `Dropdown`-là est un flottant.
+séparateurs —, ce n'est plus un `Select` : c'est un menu `.ds-dropdown` déclenché par un
+bouton, et l'app en porte le balisage, l'état et l'ARIA. Voir alors le piège 5 : ce menu-là
+est un flottant.
 
 **Le garde.** Le type, et c'est le bon niveau : l'erreur des enfants est de compilation.
 

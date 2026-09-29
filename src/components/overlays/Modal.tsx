@@ -12,7 +12,7 @@ import { useModalSurface } from './useModalSurface';
  * Three phases in ONE dialog: confirm → loading → result.
  *
  * MODAL SURFACE — focus moved in on open, focus trapped, Escape closes, focus restored to the
- * opener on close (hook `useModalSurface`, shared with ActionSheet). phase="loading" keeps the
+ * opener on close (hook `useModalSurface`, shared by every modal surface). phase="loading" keeps the
  * trap and kills Escape, the scrim click and the close button.
  */
 export interface ModalResult {
@@ -52,8 +52,8 @@ export interface ModalProps {
   /** Render the panel without the fixed scrim — for specimen cards. */
   inline?: boolean;
   /**
-   * md (défaut) = --modal-w, 23,75 rem : la confirmation, le résultat. lg (v0.1.4) = --modal-w-lg,
-   * 32,5 rem : la modale à FORMULAIRE (maquette 02 de Creator, « Analyser une vidéo »). Sans
+   * md (défaut) = --modal-w, 23,75 rem : la confirmation, le résultat. lg = --modal-w-lg,
+   * 32,5 rem : la modale à FORMULAIRE ou à contenu riche (un paiement, une résiliation). Sans
    * effet sous 64 rem, où les deux sont une feuille en pleine largeur.
    */
   size?: 'md' | 'lg';

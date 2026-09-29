@@ -93,7 +93,7 @@
      utilitaires. Ce n'était pas une politique : primary et destructive étaient exposés
      quand leurs jumeaux -readable — précisément ceux qui posent une couleur sur du
      TEXTE — ne l'étaient pas. Balayé : ces quatre étaient les seuls manquants PARMI LES
-     COULEURS ; --tone-deep reste dehors, exclusion délibérée documentée plus bas.
+     COULEURS.
      ⚠️ La phrase disait « seuls ces quatre manquaient » tout court, et c'était FAUX d'un
      cran : --shadow-glow-sm cochait exactement les mêmes cases dans l'espace des OMBRES —
      déclaré par la marque, employé par le socle, jamais exposé, recopié à la main par
@@ -103,9 +103,7 @@
   --color-destructive-readable: var(--destructive-readable);
   --color-success: var(--success);
 
-  /* ---------- Couleurs : neutres de marque ----------
-     --color-tone-deep n’est pas ici : il appartient à l’extension métier et vit dans
-     `brand-content.css`, avec les utilitaires qui l’emploient. */
+  /* ---------- Couleurs : neutres de marque ---------- */
   --color-tone-dark: var(--tone-dark);
   --color-tone-dark-soft: var(--tone-dark-soft);
   --color-tone-light: var(--tone-light);
@@ -312,16 +310,8 @@
   --container-read: var(--container-read);
   --container-narrow: var(--container-narrow);
   --container-dialog: var(--container-dialog);
-  /* La largeur MINIMALE d'une tuile de grille — lue par `grid-cards-tile` (ci-dessous). Génère
-     aussi `max-w-tile`, par construction du namespace ; il n'a pas d'emploi prévu. */
-  --container-tile: var(--container-tile);
-  /* La colonne latérale d'une fiche : `w-aside` sur la colonne. v0.1.4 */
+  /* La colonne latérale : `w-aside` sur la colonne. */
   --container-aside: var(--container-aside);
-
-  /* ---------- Ratios ----------
-     `aspect-video-portrait` — le 9/16 d'une vignette de vidéo verticale. L'échelle native
-     (`aspect-video` 16/9, `aspect-square`) n'est PAS supprimée : elle ne nomme rien de faux. */
-  --aspect-video-portrait: var(--aspect-video-portrait);
 
   /* ---------- Motion ---------- */
   --ease-standard: var(--ease-standard);
@@ -351,26 +341,22 @@
 @utility bg-halo {
   background-image: var(--gradient-halo);
 }
-/* L'utilitaire métier `bg-thumbnail` n'est pas ici : il est parti avec l'extension
-   optionnelle `brand-content.css`. */
-
-/* LA GRILLE DE CARTES EN AUTO-FILL — un utilitaire PARAMÉTRÉ PAR RÔLE (v0.1.3).
+/* LA GRILLE DE CARTES EN AUTO-FILL — un utilitaire PARAMÉTRÉ PAR RÔLE.
    `grid-cards-<rôle>` pose `grid-template-columns: repeat(auto-fill, minmax(min(<largeur du
    rôle>, 100%), 1fr))` : la grille gagne des colonnes avec l'écran, aucune carte ne descend
    sous la largeur du rôle, et le `min(…, 100%)` empêche une carte de déborder d'un conteneur
    plus étroit qu'elle (un téléphone, une colonne latérale). Il ne pose PAS `display: grid`,
-   exactement comme `grid-cols-*` : il se compose — `grid grid-cards-tile gap-space-5`.
+   exactement comme `grid-cols-*` : il se compose — `grid grid-cards-dialog gap-space-5`.
 
    Le paramètre est un RÔLE de `--container-*`, jamais une mesure : `--value(--container-*)`
-   résout `grid-cards-tile` sur `--container-tile` (la tuile, 15,75 rem — quatre colonnes à 1440,
-   la carte vidéo de Creator) et `grid-cards-dialog` sur `--container-dialog` (27,5 rem — la carte d'outil du
-   Hub, qui lisait déjà ce jeton en style inline). Un nouvel usage choisit un rôle existant
-   ou en ajoute un dans scales.css ; il n'écrit jamais `grid-cols-[repeat(auto-fill,
-   minmax(15rem,1fr))]`, la forme que ceci remplace dans les deux apps.
+   résout `grid-cards-dialog` sur `--container-dialog` (27,5 rem — une carte d'outil) et
+   `grid-cards-narrow` sur `--container-narrow` (30 rem). Un nouvel usage choisit un rôle
+   existant ou en ajoute un dans scales.css ; il n'écrit jamais `grid-cols-[repeat(auto-fill,
+   minmax(15rem,1fr))]`, la forme que ceci remplace.
 
    Pourquoi un `@utility` et pas un jeton `--grid-template-columns-*` par usage : le jeton
-   fixerait UNE largeur par nom (`grid-cols-cards` = 15 rem, et il en faudrait un second pour
-   27,5), alors qu'ici la largeur est déjà nommée par son rôle — un seul mécanisme, zéro
+   fixerait UNE largeur par nom (`grid-cols-cards` = 27,5 rem, et il en faudrait un second pour
+   30), alors qu'ici la largeur est déjà nommée par son rôle — un seul mécanisme, zéro
    valeur en double. `100%` et `1fr` ne sont pas des valeurs de design : c'est la structure
    de la formule, au même titre que `repeat` ou `minmax`. */
 @utility grid-cards-* {

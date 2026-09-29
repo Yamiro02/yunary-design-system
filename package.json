@@ -1,6 +1,6 @@
 {
   "name": "@yunary/ds",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "Design system Yunary — jetons, couche Tailwind v4 et primitives React.",
   "license": "UNLICENSED",
   "private": false,
@@ -26,13 +26,6 @@
     "./core.css": "./src/styles/core.css",
     "./brand-yunary.css": "./src/styles/brand-yunary.css",
     "./brand.template.css": "./src/styles/brand.template.css",
-    "./brand-content.css": "./src/styles/brand-content.css",
-    "./brand-content": {
-      "types": "./dist/brand-content.d.ts",
-      "source": "./src/brand-content.tsx",
-      "import": "./dist/brand-content.js",
-      "require": "./dist/brand-content.cjs"
-    },
     "./theme.css": "./src/styles/theme.css",
     "./app-scale.css": "./src/styles/app-scale.css",
     "./package.json": "./package.json"

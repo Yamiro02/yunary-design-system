@@ -68,7 +68,7 @@ export function FeedbackPage() {
 
       <Section title="StateCard" note="La carte d'état héros : l'attente, l'indisponible, l'erreur, le cas limite. Une carte PLEINE qui explique — pastille héros outlined et carrée, titre subheading, corps muted, appoint, action. Ce n'est pas l'EmptyState (un emplacement vide en pointillés).">
         <Grid cols={2}>
-          <Block label="brand · avec appoint" hint="role=status. L'appoint (children) va entre le corps et l'action : ici la progression de la maquette 09b.">
+          <Block label="brand · avec appoint" hint="role=status. L'appoint (children) va entre le corps et l'action : ici une barre de progression.">
             <StateCard
               icon={<Icon name="clock" />}
               title="Encore un peu de matière, et on te dit tout"

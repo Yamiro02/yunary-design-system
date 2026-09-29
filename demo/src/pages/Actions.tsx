@@ -1,5 +1,4 @@
 import { Button, Icon, IconButton } from '@yunary/ds';
-import { ContentIcon } from '@yunary/ds/brand-content';
 import { Block, Row, Section } from '../ui';
 
 const VARIANTS = ['primary', 'secondary', 'ghost', 'danger'] as const;
@@ -45,7 +44,7 @@ export function ActionsPage() {
         <Block label="Icônes" hint="icon en tête, iconRight en fin. L'icône du chargement remplace celle de tête.">
           <Row>
             <Button variant="primary" size="lg" iconRight={<Icon name="arrow-right" />}>On build une app</Button>
-            <Button variant="secondary" icon={<ContentIcon name="youtube" />}>Voir la chaîne</Button>
+            <Button variant="secondary" icon={<Icon name="external-link" />}>Voir la page</Button>
             <Button variant="ghost" size="sm" icon={<Icon name="copy" />}>Copier</Button>
             <Button variant="danger" icon={<Icon name="triangle-alert" />}>Supprimer</Button>
           </Row>
@@ -67,7 +66,7 @@ export function ActionsPage() {
       </Section>
 
       <Section title="IconButton" note="Carré, rayon --radius-md. md fait 2.625rem — la cible de touche minimale. Jamais un pill.">
-        <Block label="Variantes et tailles" hint="Les icônes ne portent aucun size : le créneau les dimensionne (sm 1rem · md 1.125rem). accent = fond --accent, sans bordure, icône --primary (corail) — l'état « sélectionné doux » d'un lien-icône. danger-soft = la corbeille : la paire de la pilule danger, sans bordure (v0.1.4).">
+        <Block label="Variantes et tailles" hint="Les icônes ne portent aucun size : le créneau les dimensionne (sm 1rem · md 1.125rem). accent = fond --accent, sans bordure, icône --primary (corail) — l'état « sélectionné doux » d'un lien-icône. danger-soft = la corbeille : la paire de la pilule danger, sans bordure.">
           {ICON_VARIANTS.map(v => (
             <Row key={v} label={v}>
               <IconButton label="Copier" variant={v} size="sm"><Icon name="copy" /></IconButton>

@@ -1,12 +1,14 @@
 # @yunary/ds
 
 **Le design system de Yunary.** Deux couches qui ne se mélangent pas : un **socle**
-générique — structure, comportements, échelles, rail de contrôles, motion, 39 composants
+générique — structure, comportements, échelles, rail de contrôles, motion, 36 composants
 React + TypeScript, **zéro couleur** — et la **marque Yunary**, qui porte les couleurs, les
 polices, les dégradés et la lueur.
 
-C'est le socle commun des apps Yunary : chaque micro-outil installe ce paquet et monte la
-même marque, pour que dix produits se ressemblent sans qu'on redécide dix fois.
+C'est le socle commun de Yunary : la coquille web (`@yunary/shell` et le hub) installe ce
+paquet, les écrans MCP (`@yunary/mcp-ui`) en importent les jetons, et le site vitrine en
+porte une copie du CSS. Tous montent la même marque, pour que chaque surface se ressemble
+sans qu'on redécide à chaque fois.
 
 Jetons CSS · couche Tailwind v4 · tout est en `rem`.
 
@@ -28,15 +30,14 @@ import '@yunary/ds/brand-yunary.css';  // la marque Yunary
 | **vous touchez à la marque** | **[`docs/DESIGN.md`](docs/DESIGN.md)** — la charte, et la liste fermée de l'accent |
 
 **La marque Yunary**, `src/styles/brand-yunary.css` : encre et crème, dégradé ambre →
-orange → corail, Onest en titrage et DM Sans en texte. Elle porte les 54 jetons du contrat
-plus 3 jetons métier, et déclare ses 17 écarts d'accessibilité assumés, chacun avec sa
-raison. Le socle, lui, ne porte **aucune couleur** — c'est ce qui permet de la faire évoluer
+orange → corail, Onest en titrage et DM Sans en texte. Elle porte les 55 jetons du contrat
+et déclare ses 24 écarts d'accessibilité assumés, chacun avec sa raison. Le socle, lui, ne porte **aucune couleur** — c'est ce qui permet de la faire évoluer
 sans toucher aux composants.
 
-> **Ce paquet vient d'un gabarit**, dont [`PORTAGE.md`](PORTAGE.md) et
-> [`GETTING-STARTED.md`](GETTING-STARTED.md) décrivent la procédure. Les deux restent dans
-> le dépôt pour mémoire — ils parlent de fabriquer un design system, pas de s'en servir. Le
-> portage Yunary est **fait** : vous n'avez pas à les dérouler.
+> **Ce paquet est bâti sur un gabarit**, dont [`PORTAGE.md`](PORTAGE.md) et
+> [`GETTING-STARTED.md`](GETTING-STARTED.md) décrivent la procédure. Ils parlent de fabriquer
+> un design system à partir de celui-ci, pas de s'en servir : pour Yunary, vous n'avez pas à
+> les dérouler.
 
 ### Les documents
 
@@ -58,7 +59,7 @@ sans toucher aux composants.
 Pas de registry : chaque app épingle une version par un tag git.
 
 ```bash
-npm i github:Yamiro02/yunary-design-system#v0.1.9
+npm i github:Yamiro02/yunary-design-system#v0.2.0
 ```
 
 Cinq **peer dependencies**, à la charge de l'app :
@@ -66,7 +67,7 @@ Cinq **peer dependencies**, à la charge de l'app :
 | Peer | Plage | Note |
 |---|---|---|
 | `react` · `react-dom` | `>=18` | |
-| `tailwindcss` | `>=4` | **v4 uniquement.** Aucun preset v3 : ce gabarit est né sur la v4 |
+| `tailwindcss` | `>=4` | **v4 uniquement.** Aucun preset pour Tailwind 3 |
 | `lucide-react` | `>=0.400` | |
 | `tailwind-merge` | `^3` | **3.x obligatoire** |
 
@@ -77,8 +78,7 @@ Cinq **peer dependencies**, à la charge de l'app :
 > `@import "tailwindcss/…"`. Le flag ne rend pas Tailwind facultatif dans ce cas — il dit
 > seulement que npm ne bloquera pas l'installation. C'est le build CSS qui échouera.
 
-`lucide-react` et `tailwind-merge` sont des **peers** depuis le premier `package.json` du
-gabarit, jamais des dépendances directes : en direct, une app qui a déjà les siennes en
+`lucide-react` et `tailwind-merge` sont des **peers**, jamais des dépendances directes : en direct, une app qui a déjà les siennes en
 embarque **deux copies** dans son bundle. `tailwind-merge` est épinglé
 en 3.x parce que la 2.x ne connaît pas les groupes de classes de Tailwind v4 : elle résoudrait les
 conflits faux, sans rien signaler — et `cn()` est précisément l'endroit où ça coûte une couleur
@@ -114,11 +114,6 @@ Les mêmes fichiers **depuis ton CSS marchent aussi** et produisent le même ré
 jetons et polices compris. L'import JS reste la voie recommandée : c'est celle que fait tourner la
 vitrine, donc celle qui est vérifiée à chaque version.
 
-**L'extension métier est à part et optionnelle.** `brand-content.css` et le sous-chemin
-`@yunary/ds/brand-content` portent les halos de vignette et les icônes de plateformes : de
-quoi fabriquer une miniature ou une carte de motion, pas un écran. Une app d'interface ne
-les importe pas et ne perd rien.
-
 ### 2. La couche Tailwind — import **CSS**
 
 `theme.css` branche les tokens sur Tailwind v4. Il doit être atteint par un `@import` **depuis le
@@ -148,7 +143,7 @@ CSS.
 
 #### Ce que `theme.css` règle pour toi
 
-- **Le preflight est là, et c'est `core.css` qui le porte** — depuis la 0.2.0. Il est versé
+- **Le preflight est là, et c'est `core.css` qui le porte.** Il est versé
   dans le dépôt (`src/styles/tokens/preflight.css`, copie conforme de celui de Tailwind) et
   chargé en `layer(base)` **juste avant** le reset du socle, dans le même fichier : le
   preflight normalise, l'identité du socle repasse par-dessus. Tu n'as rien à importer, et
@@ -161,8 +156,7 @@ CSS.
   `border-current`.
 - **Les couches** : `@layer theme, base, components, utilities`. Le reset du DS est en `base`, les
   états `.ds-*` en `components`. C'est ce qui permet à un utilitaire Tailwind passé en `className`
-  de **surcharger** un composant — `<Card className="p-space-7">` applique bien `--space-7` —
-  exactement comme en v3.
+  de **surcharger** un composant — `<Card className="p-space-7">` applique bien `--space-7`.
 - **Le thème sombre** est le scope `.dark`, jamais un media query (`@custom-variant dark`).
 
 `theme.css` ne contient **que** des `var(--…)` : il branche les tokens sur Tailwind, il n'invente
@@ -190,7 +184,7 @@ garde-fou de largeur minimale ne s'applique qu'à partir de 64 rem : le mobile r
 ```ts
 import '@yunary/ds/core.css';
 import '@yunary/ds/brand-yunary.css';
-import '@yunary/ds/app-scale.css';   // les apps (Hub, Creator, outils internes) — jamais le site public
+import '@yunary/ds/app-scale.css';   // les apps web (le hub, les outils internes) — jamais le site public
 ```
 
 Les paliers sont en **%** : ils multiplient la préférence de taille de texte du navigateur au lieu
@@ -221,9 +215,9 @@ Une section ink au milieu d'une page crème adopte le scope, elle ne peint pas u
 | Ombres | `shadow-sm` `shadow-md` `shadow-lg` `shadow-glow` `shadow-glow-lg` |
 | Typo | `font-display` `font-body` `font-mono` · `text-display-xl` `text-display` `text-heading-xl` `text-heading` `text-subheading` `text-heading-sm` `text-body-lg` `text-body` `text-body-sm` `text-control` `text-caption` `text-eyebrow` `text-chip` |
 | Espacement | `gap-space-1` … `gap-space-8` · `h-control-sm/md/lg` · `w-icon-control-sm/md/lg` · `p-card-pad` `p-card-pad-lg` — **rail unique** : tous les contrôles s'alignent sur `--control-md`, qui descend à 2.75rem sous 64rem |
-| Largeurs | `max-w-shell` `max-w-wide` `max-w-read` `max-w-narrow` `max-w-dialog` `max-w-page` · `w-aside` (la colonne latérale d'une fiche, 20 rem) — et `--container-tile` (15,75 rem : quatre colonnes de cartes vidéo à 1440, calculées avec l'échelle d'app, la barre latérale et les gouttières réelles), la largeur **minimale** d'une tuile de grille, lue par la grille ci-dessous |
-| Ratios | `aspect-video-portrait` — le 9/16 d'une vignette de vidéo verticale ; `aspect-video` et `aspect-square` natifs restent |
-| Grilles | `grid-cards-tile` `grid-cards-dialog` — `grid-cards-<rôle>` pose des colonnes en `auto-fill` dont aucune ne descend sous la largeur du rôle `--container-<rôle>` (`minmax(min(…, 100%), 1fr)`). À composer avec `grid` et un gap, comme `grid-cols-*` ; un `@utility` paramétré, donc variantable |
+| Largeurs | `max-w-shell` `max-w-wide` `max-w-read` `max-w-narrow` `max-w-dialog` `max-w-page` · `w-aside` (la colonne latérale, 20 rem) |
+| Ratios | `aspect-video` et `aspect-square` natifs |
+| Grilles | `grid-cards-dialog` `grid-cards-narrow`… — `grid-cards-<rôle>` pose des colonnes en `auto-fill` dont aucune ne descend sous la largeur du rôle `--container-<rôle>` (`minmax(min(…, 100%), 1fr)`). À composer avec `grid` et un gap, comme `grid-cols-*` ; un `@utility` paramétré, donc variantable |
 | Motion | `ease-standard` |
 
 L'échelle d'espacement est **nommée** (`space-5`, pas `5`) : elle n'écrase pas l'échelle numérique
@@ -244,14 +238,13 @@ de Tailwind, sur laquelle reposent les composants shadcn de ton app.
 > `cn` reste le raccourci quand il n'y a aucun palier à ajouter, et `PALIERS_TYPO` reste exporté
 > pour les cas où tu veux la liste brute.
 
-> **`rounded` nu n'existe plus au barème.** En v3, `rounded` valait `var(--radius)`, soit 20 px.
-> En v4 c'est un utilitaire **statique** de Tailwind, câblé sur `0.25rem`, qu'aucun token ne peut
-> reprendre : un `@utility rounded` fusionnerait avec lui au lieu de le remplacer, et le natif
-> gagnerait. Écris **`rounded-lg`**, qui vaut exactement l'ancien `rounded`. Un `rounded` oublié ne
-> lève aucune erreur : il passe silencieusement de 20 px à 4 px.
+> **`rounded` nu n'est pas au barème.** En Tailwind v4 c'est un utilitaire **statique**, câblé sur
+> `0.25rem`, qu'aucun token ne peut reprendre : un `@utility rounded` fusionnerait avec lui au lieu
+> de le remplacer, et le natif gagnerait. Écris **`rounded-lg`**. Un `rounded` écrit par réflexe ne
+> lève aucune erreur : il rend 4 px, hors barème.
 
 > **Le paquet n'est pas scanné par Tailwind.** v4 ne lit pas `node_modules`. Sans effet
-> aujourd'hui : les 39 composants s'habillent en classes `.ds-*` et n'écrivent aucun utilitaire
+> aujourd'hui : les 36 composants s'habillent en classes `.ds-*` et n'écrivent aucun utilitaire
 > Tailwind. C'est une précaution pour l'avenir — le jour où un composant du DS écrira une classe
 > Tailwind, l'app devra pointer le paquet :
 > ```css
@@ -272,7 +265,7 @@ de Tailwind, sur laquelle reposent les composants shadcn de ton app.
 | `forms` | `Input` · `Textarea` · `Select` · `Checkbox` · `Radio` · `Switch` · `FormField` · `Calendar` · `DatePicker` |
 | `data-display` | `Card` (+ en-tête à slots) · `Pastille` · `Badge` (2 rembourrages) · `Tooltip` · `Separator` · `Table` (+ `THead` `TBody` `Tr` `Th` `Td`) — `framed` · `columns` · `striped` · `hoverable`, composables |
 | `feedback` | `Toast` · `Banner` · `EmptyState` · `Skeleton` · `SkeletonCard` · `Spinner` · `Progress` |
-| `overlays` | `Modal` (3 phases + feuille basse sous 64 rem) · `ActionSheet` · `Dropdown` |
+| `overlays` | `Modal` (3 phases + feuille basse sous 64 rem) |
 | `navigation` | `Navbar` · `Footer` · `Tabs` · `Pagination` · `AppShell` · `Sidebar` |
 | `brand` | `Logo` · `Halo` · `Avatar` |
 
@@ -284,17 +277,14 @@ import { Button, type ButtonProps } from '@yunary/ds';
 
 Les règles d'usage composant par composant sont dans [`docs/PROMPTS.md`](docs/PROMPTS.md).
 
-> **Doctrine ⋯ .** `Dropdown` est **desktop only**. Sous 64 rem, un menu ⋯ s'ouvre **toujours** en
-> `ActionSheet`, jamais en `Dropdown` : ce ne sont pas deux composants concurrents, c'est le même
-> geste sur deux tailles d'écran. La règle est tenue par le CSS — au-dessus de 64 rem,
-> `.ds-scrim--sheet` est en `display:none`, une ActionSheet modale y est impossible. Le composant
-> le signale en console en développement.
+> **Classes sans composant.** La tuile cochable (`.ds-tile`) et le menu déroulant
+> (`.ds-dropdown`) n'ont pas de composant React : leurs classes sont stables, l'app écrit le
+> balisage. Voir la fin de [`docs/PROMPTS.md`](docs/PROMPTS.md).
 
-> **Hors périmètre** — une famille `content` (`CodeBlock`, `StepCard`, `BeforeAfter`,
-> `QuoteBlock`) et un `MetricPill` ont existé puis sont sortis du socle : ce sont des
-> composants métier, ils vivent dans l'app qui en a besoin. Les classes `.ds-metric*`
-> restent dans `patterns.css`, une app peut donc reconstruire sa propre pill de métrique
-> sans réinventer une valeur.
+> **Hors périmètre** — les composants métier (blocs de code, cartes d'étape, pills de
+> métrique…) vivent dans l'app qui en a besoin. Les classes `.ds-metric*` sont dans
+> `patterns.css` : une app peut composer sa propre pill de métrique sans réinventer une
+> valeur.
 
 ---
 
@@ -384,7 +374,7 @@ publié. Elle n'utilise aucun style custom hors tokens.
 ## Périmètre et versions
 
 **Ici : uniquement le générique.** Les composants métiers d'une app restent dans l'app.
-Les gabarits de production (landing, miniatures, motion, slides, social) vivent dans les projets
+Les gabarits de production (landing, visuels, slides, e-mails) vivent dans les projets
 consommateurs.
 
 Semver + tags git. Une évolution = PR sur ce repo, bump, tag, puis mise à jour de la dépendance
@@ -399,11 +389,11 @@ Pas de valeur inventée : chaque couleur, taille, rayon ou ombre vient d'un jeto
 d'emoji — seul le point médian `·`. Jamais un pill sur un bouton ou un input. La face
 `--font-display` est réservée aux titres, jamais sous `1.125rem`, jamais faux-grassée — sa
 casse et sa graisse viennent de `--heading-transform` / `--heading-weight`, que la marque
-règle. `--tone-deep` : miniatures et motion uniquement. Jamais `rounded` nu — toujours
+règle. Jamais `rounded` nu — toujours
 `rounded-lg` : en Tailwind v4, `rounded` est un littéral de 4 px hors barème, et il dérive
 sans rien signaler. Pas de `sparkles` : l'étoile-éclair est bannie du set, elle signe
 « fait par une IA ». Les actions destructives prennent `trash-2`.
 
 Les interdits de **couleur** de Yunary — et la liste **fermée** des endroits où l'accent a
 le droit d'apparaître — sont dans [`docs/DESIGN.md`](docs/DESIGN.md). C'est cette liste qui
-empêche le système de devenir bruyant quand cinq apps l'utilisent en même temps.
+empêche le système de devenir bruyant quand plusieurs surfaces l'utilisent en même temps.

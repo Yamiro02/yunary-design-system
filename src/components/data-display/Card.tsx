@@ -30,11 +30,11 @@ export interface CardProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   /** normal = --space-4 gutter under the header · airy = --space-6, for a card of blocks. */
   headerGap?: 'normal' | 'airy';
   /**
-   * LA PILE — opt-in (v0.1.4). `.ds-card` est `display:block`, donc un `gap-*` posé en
-   * `className` ne rend RIEN (0 px sur 23 cartes de Creator). `gap` passe la carte en colonne
-   * flex avec l'écart du palier --space-N ; l'en-tête cède alors sa marge basse au gap. Sans
-   * `gap`, rien ne change : DOM et rendu identiques à la v0.1.3. Quatre paliers, exprès — pas
-   * de 20 px : l'espacement interne d'une carte reste sur l'échelle.
+   * LA PILE — opt-in. `.ds-card` est `display:block`, donc un `gap-*` posé en `className` ne
+   * rend RIEN (0 px d'écart, en silence). `gap` passe la carte en colonne flex avec l'écart du
+   * palier --space-N ; l'en-tête cède alors sa marge basse au gap. Sans `gap`, la carte reste un
+   * bloc. Quatre paliers, exprès — pas de 20 px : l'espacement interne d'une carte reste sur
+   * l'échelle.
    */
   gap?: 3 | 4 | 5 | 6;
   as?: keyof JSX.IntrinsicElements;

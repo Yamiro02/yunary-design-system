@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { ContentIcon } from '@yunary/ds/brand-content';
 import { IDENTITY } from '../identity';
 import { AppShell, Avatar, Button, Footer, Icon, IconButton, Navbar, Pagination, Sidebar, Tabs, Logo } from '@yunary/ds';
 import { Block, Row, Section } from '../ui';
@@ -41,7 +40,7 @@ export function NavigationPage() {
         </Block>
       </Section>
 
-      <Section title="Tabs" note="Groupe d'onglets sur --secondary. L'onglet actif porte LA convention de l'élément sélectionné du socle : plaque --accent, texte --primary (le corail de la v1, écart de contraste assumé dans la marque — v0.1.5), même graisse que ses voisins — celle de l'entrée de Sidebar, de la page courante, de l'item de menu coché. Jamais noir gras.">
+      <Section title="Tabs" note="Groupe d'onglets sur --secondary. L'onglet actif porte LA convention de l'élément sélectionné du socle : plaque --accent, texte --primary (le corail, écart de contraste assumé dans la marque), même graisse que ses voisins — celle de l'entrée de Sidebar, de la page courante, de l'item de menu coché. Jamais noir gras.">
         <Block label="Interactif">
           <Row><Tabs items={SERIES} value={tab} onChange={setTab} /></Row>
           <p className="caption">Onglet actif : {SERIES.find(s => s.value === tab)?.label}</p>
@@ -83,7 +82,7 @@ export function NavigationPage() {
         </Block>
       </Section>
 
-      <Section title="AppShell et Sidebar" note="Le squelette des outils internes : grille [barre latérale | contenu]. La barre est sur --secondary, repliable en icônes seules, et l'état est persisté en localStorage. L'entrée active : plaque --accent, libellé --primary (corail, v0.1.5), graisse inchangée, icône en currentColor — le rendu de la v1, plus de surface-alt + gras + icône --brand-via.">
+      <Section title="AppShell et Sidebar" note="Le squelette des outils internes : grille [barre latérale | contenu]. La barre est sur --secondary, repliable en icônes seules, et l'état est persisté en localStorage. L'entrée active : plaque --accent, libellé --primary (corail), graisse inchangée, icône en currentColor — jamais surface-alt + gras.">
         <Block label="Complet" hint="responsive={false} et staticLayout épinglent la mise en page à deux colonnes pour la vitrine. Chaque section est un groupe : 16px les séparent, avec ou sans titre — le dernier groupe, sans titre, ne se colle plus au précédent.">
           <div className="overflow-hidden rounded-xl border border-border">
             <AppShell
@@ -165,8 +164,7 @@ export function NavigationPage() {
                 { title: 'Marque', links: [{ label: 'À propos' }, { label: 'Contact' }] },
               ]}
               social={<>
-                <IconButton label="YouTube"><ContentIcon name="youtube" /></IconButton>
-                <IconButton label="Instagram"><ContentIcon name="instagram" /></IconButton>
+                <IconButton label="Écrire"><Icon name="mail" /></IconButton>
                 <IconButton label="GitHub"><Icon name="github" /></IconButton>
               </>}
             />

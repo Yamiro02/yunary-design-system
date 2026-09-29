@@ -9,10 +9,10 @@
 
      1. `npm run rebrand -- "@vous/ds" "Votre Marque"` — renomme le paquet et l'identité
         textuelle (`src/brand.ts`). Il ne crée AUCUN fichier de marque.
-     2. Copiez `src/styles/brand-example.css` en `src/styles/brand-<vous>.css` et repeignez
-        chaque valeur : partir du fichier d'exemple donne les 54 emplacements dans le bon
-        ordre avec leurs commentaires, et comme on remplace toutes les valeurs, on n'hérite
-        d'aucune couleur. CE fichier-ci reste le CONTRAT annoté qu'on garde ouvert à côté
+     2. Copiez `src/styles/brand-yunary.css` (la marque livrée) en
+        `src/styles/brand-<vous>.css` et repeignez chaque valeur : partir d'une marque complète
+        donne tous les emplacements dans le bon ordre avec leurs commentaires, et comme on
+        remplace toutes les valeurs, on n'hérite d'aucune couleur. CE fichier-ci reste le CONTRAT annoté qu'on garde ouvert à côté
         pendant qu'on remplit — il n'est pas le point de départ à recopier.
      3. Montez-le à côté du socle, partout où le design system est chargé :
 
@@ -191,15 +191,6 @@
   --shadow-glow-lg:;   /* CTA primaire survolé */
   --shadow-glow-sm:;   /* CTA primaire enfoncé */
   --shadow-logo-dot:;  /* la pastille du logo */
-
-  /* ---------- MÉTIER — OPTIONNEL, et à ne décommenter que si vous en avez besoin ----------
-     Ces trois jetons ne servent QU'À l'extension `brand-content.css` : halos de miniature,
-     cartes motion, visuels d'export. Une app d'INTERFACE ne les déclare pas et n'importe
-     pas l'extension — elle ne perd rien, il n'y a pas un écran là-dedans.
-     Le contrat des trois est écrit en tête de `src/styles/brand-content.css`.
-     Le pendant JavaScript est sur `@yunary/ds/brand-content` :
-     `HaloHot`, `ContentIcon`. */
-  /* --tone-deep:; --gradient-thumbnail:; --shadow-accent-hot:; */
 }
 
 /* Les 32 jetons dont la valeur DÉPEND DU THÈME. Les 22 autres n'en dépendent pas et ne
@@ -328,8 +319,6 @@
   /* --modal-close:2rem; */             /* socle : 32 — le carré du bouton de fermeture */
   /* --dropdown-w:14.375rem; */         /* socle : 230 */
   /* --dropdown-item-h:2.75rem; */      /* socle : 44 — le rail d'un item de menu */
-  /* --actionsheet-w-panneau:20rem; */  /* socle : 320 — la variante panneau, au-dessus de
-                                           64rem ; la feuille, elle, est en pleine largeur */
   /* --toast-w-min:17.5rem; */          /* socle : 280 */
   /* --toast-w-max:26rem; */            /* socle : 416 */
 
@@ -349,7 +338,7 @@
      Le SEUL palier typographique réglable ici. L'échelle de `tokens/typography.css` vaut pour
      n'importe quelle famille et ne se redéclare pas — sauf ce palier : le titre de page est
      la mesure la plus visible d'une app, et une marque peut légitimement le vouloir un cran
-     sous le 40 du socle sans toucher au reste de l'échelle (Yunary : 36, la valeur de sa v1).
+     sous le 40 du socle sans toucher au reste de l'échelle (Yunary : 36).
 
      LE PIÈGE, le même qu'au § 4.2 : le socle redéclare ce palier à 1.75rem (28) sous 64 rem.
      Une ligne posée ici en `:root` nu arrive APRÈS et gagne AUSSI sous 64 rem : le titre

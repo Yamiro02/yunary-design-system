@@ -204,6 +204,27 @@ const TEMOINS = [
 ];
 const perimes = TEMOINS.filter(([c]) => !ecrites.has(c));
 
+/* LES CLASSES RETIRÉES en 0.2.0 — leur CSS est parti avec elles. Écrites de nouveau, elles
+   seraient déjà muettes ci-dessous ; ce contrôle le dit avec la bonne cause, pour qu'un
+   portage ne « répare » pas la panne en remettant la règle. La contrepartie côté CSS est
+   dans check-catalogue.mjs (point 6). `.ds-tile*` et `.ds-dropdown*` restent : seuls leurs
+   composants React sont retirés. */
+const RETIREES = [/^ds-actionsheet/, /^ds-scrim--sheet$/, /^bg-thumbnail$/, /^accent-hot$/, /^bg-tone-deep$/,
+  /^grid-cards-tile$/, /^max-w-tile$/, /^aspect-video-portrait$/];
+const revenues = [...ecrites.keys()].filter(c => RETIREES.some(r => r.test(c.split(':').pop()))).sort();
+if (revenues.length > 0) {
+  console.error('');
+  console.error('✘ COUVERTURE DES CLASSES — classe RETIRÉE écrite de nouveau');
+  for (const c of revenues) {
+    console.error(`  ✘ ${c}`);
+    for (const ou of [...ecrites.get(c)].sort()) console.error(`      ${ou}`);
+  }
+  console.error('');
+  console.error('  Retirées en 0.2.0 (voir CHANGELOG) : ne remets pas leur CSS, change le code qui les écrit.');
+  console.error('');
+  process.exit(1);
+}
+
 if (muettes.length > 0) {
   console.error('');
   console.error('✘ COUVERTURE DES CLASSES — panne muette détectée');

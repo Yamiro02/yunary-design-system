@@ -12,8 +12,7 @@
  *   propriété devient invalide et ça casse à l'écran, mais chez LUI, pas ici. L'inverse
  *   compte aussi : un jeton resté au gabarit après avoir disparu de la marque fait remplir
  *   une valeur que plus personne ne lit.
- *   Même jeu de noms en `:root`, aux jetons MÉTIER près — ceux du bloc optionnel, qui ne
- *   servent qu'à `brand-content.css`. En `.dark`, le gabarit porte le MINIMUM : tout ce
+ *   Même jeu de noms en `:root`. En `.dark`, le gabarit porte le MINIMUM : tout ce
  *   qu'il déclare doit exister dans la marque, mais une marque peut en redéclarer davantage.
  *
  * RÈGLE 2 — § FACULTATIF (sous le marqueur) ⊆ les jetons du socle.
@@ -48,7 +47,7 @@ const SOCLE = ['src/styles/tokens/scales.css', 'src/styles/tokens/typography.css
 const MARQUE = (() => {
   const dir = 'src/styles';
   const marques = fs.readdirSync(dir)
-    .filter(n => /^brand-.*\.css$/.test(n) && n !== 'brand-content.css' && n !== 'brand.template.css')
+    .filter(n => /^brand-.*\.css$/.test(n) && n !== 'brand.template.css')
     .sort();
   if (!marques.length) {
     console.error(`\n✗ contrat — aucune marque dans ${dir}/ : il n'y a rien à confronter au gabarit.
@@ -60,19 +59,6 @@ const MARQUE = (() => {
   if (marques.length > 1) console.warn(`⚠ contrat — ${marques.length} marques présentes, comparaison sur ${marques[0]}.`);
   return dir + '/' + marques[0];
 })();
-
-/* Les jetons MÉTIER : commentés dans le gabarit, et déclarés par la marque de référence
-   puisqu'elle sert d'exemple complet. On les lit dans le CONTRAT écrit en tête de
-   `brand-content.css` — pas dans une liste tenue ici, qui divergerait. */
-const METIER = new Set(
-  [...fs.readFileSync('src/styles/brand-content.css', 'utf8')
-      .matchAll(/^ {5}(--[\w-]+) {2,}/gm)].map(m => m[1]));
-if (!METIER.size) {
-  console.error(`\n✗ contrat — aucun jeton métier lu dans l'en-tête de brand-content.css.
-  Le contrôle comparerait alors le gabarit et la marque en incluant les jetons optionnels,
-  et signalerait des divergences qui n'en sont pas. Vérifie le format de cet en-tête.\n`);
-  process.exit(1);
-}
 
 /* Le gabarit se coupe en deux sur le marqueur. Un marqueur absent, ou en double, rendrait
    le découpage arbitraire : on refuse au lieu de deviner. */
@@ -106,11 +92,8 @@ const diff = (a, b) => [...a].filter(x => !b.has(x));
 const erreurs = [];
 
 /* ---------- RÈGLE 1 ---------- */
-/* Les jetons MÉTIER sont commentés dans le gabarit — c'est leur état normal, ils sont
-   optionnels — et déclarés par la marque de référence, qui sert d'exemple complet. Les
-   compter comme manquants ferait échouer un contrat correct. */
-const manquantsGabarit = diff(m.root, g.root).filter(n => !METIER.has(n));
-const enTropGabarit = diff(g.root, m.root).filter(n => !METIER.has(n));
+const manquantsGabarit = diff(m.root, g.root);
+const enTropGabarit = diff(g.root, m.root);
 const darkManquants = diff(g.dark, m.dark);
 
 if (manquantsGabarit.length) erreurs.push(
@@ -158,5 +141,5 @@ if (erreurs.length) {
   process.exit(1);
 }
 console.log(`✓ contrat — OBLIGATOIRE : ${g.root.size} jetons au gabarit, ${m.root.size} à la marque par défaut `
-  + `(+${METIER.size} métier optionnels) · .dark : ${g.dark.size} exigés, ${m.dark.size} déclarés`);
+  + `· .dark : ${g.dark.size} exigés, ${m.dark.size} déclarés`);
 console.log(`✓ contrat — FACULTATIF : ${proposes.length} jetons de forme proposés, tous déclarés dans le socle`);

@@ -3,7 +3,7 @@
 Ce dépôt est un **squelette de design system React**. Il apporte trois choses, et
 seulement trois :
 
-1. **L'inventaire** — 39 composants d'interface, leur nom, leur emplacement, leur API.
+1. **L'inventaire** — 36 composants d'interface, leur nom, leur emplacement, leur API.
 2. **La vitrine** — 9 pages qui les montrent tous, prête à ouvrir.
 3. **Le comportement** — focus, clavier, ARIA, cibles tactiles. La partie qu'on ne voit
    pas sur une maquette et qu'on re-casse à chaque régénération.
@@ -17,7 +17,7 @@ Tout le reste — couleurs, typographie, formes, ombres, traitements — **est �
 | | Pourquoi |
 |---|---|
 | La **structure des fichiers** | `src/components/<famille>/<Nom>.tsx`. Le point d'entrée et la vitrine importent par ces chemins. |
-| La **liste des 39 composants** | C'est l'inventaire. On n'en retire pas, on n'en ajoute pas au portage. |
+| La **liste des 36 composants** | C'est l'inventaire. On n'en retire pas, on n'en ajoute pas au portage. |
 | La **structure de la vitrine** | 9 pages — une par famille, plus Fondations. On remplace ce qu'elles montrent, pas leur découpage. |
 | Le **comportement et l'accessibilité** | Piège de focus, touche Échap, verrou de défilement, restitution du focus, `focus-visible`, rôles ARIA, cibles tactiles 44 px. Invisible sur une maquette, indispensable dans une app. |
 
@@ -27,25 +27,23 @@ Tout le visuel, sans exception : palette claire et sombre, polices, échelle
 typographique, arrondis, ombres, dégradés, lueurs, densité, et la façon dont chaque
 composant est traité (plein ou contour, ombre ou bordure, uni ou dégradé).
 
-**Le dépôt rend dès l'installation.** `src/styles/brand-example.css` est une marque
-d'exemple — froide, serif, celle de personne. Elle existe pour que la vitrine s'affiche
-tout de suite et pour prouver que le socle ne porte aucune couleur : si un pixel chaud
-apparaît, une valeur de marque est restée coincée dans le socle. **C'est elle que tu
-remplaces.**
+**Le dépôt rend dès l'installation.** `src/styles/brand-yunary.css` est la marque livrée,
+celle de Yunary. Elle fait s'afficher la vitrine tout de suite, et toutes ses valeurs vivent
+dans ce seul fichier : le socle ne porte aucune couleur. **C'est elle que tu remplaces.**
 
 Deux endroits :
 
-- `src/styles/brand-<projet>.css` — **les valeurs.** Copie `brand-example.css` sous ce nom
-  et repeins chaque valeur — la copie donne les 54 emplacements dans le bon ordre, et comme
+- `src/styles/brand-<projet>.css` — **les valeurs.** Copie `brand-yunary.css` sous ce nom
+  et repeins chaque valeur — la copie donne les 55 emplacements dans le bon ordre, et comme
   tout est remplacé, rien n'est hérité. Garde le contrat annoté
   `src/styles/brand.template.css` ouvert à côté : il liste chaque jeton et dit ce qu'il
-  tient. Puis repointe l'import de `demo/brand-entry.css` sur ton fichier.
+  tient. Puis repointe l'import de `demo/brand-yunary-entry.css` sur ton fichier.
 - `src/styles/patterns.css` — **les règles**, si un traitement demande une autre règle et
   pas seulement une autre valeur. Sur un projet client, ce fichier t'appartient.
 
 ---
 
-## L'inventaire — 39 composants
+## L'inventaire — 36 composants
 
 Chemin : `src/components/<famille>/<Nom>.tsx` · classes CSS : `src/styles/patterns.css`
 
@@ -55,14 +53,14 @@ Chemin : `src/components/<famille>/<Nom>.tsx` · classes CSS : `src/styles/patte
 | `brand` | Avatar · Halo · Logo |
 | `data-display` | Badge · Card · Pastille · Separator · Table · Tooltip |
 | `feedback` | Banner · EmptyState · Progress · Skeleton · SkeletonCard · Spinner · StateCard · Toast |
-| `forms` | Calendar · Checkbox · ChoiceTile *(+ `CheckTile`, `RadioTile`)* · DatePicker · FormField · Input · Radio · Select · Switch · Textarea |
+| `forms` | Calendar · Checkbox · DatePicker · FormField · Input · Radio · Select · Switch · Textarea |
 | `icons` | Icon |
 | `navigation` | AppShell · Footer · Navbar · Pagination · Sidebar · Tabs |
-| `overlays` | ActionSheet · Dropdown · Modal *(+ `useModalSurface`, le hook partagé)* |
+| `overlays` | Modal *(+ `useModalSurface`, le hook partagé)* |
 
-**En plus, et optionnels** — `src/brand-content.tsx` : `HaloHot`, `ContentIcon`. Outils de
-miniature et de motion design, pas d'interface. Une app qui n'en fait pas ne les importe
-jamais.
+**Classes sans composant** — la tuile cochable (`.ds-tile`) et le menu déroulant
+(`.ds-dropdown`) : des classes de `patterns.css`, sans composant React. Voir la fin de
+`docs/PROMPTS.md`.
 
 ## La vitrine — 9 pages
 
@@ -86,7 +84,7 @@ C'est la page de recette. Si elle est juste, le design system est juste.
 **1 · Lis le contrat.** `src/styles/brand.template.css` — chaque jeton, ce qu'il tient, et
 les règles de structure d'une palette. C'est le seul fichier à lire avant d'écrire.
 
-**2 · Écris `src/styles/brand-<client>.css`** — en copiant `brand-example.css` puis en
+**2 · Écris `src/styles/brand-<client>.css`** — en copiant `brand-yunary.css` puis en
 repeignant chaque valeur. Les `@font-face` du client en haut, puis les jetons. Un jeton
 d'identité oublié fait que la variable n'existe pas : ça casse à l'écran, c'est voulu. Les
 jetons de forme, eux, retombent sur la valeur du socle si tu les omets.
@@ -170,4 +168,4 @@ C'est volontaire : une régression casse visiblement au lieu de dériver en sile
 `GETTING-STARTED.md` — la même chose en checklist minutée, pour un humain.
 `docs/DESIGN.md` — la charte à remplir avant de toucher au CSS.
 `docs/accessibilite.md` — ce qui est garanti, et ce qui ne l'est pas.
-`README.md` — l'API des 39 composants.
+`README.md` — l'API des 36 composants.

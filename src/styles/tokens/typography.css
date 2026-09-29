@@ -16,7 +16,7 @@
      leurs NOMS et l'échelle ci-dessous — laquelle vaut pour n'importe quelle famille. */
 
   /* Type scale (rem, px in comment) */
-  --text-display-xl:4.5rem;   /* 72 — thumbnail / motion card. Range 4–8rem. ADDED */
+  --text-display-xl:4.5rem;   /* 72 — affiche, visuel plein cadre. Range 4–8rem. */
   --text-display:3.25rem;     /* 52 — héros de site. --font-display */
   --text-heading-xl:2.5rem;   /* 40 — H1. --font-display */
   --text-heading:1.8125rem;   /* 29 — H2. --font-display */
@@ -27,7 +27,7 @@
   --text-control:0.9375rem;   /* 15 — contrôles : boutons, champs, chips, onglets. FROM APP CODE */
   /* 14 — LE PALIER QUI MANQUAIT. Il était écrit `0.875rem` en littéral DIX fois dans
      patterns.css : bouton sm, choice, switch, sous-titre de carte, titre de toast,
-     description de modale, titre d'actionsheet, item de menu, table, jour de calendrier.
+     description de modale, item de menu, table, jour de calendrier.
      Dix composants rendaient donc une taille que l'échelle ne nommait pas, et une marque
      qui retouche son échelle ne les emmenait pas avec elle.
      Le RÔLE : un cran SOUS le corps de texte, partout où la surface est dense — un menu,

@@ -27,7 +27,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
   size = 'md', invalid = false, surface = 'page', unit, className = '', ...rest
 }: InputProps, ref): JSX.Element {
   // surface: 'page' (default) = the input sits directly on the layout (fill --secondary) · 'card' = inside a card (fill --background).
-  // Since the surface-inference rule in patterns.css, a field inside a Card, Modal, ActionSheet, Dropdown or DatePicker pop deduces --background by itself — the prop is only needed for other containers.
+  // Since the surface-inference rule in patterns.css, a field inside a Card, Modal, .ds-dropdown menu or DatePicker pop deduces --background by itself — the prop is only needed for other containers.
   /* Le rail passe par des classes, jamais par un style inline : `--control-sm`
      aliase `--control-md` depuis le rail unique, mais la classe reste pour l'API
      et pour le jour où le rail redivergerait. */

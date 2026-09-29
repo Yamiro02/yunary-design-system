@@ -109,9 +109,6 @@ img{max-width:100%;display:block}
 .halo-top{background:var(--gradient-halo-top)}
 .halo-center{background:var(--gradient-halo-center)}
 
-/* .accent-hot n'est PAS ici : c'est un motif de MINIATURE et de MOTION, pas d'interface.
-   Il est parti avec l'extension optionnelle `brand-content.css`. */
-
 .page{width:100%;max-width:var(--container-shell);margin-inline:auto;padding-inline:var(--space-5)}
 
 /* Logo — la marque rendue en CSS : --font-display + pastille carrée à coins arrondis en

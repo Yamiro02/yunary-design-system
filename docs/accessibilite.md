@@ -10,9 +10,9 @@
 > translucides — pilules, plaques de marque — sont **composités sur leur surface porteuse**
 > avant mesure : c'est la couleur que l'œil reçoit, pas celle qui est écrite.
 >
-> **66 paires × 2 thèmes. 41 conformes, 25 écarts assumés.** Un écart assumé n'est pas un
+> **64 paires × 2 thèmes. 40 conformes, 24 écarts assumés.** Un écart assumé n'est pas un
 > oubli : c'est une décision écrite, déclarée dans `src/styles/brand-yunary.css` par un bloc
-> `@a11y-assume:` avec sa raison. Le build tombe si une **vingt-sixième** apparaît.
+> `@a11y-assume:` avec sa raison. Le build tombe si une **vingt-cinquième** apparaît.
 
 ---
 
@@ -35,11 +35,10 @@ info et les messages d'erreur — lignes `a{}`, `.ds-badge--accent`, `.ds-banner
 `.ds-error` du tableau § 2.
 
 **L'exception, décidée : l'élément sélectionné est en corail.** La convention d'état actif du
-socle (v0.1.4) pose `--primary` en texte sur la plaque `--accent`, à la lettre de la v1 —
-entrée de Sidebar, onglet, page courante, item de menu coché, lien de barre. 3,00 sur
-`--accent`, le seuil des graphiques, pas celui du texte : huit paires assumées, § 3.6. La
-v0.1.4 avait posé `--primary-readable` (5,16) ; Julien a tranché le 11/09/2026 pour la fidélité
-à la v1 (v0.1.5).
+socle pose `--primary` en texte sur la plaque `--accent` — entrée de Sidebar, onglet, page
+courante, item de menu coché, lien de barre. 3,00 sur `--accent`, le seuil des graphiques, pas
+celui du texte : sept paires assumées, § 3.6. `--primary-readable` (5,16) tiendrait le seuil ;
+Julien a tranché le 11/09/2026 pour le corail.
 
 Le survol de lien ne demande pas de troisième jeton : il se **dérive** en tirant le jumeau
 vers `--foreground` (`color-mix(in srgb, var(--primary-readable) 80%, var(--foreground))`),
@@ -55,9 +54,9 @@ La règle se vérifie d'un grep, et c'est ce qui la rend tenable :
 grep -rE '(^|[^-[:alnum:]])color:var\(--(primary|destructive)\)' src/styles/
 ```
 
-Quatorze sorties aujourd'hui : les deux marqueurs du § 3.4, l'astérisque « requis » d'un
-libellé (`.ds-label__required`, un signe de ponctuation à côté d'un mot en encre), et les onze
-règles de la convention d'état actif (§ 3.6) — toutes décidées, aucune par accident.
+Treize sorties : les deux marqueurs du § 3.4, l'astérisque « requis » d'un libellé
+(`.ds-label__required`, un signe de ponctuation à côté d'un mot en encre), et les dix règles de
+la convention d'état actif (§ 3.6) — toutes décidées, aucune par accident.
 
 ---
 
@@ -85,7 +84,6 @@ règles de la convention d'état actif (§ 3.6) — toutes décidées, aucune pa
 | `.ds-icon-btn--danger-soft sur --background — glyphe` | icône | 3 | 5,28 | 7,59 |
 | `.ds-tile cochée — titre sur --accent` | 16 / 600 | 4,5 | 14,38 | 11,95 |
 | `.ds-tile cochée — description sur --accent` | 14 / 400 | 4,5 | 9,51 | 8,82 |
-| `.ds-actionsheet__item--danger` | 15 / 500 | 4,5 | 6,84 | 5,73 |
 | `.ds-badge--coral sur --card` | 12 / 700 | 4,5 | 4,90 | 5,73 |
 | `.ds-badge--coral sur --background` | 12 / 700 | 4,5 | 4,69 | 6,62 |
 | `.ds-badge--amber sur --card` | 12 / 700 | 4,5 | 4,99 | 7,13 |
@@ -111,7 +109,7 @@ règles de la convention d'état actif (§ 3.6) — toutes décidées, aucune pa
 
 ## 3. Les écarts assumés
 
-25 paires, en six familles. Chacune est déclarée dans `src/styles/brand-yunary.css` par un
+24 paires, en six familles. Chacune est déclarée dans `src/styles/brand-yunary.css` par un
 bloc `@a11y-assume:`. Le script porte la mécanique, **la marque porte ses renoncements** : une
 autre marque née de ce socle repart d'une liste vide et n'hérite d'aucune dérogation.
 
@@ -123,7 +121,6 @@ autre marque née de ce socle repart d'une liste vide et n'hérite d'aucune dér
 | `.ds-tabs--on-card .ds-tab[aria-selected]` | 15 / 600 | 4,5 | 3,25 ✗ | 4,12 ✗ |
 | `.ds-page[aria-current]` | 15 / 600 | 4,5 | 3,00 ✗ | 3,94 ✗ |
 | `.ds-dropdown__item[aria-checked]` | 15 / 400 | 4,5 | 3,00 ✗ | 3,94 ✗ |
-| `.ds-actionsheet__item[aria-checked]` | 15 / 500 | 4,5 | 3,00 ✗ | 3,94 ✗ |
 | `.ds-select option:checked` | 15 / 400 | 4,5 | 3,00 ✗ | 3,94 ✗ |
 | `.ds-cal__day.is-today` | 14 / 700 | 4,5 | 3,25 ✗ | 4,12 ✗ |
 | `.ds-pastille--brand — icône` | icône | 3 | 2,85 ✗ | 3,58 |
@@ -186,8 +183,8 @@ le jour du jour en `--primary` (**3,25** en clair, 4,12 en sombre, pour du 14/70
 **Pourquoi il est assumé.** Les deux sont des **marqueurs**, pas du texte à lire. Le glyphe de
 pastille est décoratif et toujours accompagné de son libellé en texte courant ; le jour du jour
 est aussi porté par la **graisse**, et le jour *sélectionné*, lui, porte l'aplat plein. Ce sont
-les deux paires que `check-contrast.mjs` a fallu **recaler** au portage : le script mesurait
-encore `--primary-readable`, que `patterns.css` ne pose plus à ces deux endroits.
+deux paires que `check-contrast.mjs` mesure sur `--primary`, la couleur que `patterns.css` pose
+réellement à ces deux endroits.
 
 ### 3.5 · Les contours doux crème — `1,05` à `1,36` · 5 paires
 
@@ -201,17 +198,16 @@ délimité par son remplissage **et** son anneau de focus à 3:1 ; la carte port
 ombre teintée d'encre (`--shadow-sm`) qui fait le détachement ; le séparateur est un filet de
 rythme, non porteur de sens.
 
-### 3.6 · L'élément sélectionné en corail — `3,00` à `3,28` en clair · 8 paires
+### 3.6 · L'élément sélectionné en corail — `3,00` à `3,28` en clair · 7 paires
 
 **L'écart.** La convention d'état actif pose `--primary` (`#e85d2f`) en couleur de **texte** sur
 la plaque `--accent` : **3,00** en clair, 3,94 en sombre — entrée de Sidebar, onglet, page
-courante, item de menu coché, ligne de feuille cochée, option de select ; 3,25 sur `--card`
+courante, item de menu coché, option de select ; 3,25 sur `--card`
 pour l'onglet d'une barre posée sur une carte ; 3,28 sur `--secondary` pour le lien actif d'une
 barre de navigation. Le seuil des graphiques, pas celui du texte.
 
-**Pourquoi il est assumé.** Décision de marque de Julien, 11/09/2026 : **le rendu de la v1**
-(`Sidebar.tsx` : `bg-accent text-primary`), le corail et non le brique du jumeau lisible que la
-v0.1.4 avait posé. L'état n'est jamais porté par la couleur seule : la plaque `--accent` (ou
+**Pourquoi il est assumé.** Décision de marque de Julien, 11/09/2026 : `bg-accent
+text-primary`, le corail et non le brique du jumeau lisible. L'état n'est jamais porté par la couleur seule : la plaque `--accent` (ou
 `--card`), l'ombre `--shadow-sm` de l'onglet et de la page courante, la coche d'un item de menu,
 et l'attribut ARIA (`aria-current`, `aria-selected`, `aria-checked`) — un lecteur d'écran n'a
 pas besoin de la couleur. Les libellés sont courts, en 15-16 px et 500-600 ; les **icônes** de la

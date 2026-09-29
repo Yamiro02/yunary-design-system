@@ -1,20 +1,38 @@
 import { useState } from 'react';
-import { ActionSheet, Button, Dropdown, FormField, Icon, Input, Modal } from '@yunary/ds';
+import type { ReactNode } from 'react';
+import { Button, FormField, Icon, Input, Modal, cn } from '@yunary/ds';
 import { Block, Row, Section } from '../ui';
 
-const MENU = [
-  { label: 'Copier le lien', icon: <Icon name="copy" size="1rem" /> },
-  { label: 'Ouvrir la vidéo', icon: <Icon name="play" size="1rem" /> },
-  { label: 'Voir les stats', icon: <Icon name="trending-up" size="1rem" /> },
-];
-
-/* La ligne de coût de la maquette 02 — une COMPOSITION d'app (fond --background, radius md,
-   body-sm), pas un composant du socle : elle est là pour recetter le rythme de la modale. */
-function LigneCout() {
+/* Une ligne d'appoint — une COMPOSITION d'app (fond --background, radius md, body-sm), pas un
+   composant du socle : elle est là pour recetter le rythme de la modale. */
+function LigneAppoint() {
   return (
     <div className="flex items-center gap-space-3 rounded-md bg-background px-space-4 py-space-3 text-body-sm text-text-secondary">
       <span className="inline-flex text-primary"><Icon name="zap" size="1rem" /></span>
-      <span>Cette analyse utilisera <span className="mono font-semibold text-foreground">10 crédits</span> · il t'en reste <span className="mono font-semibold text-foreground">37</span></span>
+      <span>Ce build utilisera <span className="mono font-semibold text-foreground">1 déploiement</span> · il t'en reste <span className="mono font-semibold text-foreground">4</span></span>
+    </div>
+  );
+}
+
+/* LE MENU DÉROULANT, EN CLASSES. Il n'y a pas de composant React : une app écrit le balisage
+   elle-même, comme ci-dessous. Classes écrites EN CLAIR pour que check-classes.mjs les voie. */
+type ItemMenu = { label?: ReactNode; icon?: ReactNode; hint?: ReactNode; danger?: boolean; separator?: boolean; checked?: boolean; className?: string; onSelect?: () => void };
+function Menu({ items, floating = false, end = false }: { items: ItemMenu[]; floating?: boolean; end?: boolean }) {
+  return (
+    <div role="menu" className={cn('ds-dropdown', floating && 'ds-dropdown--floating', floating && end && 'ds-dropdown--end')}>
+      {items.map((it, i) => it.separator
+        ? <hr key={i} className="ds-dropdown__sep" />
+        : (
+          <button key={i} type="button" onClick={it.onSelect}
+            role={it.checked === undefined ? 'menuitem' : 'menuitemradio'}
+            aria-checked={it.checked === undefined ? undefined : it.checked}
+            className={cn('ds-dropdown__item', it.danger && 'ds-dropdown__item--danger', it.className)}>
+            {it.icon}
+            <span className="ds-dropdown__label">{it.label}</span>
+            {it.hint ? <span className="ds-dropdown__hint">{it.hint}</span> : null}
+            {it.checked ? <span className="ds-dropdown__check" aria-hidden="true"><Icon name="check" size="1rem" /></span> : null}
+          </button>
+        ))}
     </div>
   );
 }
@@ -23,14 +41,13 @@ export function OverlaysPage() {
   const [open, setOpen] = useState(false);
   const [renameOpen, setRenameOpen] = useState(false);
   const [projectName, setProjectName] = useState('');
-  const [sheet, setSheet] = useState(false);
-  const [analyseOpen, setAnalyseOpen] = useState(false);
-  const [reseauOpen, setReseauOpen] = useState(false);
-  const [reseau, setReseau] = useState<'all' | 'ig' | 'tt'>('all');
-  const RESEAUX = [
-    { value: 'all' as const, label: 'Tous les réseaux' },
-    { value: 'ig' as const, label: 'Instagram' },
-    { value: 'tt' as const, label: 'TikTok' },
+  const [formOpen, setFormOpen] = useState(false);
+  const [triOpen, setTriOpen] = useState(false);
+  const [tri, setTri] = useState<'recent' | 'ancien' | 'nom'>('recent');
+  const TRIS = [
+    { value: 'recent' as const, label: 'Plus récents' },
+    { value: 'ancien' as const, label: 'Plus anciens' },
+    { value: 'nom' as const, label: 'Par nom' },
   ];
   const [phase, setPhase] = useState<'confirm' | 'loading' | 'result'>('confirm');
   const [statut, setStatut] = useState<'success' | 'error'>('success');
@@ -116,49 +133,49 @@ export function OverlaysPage() {
           </div>
         </Block>
 
-        <Block label="Sans icône, avec fermeture" hint="Sans pastille, le titre partage la ligne de la croix, centré verticalement (v0.1.4) — la croix seule laissait le titre 46-56 px sous le bord.">
+        <Block label="Sans icône, avec fermeture" hint="Sans pastille, le titre partage la ligne de la croix, centré verticalement — seule sur sa rangée, la croix ferait tomber le titre 46-56 px sous le bord.">
           <Modal inline onClose={() => undefined} title="Ta session a expiré" description="Reconnecte-toi pour reprendre là où tu en étais."
             footer={<Button size="sm">Se reconnecter</Button>} />
         </Block>
 
-        <Block label="size=lg — la modale à formulaire" hint="32,5 rem (--modal-w-lg), la maquette 02 de Creator. md (23,75 rem) reste la confirmation et le résultat. Sous 64 rem, les deux sont la même feuille en pleine largeur. Rythme interne : --space-5 (24) entre l'en-tête, le champ, la ligne de coût et le pied (v0.1.9 — la maquette dit 22, l'échelle dit 24).">
+        <Block label="size=lg — la modale à formulaire" hint="32,5 rem (--modal-w-lg) : un formulaire, un contenu riche. md (23,75 rem) reste la confirmation et le résultat. Sous 64 rem, les deux sont la même feuille en pleine largeur. Rythme interne : --space-5 (24) entre l'en-tête, le champ, la ligne d'appoint et le pied.">
           <Row>
-            <Button variant="primary" icon={<Icon name="plus" />} onClick={() => setAnalyseOpen(true)}>Analyser une vidéo</Button>
+            <Button variant="primary" icon={<Icon name="plus" />} onClick={() => setFormOpen(true)}>Nouveau build</Button>
           </Row>
           <Modal
-            open={analyseOpen}
+            open={formOpen}
             size="lg"
-            onClose={() => setAnalyseOpen(false)}
-            title="Analyser une vidéo"
-            footer={<><Button variant="secondary" onClick={() => setAnalyseOpen(false)}>Annuler</Button><Button onClick={() => setAnalyseOpen(false)}>Lancer l'analyse</Button></>}
+            onClose={() => setFormOpen(false)}
+            title="Nouveau build"
+            footer={<><Button variant="secondary" onClick={() => setFormOpen(false)}>Annuler</Button><Button onClick={() => setFormOpen(false)}>Lancer le build</Button></>}
           >
-            <FormField label="Lien de la vidéo" htmlFor="demo-analyse" help="Instagram et TikTok · YouTube arrive bientôt">
-              <Input id="demo-analyse" type="url" placeholder="Colle le lien d'un Reel Instagram ou d'un TikTok" />
+            <FormField label="Lien du dépôt" htmlFor="demo-build" help="GitHub ou GitLab · Bitbucket arrive bientôt">
+              <Input id="demo-build" type="url" placeholder="Colle le lien d'un dépôt GitHub ou GitLab" />
             </FormField>
-            <LigneCout />
+            <LigneAppoint />
           </Modal>
           <div className="flex flex-wrap items-start gap-space-5">
-            <Modal inline size="lg" onClose={() => undefined} title="Analyser une vidéo"
-              footer={<><Button variant="secondary" size="sm">Annuler</Button><Button size="sm">Lancer l'analyse</Button></>}>
-              <FormField label="Lien de la vidéo" htmlFor="demo-analyse-inline" help="Instagram et TikTok · YouTube arrive bientôt">
-                <Input id="demo-analyse-inline" type="url" placeholder="Colle le lien d'un Reel Instagram ou d'un TikTok" />
+            <Modal inline size="lg" onClose={() => undefined} title="Nouveau build"
+              footer={<><Button variant="secondary" size="sm">Annuler</Button><Button size="sm">Lancer le build</Button></>}>
+              <FormField label="Lien du dépôt" htmlFor="demo-build-inline" help="GitHub ou GitLab · Bitbucket arrive bientôt">
+                <Input id="demo-build-inline" type="url" placeholder="Colle le lien d'un dépôt GitHub ou GitLab" />
               </FormField>
-              <LigneCout />
+              <LigneAppoint />
             </Modal>
-            <Modal inline size="lg" onClose={() => undefined} iconVariant="brand" icon={<Icon name="rocket" />} title="Analyser une vidéo"
+            <Modal inline size="lg" onClose={() => undefined} iconVariant="brand" icon={<Icon name="rocket" />} title="Nouveau build"
               description="Avec pastille : la rangée pastille + croix, le titre dessous, puis le champ."
-              footer={<><Button variant="secondary" size="sm">Annuler</Button><Button size="sm">Lancer l'analyse</Button></>}>
-              <FormField label="Lien de la vidéo" htmlFor="demo-analyse-pastille" help="Instagram et TikTok · YouTube arrive bientôt">
-                <Input id="demo-analyse-pastille" type="url" placeholder="Colle le lien d'un Reel Instagram ou d'un TikTok" />
+              footer={<><Button variant="secondary" size="sm">Annuler</Button><Button size="sm">Lancer le build</Button></>}>
+              <FormField label="Lien du dépôt" htmlFor="demo-build-pastille" help="GitHub ou GitLab · Bitbucket arrive bientôt">
+                <Input id="demo-build-pastille" type="url" placeholder="Colle le lien d'un dépôt GitHub ou GitLab" />
               </FormField>
-              <LigneCout />
+              <LigneAppoint />
             </Modal>
-            <Modal inline onClose={() => undefined} title="Renommer le script"
+            <Modal inline onClose={() => undefined} title="Renommer le build"
               footer={<><Button variant="ghost" size="sm">Annuler</Button><Button size="sm">Renommer</Button></>}>
-              <FormField label="Nom du script" htmlFor="demo-rename-md" help="Visible dans la liste des scripts.">
-                <Input id="demo-rename-md" placeholder="Mon script" />
+              <FormField label="Nom du build" htmlFor="demo-rename-md" help="Visible dans la liste des builds.">
+                <Input id="demo-rename-md" placeholder="Mon build" />
               </FormField>
-              <LigneCout />
+              <LigneAppoint />
             </Modal>
           </div>
         </Block>
@@ -203,73 +220,42 @@ export function OverlaysPage() {
         </Block>
       </Section>
 
-      <Section title="ActionSheet" note="Le menu ⋯ sur mobile : une feuille basse d'actions, Annuler intégré. Chaque ligne fait au moins --control-md — le rail tactile, non négociable.">
-        <Block label="La doctrine ⋯" hint="Dropdown est desktop only. Sous 64 rem, un menu ⋯ ouvre TOUJOURS une ActionSheet, jamais un Dropdown. Ce ne sont pas deux composants concurrents : c'est le même geste sur deux tailles d'écran. Au-dessus de 64 rem, .ds-scrim--sheet est en display:none — une ActionSheet modale y est impossible par construction, et le composant le signale en console en développement.">
-          <Row>
-            <Button variant="secondary" onClick={() => setSheet(true)}>Ouvrir le menu ⋯</Button>
-          </Row>
-          <ActionSheet
-            open={sheet}
-            onCancel={() => setSheet(false)}
-            items={[...MENU.map(m => ({ ...m, onSelect: () => setSheet(false) })),
-              { label: 'Supprimer', icon: <Icon name="trash-2" size="1rem" />, danger: true, onSelect: () => setSheet(false) }]}
-          />
-        </Block>
-
-        <Block label="inline panel — la forme desktop" hint="Au-dessus de 64 rem elle n'existe qu'en spécimen : 20rem, quatre coins au rayon 2xl, bordure complète, sans poignée, sans voile.">
-          <Row>
-            <ActionSheet inline panel items={MENU} />
-            <ActionSheet inline panel items={[
-              { label: 'Item au repos', icon: <Icon name="file-text" size="1rem" /> },
-              { label: 'Item survolé', icon: <Icon name="file-text" size="1rem" />, className: 'is-hover' },
-              { label: 'Ligne cochée', icon: <Icon name="file-text" size="1rem" />, checked: true },
-              { label: 'Supprimer la vidéo', icon: <Icon name="trash-2" size="1rem" />, danger: true }]} />
-            <ActionSheet inline panel
-              title="Vidéo 3 — le déploiement"
-              subtitle="Publiée le 24 septembre"
-              note="La suppression retire aussi la miniature et les sous-titres. Elle est définitive."
-              items={[...MENU,
-                { label: 'Supprimer la vidéo', icon: <Icon name="trash-2" size="1rem" />, danger: true }]} />
-          </Row>
-        </Block>
-      </Section>
-
-      <Section title="Dropdown" note="Panneau de menu, rayon lg, --shadow-lg. Les items s'éclairent sur --surface-alt ; l'item coché porte la convention de l'élément sélectionné. DESKTOP ONLY — sous 64 rem, c'est l'ActionSheet ci-dessus qui prend le relais.">
-        <Block label="Ancré sous son déclencheur — align=end" hint="Flottant, le panneau se pose juste sous le bouton, dans un parent position:relative (à poser par l'app). align=end colle les bords droits — le menu d'un bouton en bout de ligne. Avant la 0.1.4, sans top/left, il s'ouvrait À DROITE du bouton. Un menu de CHOIX : checked pose role=menuitemradio + aria-checked, texte --primary (corail) sur --accent à la même graisse, coche en currentColor en fin de ligne, rail de 44 px.">
+      <Section title="Menu déroulant — classes .ds-dropdown" note="Pas de composant React : le balisage s'écrit dans l'app (role=menu, puis menuitem ou menuitemradio). Panneau rayon lg, --shadow-lg. Les items s'éclairent sur --surface-alt ; l'item coché porte la convention de l'élément sélectionné.">
+        <Block label="Ancré sous son déclencheur — .ds-dropdown--floating.ds-dropdown--end" hint="Flottant, le panneau se pose juste sous le bouton, dans un parent position:relative (à poser par l'app). --end colle les bords droits — le menu d'un bouton en bout de ligne. Un menu de CHOIX : role=menuitemradio + aria-checked, texte --primary (corail) sur --accent à la même graisse, coche en currentColor en fin de ligne, rail de 44 px.">
           <div className="flex justify-end">
             <span className="relative inline-flex">
-              <Button variant="secondary" iconRight={<Icon name="chevron-down" />} aria-haspopup="menu" aria-expanded={reseauOpen} onClick={() => setReseauOpen(o => !o)}>
-                {RESEAUX.find(r => r.value === reseau)?.label}
+              <Button variant="secondary" iconRight={<Icon name="chevron-down" />} aria-haspopup="menu" aria-expanded={triOpen} onClick={() => setTriOpen(o => !o)}>
+                {TRIS.find(r => r.value === tri)?.label}
               </Button>
-              {reseauOpen ? (
-                <Dropdown align="end" items={RESEAUX.map(r => ({
-                  label: r.label, checked: r.value === reseau,
-                  onSelect: () => { setReseau(r.value); setReseauOpen(false); },
+              {triOpen ? (
+                <Menu floating end items={TRIS.map(r => ({
+                  label: r.label, checked: r.value === tri,
+                  onSelect: () => { setTri(r.value); setTriOpen(false); },
                 }))} />
               ) : null}
             </span>
           </div>
         </Block>
 
-        <Block label="inline — rendu dans le flux" hint="Posé à côté de l'ActionSheet ci-dessus, la parenté se voit : mêmes lignes, mêmes tons. Le Dropdown garde son filet — dense, survolé à la souris — là où la feuille du bas l'a perdu. Le troisième mélange choix cochés et action : les deux coexistent dans un même menu.">
+        <Block label="Dans le flux — .ds-dropdown seul" hint="Le filet sépare l'action destructrice du reste. Le troisième mélange choix cochés et action : les deux coexistent dans un même menu.">
           <Row>
-            <Dropdown inline items={[
+            <Menu items={[
               { label: 'Copier le lien', icon: <Icon name="copy" size="1rem" /> },
-              { label: 'Ouvrir la vidéo', icon: <Icon name="play" size="1rem" />, hint: '⏎' },
+              { label: 'Ouvrir le build', icon: <Icon name="play" size="1rem" />, hint: '⏎' },
               { label: 'Voir les stats', icon: <Icon name="trending-up" size="1rem" /> },
               { separator: true },
               { label: 'Supprimer', icon: <Icon name="trash-2" size="1rem" />, danger: true },
             ]} />
-            <Dropdown inline items={[
+            <Menu items={[
               { label: 'Item au repos', icon: <Icon name="file-text" size="1rem" /> },
               { label: 'Item survolé', icon: <Icon name="file-text" size="1rem" />, className: 'is-hover' },
               { separator: true },
               { label: 'Action risquée', icon: <Icon name="triangle-alert" size="1rem" />, danger: true },
             ]} />
-            <Dropdown inline items={[
-              { label: 'Tous les réseaux', checked: true },
-              { label: 'Instagram', checked: false },
-              { label: 'TikTok', checked: false, className: 'is-hover' },
+            <Menu items={[
+              { label: 'Tous les projets', checked: true },
+              { label: 'En ligne', checked: false },
+              { label: 'Brouillons', checked: false, className: 'is-hover' },
               { separator: true },
               { label: 'Réinitialiser les filtres', icon: <Icon name="x" size="1rem" /> },
             ]} />

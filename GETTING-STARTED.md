@@ -2,8 +2,8 @@
 
 Ce dépôt est un **squelette de design system**. Il est bâti en deux couches qui ne se
 mélangent pas — un **socle** générique, et une **marque** — de sorte qu'on en fabrique un
-autre en remplaçant la seconde. La marque livrée, `brand-example.css`, est là pour que la
-vitrine s'affiche et pour prouver que le socle est neutre : elle n'est celle de personne.
+autre en remplaçant la seconde. La marque livrée, `brand-yunary.css`, fait s'afficher la
+vitrine ; le socle, lui, est neutre : aucune couleur, aucune police, aucun nom.
 
 **Le lecteur de ce document est un agent** — Claude Design, à qui on donne le dépôt et le
 brief d'un client. Il vaut aussi pour un humain : les étapes et leurs points de vérification
@@ -53,44 +53,44 @@ npm run demo
 → `http://localhost:5273`
 
 **Vérification :** neuf onglets, une bascule Clair / Sombre / Côte à côte, un interrupteur
-« Échelle d'app », et le mark de la **marque d'exemple** en haut à gauche.
+« Échelle d'app », et le mark de la **marque livrée** en haut à gauche.
 
 C'est encore SON design system. Les étapes qui suivent le remplacent par celui du
 client.
 
 ---
 
-## 1 · Mettre la marque d'exemple de côté *(1 min)*
+## 1 · Mettre la marque livrée de côté *(1 min)*
 
-**Attention à l'ordre : l'étape 3 part d'une COPIE de `brand-example.css`.** Faites cette
-copie d'abord — ou gardez l'exemple monté le temps d'écrire la vôtre et ne le supprimez
-qu'à la fin : la vitrine reste visible pendant tout le travail, ce qui aide à comparer.
+**Attention à l'ordre : l'étape 3 part d'une COPIE de `brand-yunary.css`.** Faites cette
+copie d'abord — ou gardez la marque livrée montée le temps d'écrire la vôtre et ne la
+supprimez qu'à la fin : la vitrine reste visible pendant tout le travail, ce qui aide à
+comparer.
 
 Le moment venu, **deux choses, et c'est tout** :
 
 ```bash
-rm src/styles/brand-example.css
+rm src/styles/brand-yunary.css
 ```
 
 ```bash
 rm -f src/styles/assets/fonts/*
 ```
 
-La première est la palette d'exemple — ses couleurs, ses dégradés, ses lueurs. La seconde
-vide le dossier des polices auto-hébergées, s'il en contient : celles du projet viendront à
-la place. (La marque d'exemple, elle, charge ses polices depuis Google Fonts, donc ce
-dossier est déjà vide dans le dépôt livré.)
+La première est la palette livrée — ses couleurs, ses dégradés, ses lueurs, ses
+`@font-face`. La seconde vide le dossier des polices auto-hébergées (Onest, DM Sans,
+DM Mono) : celles du projet viendront à la place.
 
 Retirez aussi son entrée d'`exports` dans `package.json` :
 
 ```
-"./brand-example.css": "./src/styles/brand-example.css",
+"./brand-yunary.css": "./src/styles/brand-yunary.css",
 ```
 
 Un export qui pointe sur un fichier absent est pire que le fichier.
 
 **Vérification :** si vous supprimez avant d'avoir remonté le montage de l'étape 3, la
-vitrine ne démarre plus — `demo/brand-entry.css` importe un fichier qui n'existe pas. C'est
+vitrine ne démarre plus — `demo/brand-yunary-entry.css` importe un fichier qui n'existe pas. C'est
 le comportement attendu, et c'est la raison d'être des deux couches : un manque casse, il
 ne dérive pas.
 
@@ -107,28 +107,27 @@ la version à `0.1.0`, met la ligne d'installation du README sur un gabarit d'UR
 le titre de la vitrine.
 
 **Il ne crée aucun fichier de marque.** La marque se fabrique à l'étape 3, en copiant
-`brand-example.css` puis en repeignant chaque valeur.
+`brand-yunary.css` puis en repeignant chaque valeur.
 
 Idempotent, relançable sans dégât. `--monogram XY` force les initiales.
 
 **Vérification :** `grep -ril "acme" .` ne sort plus que des fichiers de prose que vous
-réécrivez à l'étape 8 — jamais `src/`.
+réécrivez à l'étape 7 — jamais `src/`.
 
 ---
 
 ## 3 · Écrire la marque *(20 min)* — **c'est le vrai travail**
 
-Copiez `src/styles/brand-example.css` en `src/styles/brand-<client>.css` : partir du
-fichier d'exemple donne tous les emplacements dans le bon ordre, avec leurs commentaires —
+Copiez `src/styles/brand-yunary.css` en `src/styles/brand-<client>.css` : partir de la
+marque livrée donne tous les emplacements dans le bon ordre, avec leurs commentaires —
 et comme on repeint chaque valeur, on n'hérite d'aucune couleur. Gardez
 [`src/styles/brand.template.css`](src/styles/brand.template.css) ouvert à côté : **c'est le
 contrat** — il dit ce que chaque jeton doit tenir, et il se suffit à lui-même.
 
-**54 jetons obligatoires** en `:root`, dont **au moins 32** à redéclarer en `.dark`. Plus 3
-jetons métier, optionnels, que la plupart des projets ne déclarent pas.
+**55 jetons obligatoires** en `:root`, dont **au moins 32** à redéclarer en `.dark`.
 
-Puis, tout en bas du gabarit, une **§ FACULTATIF** de 33 jetons de **forme** — les sept
-arrondis, le rail de contrôles, et vingt dimensions de composants : hauteur de navbar,
+Puis, tout en bas du gabarit, une **§ FACULTATIF** de 35 jetons de **forme** — les sept
+arrondis, le rail de contrôles et les dimensions de composants : hauteur de navbar,
 largeur de tiroir, arrondi de barre d'onglets, taille de case à cocher. Elle ne se comporte
 **pas** comme le § 3, et c'est voulu :
 
@@ -141,7 +140,8 @@ largeur de tiroir, arrondi de barre d'onglets, taille de case à cocher. Elle ne
 
 Le § 4 est livré **entièrement commenté**, chaque ligne portant la valeur du socle. Vous
 décommentez uniquement ce que vous changez. Une marque qui n'y touche pas rend exactement ce
-que rend le socle — c'est le cas normal, et c'est ce que fait `brand-example.css`.
+que rend le socle — c'est le cas normal. `brand-yunary.css` n'y redéclare que le padding de
+carte, la largeur de barre latérale et le titre de page.
 
 Les cinq points qui coûtent une demi-journée si on les rate :
 
@@ -163,8 +163,8 @@ Les cinq points qui coûtent une demi-journée si on les rate :
 Déposez les `.woff2` du client dans `src/styles/assets/fonts/` et posez les `@font-face` en
 tête de votre fichier de marque.
 
-Puis montez-le. Renommez `demo/brand-entry.css` en `demo/brand-<client>-entry.css`, mettez
-à jour son second `@import` et l'alias correspondant dans `demo/vite.config.ts` :
+Puis montez-le. Renommez `demo/brand-yunary-entry.css` en `demo/brand-<client>-entry.css`,
+mettez à jour son second `@import` et l'alias correspondant dans `demo/vite.config.ts` :
 
 ```css
 @import '../src/styles/core.css';
@@ -202,8 +202,8 @@ Le réglage d'identité le plus visible après la couleur. Trois options :
 - multipliés par ~1.4 — grand public
 
 Les rayons se **redéclarent dans le fichier de marque** — voir le § 4.1 de
-`brand.template.css`, qui liste les sept paliers avec leurs défauts en commentaire
-(`brand-example.css` en montre l'exercice avec son `--radius-lg:0.125rem`). Le socle
+`brand.template.css`, qui liste les sept paliers avec leurs défauts en commentaire (une
+ligne décommentée, par exemple `--radius-lg:0.125rem;`, suffit). Le socle
 (`tokens/scales.css`) porte les défauts et **ne se touche pas** : ce document ne vous
 demande d'ouvrir aucun fichier du socle.
 
@@ -232,26 +232,7 @@ S'il a un logo vectoriel : remplacez le corps de
 
 ---
 
-## 6 · L'extension métier — la sauter, le plus souvent *(0 min)*
-
-`brand-content.css` porte les halos de vignette, le noir profond et la lueur de mot-clé : de
-quoi fabriquer une **miniature** ou une **carte de motion**. Il n'y a pas un écran là-dedans.
-
-**Si le client fait une app d'interface, ne l'importez pas** — et ne déclarez pas ses trois
-jetons. Retirez sa ligne de `demo/src/styles.css` :
-
-```
-@import '@<scope>/ds/brand-content.css';
-```
-
-La page Marque perdra sa section HaloHot. C'est le comportement attendu : ce qui n'est pas
-importé ne rend pas.
-
-**Vérification :** l'app compile et rend sans manque **sans** cet import.
-
----
-
-## 7 · La recette *(20 min)*
+## 6 · La recette *(20 min)*
 
 Déroulez la démo onglet par onglet, en **Côte à côte**, et regardez les **états** : survol,
 focus, pressé, désactivé. C'est l'étape qu'on est tenté de sauter, et celle qui rapporte le
@@ -261,14 +242,14 @@ plus — un jeton oublié dans `.dark` se voit ici en trois secondes.
 npm run lint
 ```
 
-Enchaîne le typecheck et les trois gardes : collision d'utilitaires, substitution figée,
-contraste de la marque.
+Enchaîne le typecheck et les gardes du dépôt : jetons, version, contrat, collisions
+d'utilitaires, substitution figée, contraste, surfaces, catalogue…
 
 **Vérification :** `✓` sur toutes les lignes.
 
 ---
 
-## 8 · Réécrire les documents qui parlent encore d'ici
+## 7 · Réécrire les documents qui parlent encore d'ici
 
 Ils sont à vous maintenant, ils ne se suppriment pas :
 
@@ -281,7 +262,7 @@ Ils sont à vous maintenant, ils ne se suppriment pas :
 
 ---
 
-## 9 · Publier
+## 8 · Publier
 
 ```bash
 npm run build

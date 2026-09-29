@@ -16,10 +16,9 @@
  *     deux valeurs voisines, c'est le SIGNE INVERSE : le socle pose -0.02em (une display
  *     est serrée), le plus large de l'échelle native vaut +0.1em. Il n'existe aucune
  *     valeur « proche » à choisir. Il s'est vu à l'œil, aucun contrôle ne l'a attrapé ;
- *   · `tracking-normal` écrit pour « remettre à zéro ». Il disait vrai jusqu'à la
- *     0.2.0 ; depuis, l'échelle native est supprimée ENTIÈRE, `normal` compris. La
- *     classe ne remet plus rien à zéro, elle laisse hériter. Une remise à zéro s'écrit
- *     désormais en littéral : `tracking-[0em]`.
+ *   · `tracking-normal` écrit pour « remettre à zéro ». L'échelle native est supprimée
+ *     ENTIÈRE, `normal` compris : la classe ne remet rien à zéro, elle laisse hériter.
+ *     Une remise à zéro s'écrit en littéral : `tracking-[0em]`.
  *
  * ⚠️ LA LISTE DES CLASSES MORTES EST DÉRIVÉE, JAMAIS RECOPIÉE. C'est le point de
  * conception de ce garde. Elle se calcule à chaque appel :

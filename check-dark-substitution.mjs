@@ -69,13 +69,10 @@ for (const racine of DIRS) (function walk(d) {
 })(racine);
 
 const estGabarit = f => path.basename(f) === 'brand.template.css';
-/* `brand-content.css` porte le préfixe mais n'est PAS une marque : c'est l'extension
-   métier, de la structure sans valeurs. Elle appartient au socle de chaque lot. */
-const estExtension = f => path.basename(f) === 'brand-content.css';
-/* `brand-entry.css` porte le préfixe mais n'est qu'un MONTAGE : deux @import, zéro jeton. */
+/* `brand-yunary-entry.css` porte le préfixe mais n'est qu'un MONTAGE : deux @import, zéro jeton. */
 const estMontage = f => /-entry\.css$/.test(path.basename(f));
 const estMarque = f => /^brand-.*\.css$/.test(path.basename(f))
-  && !estGabarit(f) && !estExtension(f) && !estMontage(f);
+  && !estGabarit(f) && !estMontage(f);
 const SOCLE = tous.filter(f => !estMarque(f) && !estGabarit(f) && !estMontage(f));
 const MARQUES = tous.filter(estMarque);
 /* Aucun fichier de marque sous DIR : on analyse ce qu'il y a, en un seul lot — c'est le

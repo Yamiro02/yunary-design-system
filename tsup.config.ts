@@ -1,9 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  /* Deux points d'entrée : le socle, et l'extension métier optionnelle. Séparés pour que
-     `import '@yunary/ds'` n'embarque ni les tracés de plateforme ni la grille. */
-  entry: ['src/index.ts', 'src/brand-content.tsx'],
+  entry: ['src/index.ts'],
   format: ['esm', 'cjs'],
   dts: true,
   clean: true,

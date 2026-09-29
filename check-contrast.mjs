@@ -22,7 +22,7 @@
  *
  * Usage : node check-contrast.mjs [--table]   (STYLES=<dossiers séparés par des virgules>)
  * TOUTES LES MARQUES DU DÉPÔT, une ligne de verdict chacune, sortie non-zéro si l'une
- * échoue — aujourd'hui il n'y en a qu'une, `src/styles/brand-example.css`, mais le script
+ * échoue — aujourd'hui il n'y en a qu'une, `src/styles/brand-yunary.css`, mais le script
  * mesure tout `brand-*.css` qu'il trouve : un garde qu'il faut penser à invoquer n'est
  * pas un garde.
  * TOKENS=<chemin> mesure UN fichier isolé — celui d'un client avant de l'installer.
@@ -40,8 +40,8 @@ const over = (fg, alpha, bg) => { const f = hex(fg), b = hex(bg);
   return '#' + f.map((c, i) => Math.round(c * alpha + b[i] * (1 - alpha)).toString(16).padStart(2, '0')).join(''); };
 
 /* ---------- lecture des jetons ---------- */
-/* Les marques à mesurer : tout `brand-*.css` des dossiers scannés, moins l'extension
-   métier (structure sans valeurs) et le gabarit (valeurs vides par construction).
+/* Les marques à mesurer : tout `brand-*.css` des dossiers scannés, moins le gabarit (valeurs
+   vides par construction).
 
    DEUX DOSSIERS SCANNÉS, exprès. `demo/` a déjà porté une palette de recette à côté de
    celle de `src/styles`, et ne scanner qu'un dossier a déjà produit une perte de
@@ -58,7 +58,7 @@ function marquesLivrées() {
     if (!fs.existsSync(d)) continue;
     for (const n of fs.readdirSync(d).sort()) {
       if (!/^brand-.*\.css$/.test(n)) continue;
-      if (n === 'brand-content.css' || n === 'brand.template.css') continue;
+      if (n === 'brand.template.css') continue;
       if (/-entry\.css$/.test(n)) continue;   // un montage, pas une marque
       out.push(path.join(d, n));
     }
@@ -151,21 +151,19 @@ function pairs(theme, { ROOT, DARK }, fichier) {
   add('Lien', 'a{} au repos sur --card', g('--primary-readable'), g(C), 4.5, '16 / 400');
   add('Lien', 'a:hover — dérivé vers --foreground', over(g('--primary-readable'), .8, g('--foreground')), g(B), 4.5, '16 / 400');
 
-  /* LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ (v0.1.4, corail depuis la v0.1.5) : plaque --accent,
-     texte --primary — la couleur de REMPLISSAGE posée en texte, à la lettre de la v1 —, partout :
-     l'entrée de Sidebar, l'onglet (aussi sur carte, où la plaque est --card), la page courante,
-     l'item de menu coché, la ligne de feuille cochée, le lien de barre. Les huit paires sont
-     mesurées telles que le CSS les pose : elles passent SOUS 4,5 dans les deux thèmes, et chacune
-     est un écart ASSUMÉ dans brand-yunary.css (@a11y-assume, un bloc par paire — décision de
-     marque de Julien du 11/09/2026, fidélité à la v1). Le garde ne masque rien : il refuse la
-     première paire dont le bloc manquerait. Une taille de texte par composant, d'où huit lignes. */
+  /* LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ : plaque --accent, texte --primary — la couleur de
+     REMPLISSAGE posée en texte —, partout : l'entrée de Sidebar, l'onglet (aussi sur carte, où la
+     plaque est --card), la page courante, l'item de menu coché, l'option cochée, le lien de barre.
+     Les sept paires sont mesurées telles que le CSS les pose : elles passent SOUS 4,5 dans les
+     deux thèmes, et chacune est un écart ASSUMÉ dans brand-yunary.css (@a11y-assume, un bloc par
+     paire — décision de marque de Julien du 11/09/2026). Le garde ne masque rien : il refuse la
+     première paire dont le bloc manquerait. Une taille de texte par composant, d'où sept lignes. */
   add('Marque-contenu', '.ds-navlink.is-active', g('--primary'), g('--secondary'), 4.5, '16 / 500');
   add('Marque-contenu', '.ds-sidenav.is-active', g('--primary'), g('--accent'), 4.5, '15 / 500');
   add('Marque-contenu', '.ds-tab[aria-selected]', g('--primary'), g('--accent'), 4.5, '15 / 600');
   add('Marque-contenu', '.ds-tabs--on-card .ds-tab[aria-selected]', g('--primary'), g(C), 4.5, '15 / 600');
   add('Marque-contenu', '.ds-page[aria-current]', g('--primary'), g('--accent'), 4.5, '15 / 600');
   add('Marque-contenu', '.ds-dropdown__item[aria-checked]', g('--primary'), g('--accent'), 4.5, '15 / 400');
-  add('Marque-contenu', '.ds-actionsheet__item[aria-checked]', g('--primary'), g('--accent'), 4.5, '15 / 500');
   add('Marque-contenu', '.ds-select option:checked', g('--primary'), g('--accent'), 4.5, '15 / 400');
   /* Les ICÔNES de la convention (seuil 3) : le bouton-icône accent et le bouton-icône enfoncé.
      3,00 en clair — au seuil, pas dessous. */
@@ -185,13 +183,12 @@ function pairs(theme, { ROOT, DARK }, fichier) {
   add('Marque-contenu', '.ds-icon-btn[aria-pressed] — icône', g('--primary'), g('--accent'), 3, 'icône');
   add('Marque-contenu', '.ds-error', g('--destructive-readable'), g(C), 4.5, '13 / 500');
   add('Marque-contenu', '.ds-dropdown__item--danger', g('--destructive-readable'), g('--popover'), 4.5, '15 / 400');
-  /* Le danger DOUX du bouton-icône (v0.1.4) : la paire de la pilule danger, sur les deux porteuses. */
+  /* Le danger DOUX du bouton-icône : la paire de la pilule danger, sur les deux porteuses. */
   add('Marque-contenu', '.ds-icon-btn--danger-soft sur --card — glyphe', g('--pill-danger-fg'), on('--pill-danger-bg', C), 3, 'icône');
   add('Marque-contenu', '.ds-icon-btn--danger-soft sur --background — glyphe', g('--pill-danger-fg'), on('--pill-danger-bg', B), 3, 'icône');
-  /* La tuile cochée (v0.1.4) : son contenu reste en encre sur la plaque, son filet est --primary. */
+  /* La tuile cochée : son contenu reste en encre sur la plaque, son filet est --primary. */
   add('Marque-contenu', '.ds-tile cochée — titre sur --accent', g('--foreground'), g('--accent'), 4.5, '16 / 600');
   add('Marque-contenu', '.ds-tile cochée — description sur --accent', g('--text-secondary'), g('--accent'), 4.5, '14 / 400');
-  add('Marque-contenu', '.ds-actionsheet__item--danger', g('--destructive-readable'), g('--popover'), 4.5, '15 / 500');
 
   for (const n of ['coral', 'amber', 'danger', 'warning', 'success', 'neutral']) {
     add('Pill', `.ds-badge--${n} sur --card`, g(`--pill-${n}-fg`), on(`--pill-${n}-bg`, C), 4.5, '12 / 700');
@@ -250,7 +247,7 @@ function mesurer(fichier) {
 
 if (process.argv.includes('--table')) {
   /* Un seul fichier pour le tableau : TOKENS= s'il est posé, sinon la première marque —
-     `brand-example.css`, celle que documente docs/accessibilite.md. */
+     `brand-yunary.css`, celle que documente docs/accessibilite.md. */
   const fichier = process.env.TOKENS || CIBLES[0];
   const { rows } = mesurer(fichier);
   const md = sel => { const out = ['| Paire | contenu | seuil | clair | sombre |', '|---|---|--:|--:|--:|'];

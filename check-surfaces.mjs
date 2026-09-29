@@ -54,7 +54,7 @@ function marquesLivrées() {
     if (!fs.existsSync(d)) continue;
     for (const n of fs.readdirSync(d).sort()) {
       if (!/^brand-.*\.css$/.test(n)) continue;
-      if (n === 'brand-content.css' || n === 'brand.template.css') continue;
+      if (n === 'brand.template.css') continue;
       if (/-entry\.css$/.test(n)) continue;
       out.push(path.join(d, n));
     }

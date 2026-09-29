@@ -1,13 +1,40 @@
 import { useState } from 'react';
+import type { InputHTMLAttributes, ReactNode } from 'react';
 import { IDENTITY } from '../identity';
-import { Badge, Calendar, CheckTile, Checkbox, DatePicker, FormField, Icon, Input, Radio, RadioTile, Select, Switch, Textarea } from '@yunary/ds';
+import { Badge, Calendar, Checkbox, DatePicker, FormField, Icon, Input, Radio, Select, Switch, Textarea, cn } from '@yunary/ds';
 import { Block, Grid, Row, Section, Stack } from '../ui';
 
 /* Une vignette IMAGE de recette : un SVG en data-URI (aucun fichier, aucune requête), au format
-   vertical d'une vidéo pour que le `cover` ait quelque chose à rogner. */
+   vertical pour que le `cover` ait quelque chose à rogner. */
 const VIGNETTE = 'data:image/svg+xml;utf8,' + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 160"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a4a3f"/><stop offset="1" stop-color="#1f1e1c"/></linearGradient></defs><rect width="90" height="160" fill="url(#g)"/><circle cx="45" cy="60" r="22" fill="#f08029" opacity=".9"/><rect x="18" y="104" width="54" height="8" rx="4" fill="#f6f2ec" opacity=".8"/><rect x="26" y="120" width="38" height="6" rx="3" fill="#f6f2ec" opacity=".5"/></svg>',
 );
+
+/* LA TUILE COCHABLE, EN CLASSES. Il n'y a pas de composant React : une app écrit le balisage
+   elle-même, comme ci-dessous. Classes écrites EN CLAIR pour que check-classes.mjs les voie. */
+type TuileProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'title'> & {
+  radio?: boolean; title: ReactNode; description?: ReactNode; meta?: ReactNode; media?: ReactNode;
+  start?: boolean; etat?: string; children?: ReactNode;
+};
+function Tuile({ radio = false, title, description, meta, media, start = false, etat, disabled, children, ...rest }: TuileProps) {
+  return (
+    <label className={cn('ds-tile', Boolean(media) && 'ds-tile--media', !media && start && 'ds-tile--start', disabled && 'is-disabled', etat)}>
+      {media ? <span className="ds-tile__media" aria-hidden="true">{media}</span> : null}
+      <span className="ds-choice">
+        <input type={radio ? 'radio' : 'checkbox'} disabled={disabled} {...rest} />
+        {radio
+          ? <span className="ds-choice__box ds-choice__box--radio" aria-hidden="true"><span className="ds-choice__dot" /></span>
+          : <span className="ds-choice__box" aria-hidden="true"><Icon name="check" size="0.8125rem" strokeWidth={3} /></span>}
+      </span>
+      <span className="ds-tile__main">
+        <span className="ds-tile__title">{title}</span>
+        {description ? <span className="ds-tile__desc">{description}</span> : null}
+        {children}
+      </span>
+      {meta ? <span className="ds-tile__meta">{meta}</span> : null}
+    </label>
+  );
+}
 
 const SERIES = [
   { value: 'build', label: 'Build' },
@@ -18,7 +45,7 @@ const SERIES = [
 export function FormsPage() {
   const [checked, setChecked] = useState(true);
   const [niveau, setNiveau] = useState('debutant');
-  const [sortie, setSortie] = useState<'hooks' | 'structure' | 'both'>('both');
+  const [formule, setFormule] = useState<'solo' | 'equipe' | 'both'>('both');
   const [sombre, setSombre] = useState(true);
   const [date, setDate] = useState<Date | undefined>(new Date(2026, 8, 24));
 
@@ -114,60 +141,60 @@ export function FormsPage() {
         </Grid>
       </Section>
 
-      <Section title="ChoiceTile — CheckTile et RadioTile" note="La tuile cochable : UNE anatomie pour tous les choix en tuile. Fond --background, radius md, filet 1,5 px ; cochée : filet --primary + plaque --accent, le titre reste en encre à sa graisse. La tuile est le label : toute sa surface coche, clavier et formulaire sont ceux de l'input natif, le contrôle du socle rend dedans.">
+      <Section title="Tuile cochable — classes .ds-tile" note="UNE anatomie pour tous les choix en tuile, sans composant React : le balisage s'écrit dans l'app. Fond --background, radius md, filet 1,5 px ; cochée : filet --primary + plaque --accent, le titre reste en encre à sa graisse. La tuile est le label : toute sa surface coche, clavier et formulaire sont ceux de l'input natif, le contrôle .ds-choice rend dedans.">
         <Grid cols={2}>
-          <Block label="RadioTile — choix unique" hint="Dans un role=radiogroup, même name. La méta (le coût) en fin de ligne. Maquette S2 de Creator.">
-            <div role="radiogroup" aria-label="Que veux-tu générer ?" className="flex flex-col gap-space-3">
-              <RadioTile name="sortie" value="hooks" checked={sortie === 'hooks'} onChange={() => setSortie('hooks')}
-                title="Des hooks" meta="Dès 2 crédits par modèle"
-                description="Plusieurs ouvertures pour ton script, calées sur des modèles qui ont fait leurs preuves." />
-              <RadioTile name="sortie" value="structure" checked={sortie === 'structure'} onChange={() => setSortie('structure')}
-                title="Une structure" meta="Dès 8 crédits par structure"
-                description="Ton script réorganisé, beat par beat, sur une structure qui tient l'attention." />
-              <RadioTile name="sortie" value="both" checked={sortie === 'both'} onChange={() => setSortie('both')}
-                title="Les deux" meta="Dès 10 crédits"
-                description="Les hooks et la structure d'un coup : la vidéo complète, prête à tourner." />
+          <Block label="Choix unique — input radio" hint="Dans un role=radiogroup, même name. La méta en fin de ligne (.ds-tile__meta).">
+            <div role="radiogroup" aria-label="Quelle formule ?" className="flex flex-col gap-space-3">
+              <Tuile radio name="formule" value="solo" checked={formule === 'solo'} onChange={() => setFormule('solo')}
+                title="Solo" meta="1 projet"
+                description="Un espace, un projet, tout ce qu'il faut pour livrer ton premier outil." />
+              <Tuile radio name="formule" value="equipe" checked={formule === 'equipe'} onChange={() => setFormule('equipe')}
+                title="Équipe" meta="5 projets"
+                description="Plusieurs projets en parallèle, partagés avec ton équipe." />
+              <Tuile radio name="formule" value="both" checked={formule === 'both'} onChange={() => setFormule('both')}
+                title="Sur mesure" meta="Illimité"
+                description="Autant de projets que nécessaire, avec un accompagnement." />
             </div>
           </Block>
-          <Block label="CheckTile — choix multiple, avec média" hint="La vignette (media) est collée aux bords haut, bas et gauche : la tuile perd son padding vertical, la zone de contenu le reprend (1 rem), la vignette s'étire à la hauteur de la rangée (au moins 6,5 rem) et le rognage de la tuile lui donne le rayon — maquettes S3a / S3b (v0.1.8). Le titre tient sur une ligne, en ellipse. Vignette dégradé, vignette image (<img> en cover), puis cochée / non cochée / désactivée.">
+          <Block label="Choix multiple, avec média — .ds-tile--media" hint="La vignette (.ds-tile__media) est collée aux bords haut, bas et gauche : la tuile perd son padding vertical, la zone de contenu le reprend (1 rem), la vignette s'étire à la hauteur de la rangée (au moins 6,5 rem) et le rognage de la tuile lui donne le rayon. Le titre tient sur une ligne, en ellipse. Vignette dégradé, vignette image (<img> en cover), puis cochée / non cochée / désactivée.">
             <div className="flex flex-col gap-space-3">
-              <CheckTile name="modele" value="miroir" defaultChecked title="Question miroir"
-                description="« Tu fais ça aussi, toi, quand… ? »"
+              <Tuile name="modele" value="api" defaultChecked title="Gabarit API"
+                description="Un service prêt à déployer, avec ses tests."
                 media={<span className="flex-1 bg-brand-gradient" />}
-                meta={<Badge tone="amber">Template Yunary</Badge>} />
-              <CheckTile name="modele" value="chiffre" title="Le chiffre qui pique — un titre de modèle assez long pour dépasser la largeur de la tuile et finir en ellipse"
-                description="« 87 % des vidéos meurent avant la troisième seconde. »"
+                meta={<Badge tone="amber">Officiel</Badge>} />
+              <Tuile name="modele" value="dash" title="Tableau de bord interne — un titre de gabarit assez long pour dépasser la largeur de la tuile et finir en ellipse"
+                description="Une vue de pilotage branchée sur ta base."
                 media={<img src={VIGNETTE} alt="" />}
                 meta={<Badge tone="accent">Importé</Badge>}>
                 <span className="inline-flex items-center gap-space-2 text-caption font-semibold text-primary-readable"><Icon name="video" size="0.875rem" />Issu de « Le déploiement »</span>
-              </CheckTile>
-              <CheckTile name="modele" value="off" disabled title="Plafond atteint"
-                description="Décoche un modèle pour en choisir un autre."
+              </Tuile>
+              <Tuile name="modele" value="off" disabled title="Plafond atteint"
+                description="Décoche un gabarit pour en choisir un autre."
                 media={<span className="flex-1 bg-tone-dark-soft" />}
                 meta={<Badge tone="neutral">Bientôt</Badge>} />
             </div>
           </Block>
-          <Block label="align=start — la case sur la première ligne" hint="Artboard S3c (propositions de hooks) : un texte de deux à quatre lignes sans titre distinct, la case alignée sur la PREMIÈRE ligne (align-items:start, 3 px pour la centrer sur la ligne). center reste le défaut : S2 (titre + description) et 08 (une ligne) centrent le contrôle. Sans effet avec un média.">
+          <Block label=".ds-tile--start — la case sur la première ligne" hint="Un texte de deux à quatre lignes sans titre distinct : la case s'aligne sur la PREMIÈRE ligne (align-items:start, 3 px pour la centrer sur la ligne). Sans la classe, le contrôle est centré (titre + description, ou une ligne seule). Sans effet avec un média.">
             <div className="grid grid-cols-1 gap-space-3 md:grid-cols-2">
-              <CheckTile name="hook" value="h1" align="start" defaultChecked
-                title={<span className="font-display text-body-lg font-bold leading-snug tracking-heading-sm">Tu postes tous les jours et personne ne regarde ? Ce n'est pas ton contenu, c'est ton emballage.</span>}
-                description="Ouvre sur la douleur et retourne la cause : la promesse arrive avant la troisième seconde." />
-              <CheckTile name="hook" value="h2" align="start"
-                title={<span className="font-display text-body-lg font-bold leading-snug tracking-heading-sm">Trois erreurs qui tuent tes vidéos avant la troisième seconde.</span>}
-                description="Le chiffre annonce une liste courte, la deadline crée l'urgence." />
-              <RadioTile name="align-demo" value="a" title="Des hooks" meta="Dès 2 crédits"
-                description="Centré (défaut) : le rond au milieu du titre et de la description, comme S2." />
-              <RadioTile name="align-demo" value="b" align="start" title="Des hooks" meta="Dès 2 crédits"
-                description="align=start sur le même contenu : le rond monte sur la ligne du titre." />
+              <Tuile name="titre" value="t1" start defaultChecked
+                title={<span className="font-display text-body-lg font-bold leading-snug tracking-heading-sm">Ton outil interne tourne en local et personne ne s'en sert ? Ce n'est pas le code, c'est le déploiement.</span>}
+                description="Ouvre sur la douleur et retourne la cause." />
+              <Tuile name="titre" value="t2" start
+                title={<span className="font-display text-body-lg font-bold leading-snug tracking-heading-sm">Trois erreurs qui cassent un déploiement avant la première requête.</span>}
+                description="Le chiffre annonce une liste courte." />
+              <Tuile radio name="align-demo" value="a" title="Solo" meta="1 projet"
+                description="Centré (défaut) : le rond au milieu du titre et de la description." />
+              <Tuile radio name="align-demo" value="b" start title="Solo" meta="1 projet"
+                description=".ds-tile--start sur le même contenu : le rond monte sur la ligne du titre." />
             </div>
           </Block>
           <Block label="États" hint="Repos, survol (filet --input, contrôle --primary), cochée, focus-visible (anneau sur la tuile, pas sur la case), désactivée.">
             <div className="flex flex-col gap-space-3">
-              <CheckTile name="etat" value="a" title="Repos" description="Filet --border sur --background." />
-              <CheckTile name="etat" value="b" title="Survol" description="Le filet passe à --input, la case à --primary." className="is-hover" />
-              <CheckTile name="etat" value="c" title="Cochée" description="Filet --primary, plaque --accent." defaultChecked />
-              <CheckTile name="etat" value="d" title="Focus" description="L'anneau est porté par la tuile." className="is-focus" />
-              <CheckTile name="etat" value="e" title="Désactivée" description="Inerte, à 50 %." disabled />
+              <Tuile name="etat" value="a" title="Repos" description="Filet --border sur --background." />
+              <Tuile name="etat" value="b" title="Survol" description="Le filet passe à --input, la case à --primary." etat="is-hover" />
+              <Tuile name="etat" value="c" title="Cochée" description="Filet --primary, plaque --accent." defaultChecked />
+              <Tuile name="etat" value="d" title="Focus" description="L'anneau est porté par la tuile." etat="is-focus" />
+              <Tuile name="etat" value="e" title="Désactivée" description="Inerte, à 50 %." disabled />
             </div>
           </Block>
         </Grid>

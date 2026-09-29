@@ -1,10 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
    MARQUE YUNARY — encre chaude & crème, dégradé ambre → orange → corail en accent
    strictement rationné (logo, un mot de titre, sur-titre, CTA primaire, halo).
-   Transposée de l'ancien design system Yunary dans le contrat brand.template.css :
-   échelle de surfaces à six crans RECONSTRUITE (l'ancienne palette partageait une
-   même valeur entre card/popover/muted), --surface-alt, jumeaux lisibles et halos
-   nommés CRÉÉS. Palette mesurée : chaque paire du contrat tient son seuil ou est
+   Écrite dans le contrat brand.template.css : échelle de surfaces à six crans (chaque
+   rôle a sa valeur : card, popover et muted ne se confondent pas), --surface-alt,
+   jumeaux lisibles et halos nommés. Palette mesurée : chaque paire du contrat tient son seuil ou est
    assumée ci-dessous. Vérif : TOKENS=src/styles/brand-yunary.css node check-contrast.mjs
    ═══════════════════════════════════════════════════════════════════════════════ */
 
@@ -43,8 +42,8 @@
 
 /* ---------- 2 · ÉCARTS D'ACCESSIBILITÉ ASSUMÉS ----------
    Mesurés sur CETTE palette. Trois familles : la signature CTA (label blanc sur le
-   dégradé chaud), les contours doux (hairlines crème) et, depuis la v0.1.5, l'élément
-   sélectionné en corail (bloc dédié plus bas). Rien n'est hérité. */
+   dégradé chaud), les contours doux (hairlines crème) et l'élément sélectionné en corail
+   (bloc dédié plus bas). */
 
 /* @a11y-assume: .ds-btn--primary — label sur --primary à plat
    Signature Yunary : le CTA primaire porte le dégradé chaud avec un label blanc
@@ -104,13 +103,12 @@
 /* @a11y-assume: .ds-sep — filet --border sur --card
    Même hairline, filet de rythme non porteur de sens. */
 
-/* ---------- L'ÉLÉMENT SÉLECTIONNÉ EN CORAIL — décision de marque, 11/09/2026 (v0.1.5) ----------
+/* ---------- L'ÉLÉMENT SÉLECTIONNÉ EN CORAIL — décision de marque, 11/09/2026 ----------
    La convention d'état actif du socle pose --primary (#e85d2f, LE corail) en couleur de TEXTE sur
-   la plaque --accent, comme la v1 (Sidebar.tsx : `bg-accent text-primary`). C'est la couleur de
-   REMPLISSAGE de la marque, et elle ne tient pas 4,5:1 en texte : 3,00 sur --accent en clair
-   (3,94 en sombre), 3,25 sur --card, 3,28 sur --secondary. La v0.1.4 avait posé le jumeau lisible
-   --primary-readable (5,16) ; Julien a tranché pour la FIDÉLITÉ À LA V1 : l'actif est corail, et
-   l'écart est assumé — huit paires, un bloc chacune, pour que check-contrast.mjs les mesure et
+   la plaque --accent (`bg-accent text-primary`). C'est la couleur de REMPLISSAGE de la marque, et
+   elle ne tient pas 4,5:1 en texte : 3,00 sur --accent en clair (3,94 en sombre), 3,25 sur
+   --card, 3,28 sur --secondary. Le jumeau lisible --primary-readable (5,16) tiendrait le seuil ;
+   Julien a tranché : l'actif est corail, et l'écart est assumé — huit paires, un bloc chacune, pour que check-contrast.mjs les mesure et
    les laisse passer parce qu'elles sont DÉCLARÉES, jamais parce qu'elles seraient masquées.
    Ce qui atténue, et vaut pour les huit : l'état n'est jamais porté par la couleur seule — la
    plaque --accent (ou --card sur une carte), l'ombre de l'onglet et de la page courante, la coche
@@ -120,10 +118,10 @@
    badge accent, bandeau info. Repli si la décision est revue : --primary-readable, 5,16 / 5,85. */
 /* @a11y-assume: .ds-navlink.is-active
    Le lien actif d'une barre de navigation, texte nu sur --secondary (3,28 / 4,12). Décision de
-   marque du 11/09/2026 : le corail de la v1. Renfort : aria-current, libellé 16/500. */
+   marque du 11/09/2026 : le corail. Renfort : aria-current, libellé 16/500. */
 /* @a11y-assume: .ds-sidenav.is-active
    L'entrée active de la Sidebar sur sa plaque --accent (3,00 / 3,94). Décision de marque du
-   11/09/2026, fidélité à la v1 (`bg-accent text-primary`). Renfort : la plaque, aria-current,
+   11/09/2026 (`bg-accent text-primary`). Renfort : la plaque, aria-current,
    l'icône en currentColor à 3:1. */
 /* @a11y-assume: .ds-tab[aria-selected]
    L'onglet actif sur --accent (3,00 / 3,94). Décision de marque du 11/09/2026. Renfort : la
@@ -137,9 +135,6 @@
 /* @a11y-assume: .ds-dropdown__item[aria-checked]
    L'item coché d'un menu de choix sur --accent (3,00 / 3,94). Même décision. Renfort : la
    plaque, la coche en fin de ligne (currentColor, 3:1), aria-checked. */
-/* @a11y-assume: .ds-actionsheet__item[aria-checked]
-   La ligne cochée d'une feuille d'actions, jumelle mobile de l'item ci-dessus (3,00 / 3,94).
-   Même décision, mêmes renforts — et un rail tactile de 48. */
 /* @a11y-assume: .ds-select option:checked
    L'option cochée d'un select natif, là où le navigateur peint ses options (3,00 / 3,94). Même
    décision ; sur macOS et iOS la liste système ignore la règle. Renfort : l'état natif. */
@@ -217,7 +212,7 @@
      Le mot-marque « Yunary » suit (casse mixte, aucun override .ds-logo nécessaire). */
   --heading-transform:none;
   --heading-weight:var(--weight-bold);
-  /* Le titre de page un cran au-dessus (Onest 800, comme la v1) ; H2-H4, titres de carte et
+  /* Le titre de page un cran au-dessus (Onest 800) ; H2-H4, titres de carte et
      mot-marque restent en 700. Décision Julien, 08/09/2026 (v0.1.2). */
   --heading-xl-weight:var(--weight-extrabold);
 
@@ -227,15 +222,6 @@
   --shadow-glow-lg:0 10px 28px rgba(245,165,36,.42), 0 4px 12px rgba(232,76,61,.30);
   --shadow-glow-sm:0 2px 8px rgba(245,165,36,.25);
   --shadow-logo-dot:0 0 12px rgba(240,128,41,.5);
-
-  /* ---------- MÉTIER — l'extension brand-content est IMPORTÉE (HaloHot en vitrine) ----------
-     Trois jetons, contrat en tête de src/styles/brand-content.css. Surfaces d'EXPORT
-     uniquement — miniatures, cartes motion — jamais un fond d'interface. Mêmes arrêts
-     chauds que le kit maître : aucune couleur inventée. Tout est littéral (aucun var()
-     dont la source bouge entre les thèmes) : rien à reprendre en .dark. */
-  --tone-deep:#0d0c0b;
-  --gradient-thumbnail:radial-gradient(70% 55% at 50% 100%, rgba(240,128,41,.55) 0%, rgba(232,76,61,.28) 45%, transparent 72%); /* @kind color */
-  --shadow-accent-hot:0 0 34px rgba(240,128,41,.65);
 }
 
 /* Le mark Yunary est VECTORIEL — l'icône (Y en squircle, dégradé de marque) remplace la
@@ -287,15 +273,14 @@
    · la largeur de barre latérale FLUIDE du kit maître — plancher 240 (≤ 1280),
      256 à 1600, 272 à 1920, plafond 288 (≥ 2240). Pente positive : la barre grandit
      avec l'écran ; sous 64rem elle est un tiroir et le jeton ne s'applique plus ;
-   · le TITRE DE PAGE à 36 px, la valeur de la v1 (--typescale-heading-xl: 2.25rem) — le socle
-     dit 40. Décision Julien, 11/09/2026 (v0.1.3), même constat que l'échelle d'app : l'app
-     refondue titrait plus gros que la v1. Réglé ICI et non dans typography.css : le 40 est
-     le défaut du gabarit, le 36 est un choix de Yunary. */
+   · le TITRE DE PAGE à 36 px — le socle dit 40. Décision Julien, 11/09/2026 : à 40 l'app
+     titre trop gros. Réglé ICI et non dans typography.css : le 40 est le défaut du gabarit,
+     le 36 est un choix de Yunary. */
 :root{
   --card-pad:1.75rem;    /* 28 — carte standard */
   --card-pad-lg:2rem;    /* 32 — grande carte / panneau */
   --sidebar-w:clamp(15rem,11rem + 5vw,18rem); /* 240 -> 288 */
-  --text-heading-xl:2.25rem; /* 36 — titre de page, valeur v1 ; socle : 40 */
+  --text-heading-xl:2.25rem; /* 36 — titre de page ; socle : 40 */
 }
 /* LE PIÈGE DU PALIER MOBILE, et il est le même que pour --control-md (gabarit § 4.2). Le socle
    redéclare --text-heading-xl à 1.75rem (28) sous 64 rem dans typography.css. Ce fichier

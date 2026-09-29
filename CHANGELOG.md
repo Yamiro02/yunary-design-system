@@ -14,6 +14,47 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
+## 0.2.0 — le paquet ne porte que ce que Yunary emploie
+
+Retraits décidés par Julien le 29/09/2026 (audit « zéro legacy », Q11). Chaque retrait est
+prouvé par un `grep` vide dans les quatre consommateurs (shell, hub, mcp-ui, site), et inscrit
+dans `check-catalogue.mjs` (point 6) et `check-classes.mjs` pour qu'aucun portage ne le
+réintroduise.
+
+**⚠ Ruptures** — aucune pour les consommateurs actuels, qui n'importent rien de ce qui part :
+
+- **Sous-chemin `@yunary/ds/brand-content` et `brand-content.css` retirés** — `HaloHot`,
+  `ContentIcon`, l'utilitaire `bg-thumbnail`, `.accent-hot`, `--color-tone-deep`. Les trois
+  jetons métier (`--tone-deep`, `--gradient-thumbnail`, `--shadow-accent-hot`) quittent la
+  marque et le gabarit : le contrat compte 55 jetons, marque et gabarit à égalité. Les glyphes
+  `Youtube` et `Instagram` de `brand-glyphs.ts` partent avec eux ; `github` reste dans `Icon`.
+- **Composants React sans consommateur retirés** — `ChoiceTile` / `CheckTile` / `RadioTile`,
+  `Dropdown`, `ActionSheet`. 36 composants au lieu de 39. **Les classes `.ds-tile*`,
+  `.ds-choice*` et `.ds-dropdown*` restent** : le site vitrine les emploie. Elles sont
+  documentées en fin de `docs/PROMPTS.md` (« Classes sans composant ») et montrées en balisage
+  nu dans la vitrine. Les classes `.ds-actionsheet*`, `.ds-scrim--sheet` et le jeton
+  `--actionsheet-w-panneau`, sans autre usage, partent avec leur composant.
+- **Jetons de grille vidéo retirés** — `--container-tile` (donc `grid-cards-tile`,
+  `max-w-tile`) et `--aspect-video-portrait` (`aspect-video-portrait`). L'utilitaire
+  `grid-cards-<rôle>` reste, sur les rôles de largeur existants (`grid-cards-dialog`…).
+
+**Contrôles** — `check-contract`, `check-contrast`, `check-surfaces`,
+`check-dark-substitution` et `check-literals` ne connaissent plus l'extension ; les tableaux de
+`docs/accessibilite.md` sont régénérés (64 paires, 24 écarts assumés). `check-portage.sh`,
+hors de tout script npm et en échec, est retiré.
+
+**Docs** — commentaires, vitrine et documents au présent, sans référence aux versions
+antérieures de Yunary ; exemples de la vitrine sur un contenu neutre. `brand-example.css`,
+cité par `rebrand.mjs`, `GETTING-STARTED.md`, `PORTAGE.md`, `brand.template.css` et
+`check-contrast.mjs` sans exister, est remplacé partout par la marque livrée,
+`brand-yunary.css`. BACKLOG ramené aux manques encore ouverts. Aucune valeur de rendu ne bouge.
+
+**Montée** : shell (tag suivant) → hub (vider `node_modules/.vite`, redéployer) → mcp-ui
+(rebuild, `sync-screens.sh`, redéploiement de `mcp`), au prochain lot de chaque couche. Le site
+garde sa copie de `src/styles/` : elle peut encore porter les règles retirées, sans effet.
+
+---
+
 ## 0.1.9 — le rythme de la modale, l'alignement du contrôle d'une tuile
 
 Deux corrections.

@@ -5,7 +5,7 @@ import { Icon } from '../icons/Icon';
 import { Calendar } from './Calendar';
 
 /**
- * Input-styled trigger (calendar icon) + Calendar in a popover (Dropdown mechanics:
+ * Input-styled trigger (calendar icon) + Calendar in a popover (menu mechanics:
  * outside click / Escape close). Single date. Same surface rule as Input.
  *
  * `forwardRef` : la ref externe est COMPOSÉE avec la ref interne (détection de clic

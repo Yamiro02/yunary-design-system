@@ -45,11 +45,11 @@ reprise en aveugle est une valeur recopiée.
   `Logo`, `Progress` : la prop EST la valeur, il n'y a rien à redéfinir.
 - **Illégitime** dès qu'il porte un **défaut**. Un défaut est un arbitrage de design ;
   l'écrire inline le range au seul endroit du langage que la cascade n'atteint pas.
-  `Glyph` et `Spinner` faisaient exactement ça — corrigé en v0.3.0 : le défaut vit dans
-  le repli de `var(--ds-icon-size, 1.25rem)`, côté cascade, où un créneau peut le battre.
-- **Sans excuse** quand il n'y a même pas de prop — l'astérisque de `FormField`, le hint
-  de `Dropdown` : une décision du socle qu'aucun sélecteur ne pouvait viser. Corrigés
-  (`.ds-label__required`, `.ds-dropdown__hint`).
+  C'est pourquoi le défaut de `Glyph` et de `Spinner` vit dans le repli de
+  `var(--ds-icon-size, 1.25rem)`, côté cascade, où un créneau peut le battre.
+- **Sans excuse** quand il n'y a même pas de prop : une décision du socle qu'aucun sélecteur
+  ne pourrait viser. D'où `.ds-label__required` (l'astérisque de `FormField`) et
+  `.ds-dropdown__hint` (le raccourci d'un item de menu).
 
 **⚠️ Les utilitaires de marque perdent contre les composants.** Les huit de
 `tokens/base.css` — `.display`, `.display-xl`, `.eyebrow`, `.chip`, `.accent`, `.mono`,
@@ -124,15 +124,15 @@ qu'il fait le dit.
 - Props : `variant` (`primary·secondary·ghost·danger·danger-soft·accent`, défaut `ghost`) ·
   `size` (`sm·md·lg`) · `surface` (`auto·page·card`) · `label` (requis) · `as` / `href`.
 - `surface` a le même rôle et les mêmes valeurs que sur `Button` — voir sa section.
-- **`variant="accent"`** (v0.3.0) : fond `--accent`, sans bordure, icône `--primary` (le corail) —
+- **`variant="accent"`** : fond `--accent`, sans bordure, icône `--primary` (le corail) —
   l'état « sélectionné doux » d'un lien-icône ou d'un raccourci. Ne pas le recomposer
   avec `is-active` (une aide de démo) et un style inline : c'est cette fraude que la
   variante remplace.
-- **`variant="danger-soft"`** (v0.1.4) : la corbeille — fond `--pill-danger-bg`, glyphe
+- **`variant="danger-soft"`** : la corbeille — fond `--pill-danger-bg`, glyphe
   `--pill-danger-fg`, sans bordure. Le `danger` plein reste l'action destructrice UNIQUE d'une
   vue ; à côté de chaque ligne supprimable, c'est le doux.
   `<IconButton label="Supprimer" variant="danger-soft"><Icon name="trash-2" /></IconButton>`
-- **`as="a"` + `href`** (v0.3.0) : un lien-icône reste un LIEN — clic-milieu, « ouvrir
+- **`as="a"` + `href`** : un lien-icône reste un LIEN — clic-milieu, « ouvrir
   dans un onglet », annonce correcte au lecteur d'écran. Jumeau du `as` de `Button`.
 - L'icône ne se dimensionne pas au site d'appel : le créneau s'en charge (sm 1rem ·
   md 1.125rem) — voir la section Icon.
@@ -165,8 +165,8 @@ portrait, posé bas, jamais centré derrière un titre.
 L'atmosphère radiale de la marque. À poser dans une section `position:relative`, derrière
 le contenu. Ancré en bas par défaut — jamais plein écran, jamais un grand aplat dégradé.
 
-**Ne pas l'utiliser** pour une miniature ou une carte de motion : ce halo-là est `HaloHot`,
-sur le sous-chemin optionnel `@yunary/ds/brand-content`.
+**Ne pas l'utiliser** comme fond d'une section entière ni derrière un titre centré : c'est
+une atmosphère posée en bas, pas un décor.
 
 ```tsx
 <section style={{ position: 'relative', overflow: 'hidden' }}>
@@ -197,7 +197,7 @@ graisse suivent `--heading-transform` / `--heading-weight`, comme tout le titrag
 - Props : `variant` (`wordmark·stacked·monogram`) · `letters` (`dark·light` — force la
   couleur des lettres ; omise, elles suivent `--foreground`) · `height` · `wordmark` ·
   `monogram` · `dot` (`false` = sans pastille ; un nœud la remplace) · `label`.
-- Lockup (v0.1.1) : en `wordmark` / `stacked`, l'icône fait 44/30 du corps du mot et se
+- Lockup : en `wordmark` / `stacked`, l'icône fait 44/30 du corps du mot et se
   centre sur lui ; `height` calibre le mot. En `monogram`, l'icône seule.
 - En HTML nu, le même mark existe en `.ds-logo` / `.ds-logo__dot` (tokens/base.css).
 
@@ -252,13 +252,13 @@ sous 1.5rem.
 - Props : `variant` (`default·interactive·feature`) · `size` (`md·lg`) · `flush` (sans
   padding, media plein bord) · `gap` (`3·4·5·6`) · slots d'en-tête `eyebrow` / `icon` /
   `title` / `subtitle` / `action` · `titleSize` (`sm·lg`) · `headerGap` (`normal·airy`) · `as`.
-- **`gap` — la pile, opt-in** (v0.1.4). `.ds-card` est `display:block` : un `gap-space-*`
-  posé en `className` ne rend RIEN (0 px, mesuré sur 23 cartes de Creator). `gap={4}` passe
+- **`gap` — la pile, opt-in.** `.ds-card` est `display:block` : un `gap-space-*` posé en
+  `className` ne rend RIEN (0 px, en silence). `gap={4}` passe
   la carte en colonne flex avec `--space-4` entre ses enfants ; l'en-tête cède sa marge basse
   au gap. Sans `gap`, rien ne change. Quatre paliers, pas de 20 px : l'espacement interne
   d'une carte reste sur l'échelle, et le padding reste à 24.
 - **Le filet de bord à bord** : `<Separator bleed />` en enfant DIRECT — voir Separator.
-- **L'alignement de l'en-tête est décidé par le socle, jamais par une prop** (v0.4.0) :
+- **L'alignement de l'en-tête est décidé par le socle, jamais par une prop** :
   titre simple → rangée **centrée** — icône, titre et action partagent un axe, la langue du design ; titre **et** sous-titre → `flex-start` —
   l'action s'aligne sur la ligne du haut au lieu de flotter entre les deux. `baseline`
   est écarté : il exigeait une retouche par instance. Ne recomposez pas l'en-tête à la
@@ -306,8 +306,7 @@ en div : c'est exactement ce que ce composant remplace.
 Filet 1px `--border` entre deux blocs. Avec `label`, la légende est centrée sur la ligne.
 
 **Ne pas l'utiliser** pour structurer une liste dense (l'espacement suffit) ni dans un
-menu de bureau (`Dropdown` a son item `separator`). Une `ActionSheet` n'en porte PAS : une
-feuille du bas est aérée et parcourue au pouce, le rythme des lignes suffit.
+menu déroulant (`.ds-dropdown` a son filet, `.ds-dropdown__sep`).
 
 ```tsx
 <Separator />
@@ -317,7 +316,7 @@ feuille du bas est aérée et parcourue au pouce, le rythme des lignes suffit.
 ```
 
 - Props : `orientation` (`horizontal·vertical`) · `label` (horizontal uniquement) · `bleed`.
-- **`bleed`** (v0.1.4) : enfant DIRECT d'une `Card`, le filet annule le `--card-pad` (ou
+- **`bleed`** : enfant DIRECT d'une `Card`, le filet annule le `--card-pad` (ou
   `--card-pad-lg`) en marge négative et va du bord gauche au bord droit, sans déborder — aucun
   `overflow` à poser. Hors d'une carte ou dans un bloc imbriqué, la prop est sans effet.
 
@@ -396,13 +395,13 @@ limite : c'est `StateCard`, une carte pleine, pas un emplacement vide.
   title="Aucun résultat" description="Essaie un autre mot-clé." />
 ```
 
-- Props : `icon` (glyphe nu — la Pastille par défaut l'enveloppe) · `tile` (v0.3.0 : la
-  tuile complète, quand `panneau brand outlined` ne convient pas ; `icon` est alors
+- Props : `icon` (glyphe nu — la Pastille par défaut l'enveloppe) · `tile` (la tuile
+  complète, quand `panneau brand outlined` ne convient pas ; `icon` est alors
   ignoré) · `title` (requis) · `description` · `action`.
 
 ## StateCard
 
-La carte d'état HÉROS (v0.1.4) : l'attente, l'indisponible, l'erreur, le cas limite — « encore
+La carte d'état HÉROS : l'attente, l'indisponible, l'erreur, le cas limite — « encore
 un peu de matière », « l'audit n'est pas disponible », « la génération a échoué ». Une `Card lg`
 centrée : pastille héros **outlined et carrée**, titre en subheading, corps muted sur la colonne
 `narrow`, un appoint libre, une action. Deux tons : `brand` (« attends, c'est normal ») annonce
@@ -424,15 +423,12 @@ pointillés) ni pour un message passager (c'est `Banner`).
 - Props : `tone` (`brand·danger`) · `icon` (glyphe nu — la `Pastille heros outlined`
   l'enveloppe) · `title` (requis) · `description` · `action` · `children` (l'appoint entre le
   corps et l'action : progression, badge, ligne de rassurance).
-- Promue à la TROISIÈME demande — l'audit d'onboarding de la coque (`AuditStateCard`), puis
-  trois écrans de Creator. La coque et Creator remplacent leur composition par celle-ci à la
-  montée en 0.1.4.
 - États rendus : brand, danger, avec appoint, avec action.
 
 ## Progress
 
-Barre fine : rail `--surface-alt`, remplissage `--brand-gradient` — depuis la v0.6.0, la
-barre remplie porte le dégradé de marque, jamais l'aplat (la piste, elle, reste un creux).
+Barre fine : rail `--surface-alt`, remplissage `--brand-gradient` — la barre remplie porte
+le dégradé de marque, jamais l'aplat (la piste, elle, reste un creux).
 Déterminée (0–max) ou indéterminée (barre glissante).
 
 **Ne pas l'utiliser** pour une attente sans notion d'avancement dans un contrôle — c'est
@@ -451,8 +447,8 @@ Déterminée (0–max) ou indéterminée (barre glissante).
 Silhouette de chargement sur `--muted`, shimmer discret. Dimensions en chaînes CSS (rem
 ou %) — c'est le style inline **légitime** au sens de la règle générale en tête de ce
 fichier : la valeur vient de l'appelant à chaque rendu, il n'y a aucun défaut de design à
-reprendre. (La même règle rend illégitime un défaut écrit inline — c'était le cas de
-`Glyph` et `Spinner` avant la v0.3.0.)
+reprendre. (La même règle rend illégitime un défaut écrit inline : celui de `Glyph` et de
+`Spinner` vit donc dans la cascade.)
 
 **Ne pas l'utiliser** après le premier rendu : un skeleton qui persiste est un bug
 d'affichage, pas un état.
@@ -561,44 +557,6 @@ immédiat (c'est `Switch`).
   attributs natifs (`checked`, `defaultChecked`, `onChange`, `disabled`…).
 - États rendus : décochée, cochée, indéterminée, hover, focus-visible, désactivée.
 
-## ChoiceTile
-
-La tuile cochable (v0.1.4) — UNE anatomie pour tous les choix en tuile : la niche de la coque,
-les sorties et les modèles de Creator. Fond `--background`, radius md, filet 1,5 px ; cochée :
-filet `--primary` + plaque `--accent`, le titre reste en encre à sa graisse. La tuile EST le
-`<label>` : toute sa surface coche, le clavier et le formulaire sont ceux de l'`<input>` natif,
-et le contrôle du socle (case ou rond) rend dedans. `CheckTile` (choix multiple) et `RadioTile`
-(choix unique, même `name`, dans un `role="radiogroup"`) sont les deux formes nommées ;
-`ChoiceTile` est la générique avec `kind`.
-
-**Ne pas** la recomposer avec un `<button role="checkbox">` : la sémantique est celle de
-l'input, et un `<label>` dans un `<label>` est du HTML invalide.
-
-```tsx
-<div role="radiogroup" aria-label="Que veux-tu générer ?" className="flex flex-col gap-space-3">
-  <RadioTile name="sortie" value="hooks" title="Des hooks" meta="Dès 2 crédits par modèle"
-    description="Plusieurs ouvertures pour ton script, calées sur des modèles qui ont fait leurs preuves." />
-  <RadioTile name="sortie" value="both" defaultChecked title="Les deux" meta="Dès 10 crédits"
-    description="Les hooks et la structure d'un coup : la vidéo complète, prête à tourner." />
-</div>
-<CheckTile name="modele" value="miroir" title="Question miroir"
-  description="« Tu fais ça aussi, toi, quand… ? »"
-  media={<span style={{ background: 'var(--brand-gradient)', flex: 1 }} />}
-  meta={<Badge tone="amber">Template Yunary</Badge>} />
-```
-
-- Props : `kind` (`checkbox·radio`, sur `ChoiceTile` seulement) · `title` (requis) ·
-  `description` · `meta` (en fin de ligne : coût, compteur, badge) · `media` (vignette 6 rem
-  collée aux bords haut, bas et gauche, hauteur de la rangée — `<img>` en cover ou `<span>` à
-  fond ; le titre passe alors en ellipse, v0.1.8) · `align` (`center·start`, v0.1.9 : `center`
-  pour un titre + description ou une ligne — S2, 08 ; `start` pose la case sur la PREMIÈRE ligne
-  d'un texte de plusieurs lignes — S3c ; sans effet avec un média) · `children` (sous la
-  description) · tout attribut d'`<input>` —
-  `name`, `value`, `checked`, `defaultChecked`, `onChange`, `disabled`, `required` · `ref`
-  → l'input natif · `className` → la tuile.
-- États rendus : repos, survol, cochée, focus-visible (anneau sur la tuile), désactivée, avec
-  média, avec méta.
-
 ## DatePicker
 
 Déclencheur façon Input (même règle de `surface`) + `Calendar` en popover. Clic extérieur
@@ -624,7 +582,7 @@ un `<input type="hidden">` porte la date en ISO (`YYYY-MM-DD`) pour la soumissio
 - Props : `value` · `onChange(Date)` · `placeholder` · `locale` · `min` / `max` ·
   `disabledDates` · `surface` (`page·card`) · `invalid` · `disabled` · `name` ·
   `trigger`.
-- **`trigger` — le déclencheur composable** (v0.3.1). Un render-prop qui reçoit
+- **`trigger` — le déclencheur composable**. Un render-prop qui reçoit
   `{ open, value, triggerProps }` et rend l'élément de son choix en **étalant
   `triggerProps`** dessus — ref, clic, clavier, ARIA. C'est l'étalement qui est le
   contrat : par lui le socle garde la ref (retour de focus sur Échap et sur sélection)
@@ -680,7 +638,7 @@ l'`<input>` natif.
 - Props : `size` (`sm·md·lg`) · `invalid` · `surface` (`page` = fond `--secondary`, posé
   à même le layout · `card` = fond `--background`, dans une Card) · `unit` + attributs
   natifs.
-- **`unit`** (v0.3.0) : l'unité — « kg », « € », « min » — posée DANS le champ, à
+- **`unit`** : l'unité — « kg », « € », « min » — posée DANS le champ, à
   droite, en sourdine. **Trois caractères au plus** ; plus long, c'est un suffixe de
   libellé, pas une unité. Elle est `aria-hidden` : le libellé du `FormField` la nomme.
 - États rendus : repos, focus, invalide, désactivé — sur les deux surfaces.
@@ -759,11 +717,11 @@ LE système d'icônes : Lucide, exclusivement. Jamais un emoji, jamais un SVG de
 main. 48 glyphes typés (`IconName`) — un nom hors du type est une erreur TypeScript, et
 c'est voulu.
 
-**Ne pas** chercher `youtube` ou `instagram` ici : les icônes de PLATEFORME vivent dans
-`ContentIcon`, sur le sous-chemin optionnel `@yunary/ds/brand-content`. Et jamais
-`sparkles` : l'étoile-éclair est bannie du set.
+**Ne pas** chercher d'icône de plateforme sociale ici (YouTube, Instagram…) : ce sont des
+logos, pas des icônes d'interface — le set n'en a pas. Et jamais `sparkles` : l'étoile-éclair
+est bannie du set.
 
-**La taille vient du CRÉNEAU, plus du site d'appel — v0.3.0.** Une icône sans `size` lit
+**La taille vient du CRÉNEAU, pas du site d'appel.** Une icône sans `size` lit
 `var(--ds-icon-size, 1.25rem)` ; les créneaux du socle posent la propriété par une règle
 CSS (bouton sm 1rem · bouton et IconButton md 1.125rem · badge dense 0.75rem · pastille
 dialogue et panneau 1.5rem · déclencheurs de champ 1rem — les défauts du socle, dans
@@ -889,12 +847,11 @@ Navigation d'app sur `--secondary` : marque en tête, sections titrées, item ac
   `footer` · `footerItems` · `brand` / `brandCollapsed` · `collapsible` (défaut `true`) ·
   `defaultCollapsed` · `storageKey` · `open` / `onClose` (tiroir mobile) · `staticLayout`
   · `linkAs`.
-- Chaque section est un **groupe** (v0.3.0) : les groupes se séparent par le gap de la
-  nav (16px), avec ou sans titre — deux sections sans titre ne se collent plus.
+- Chaque section est un **groupe** : les groupes se séparent par le gap de la nav (16px),
+  avec ou sans titre — deux sections sans titre ne se collent pas.
 - **L'entrée active** suit la convention de l'élément sélectionné, partout dans le socle :
-  plaque `--accent`, libellé `--primary` (le corail, v0.1.5 — écart de contraste assumé dans la
-  marque), MÊME graisse que ses voisines, icône en `currentColor`. Jamais « noir gras ». Le
-  rendu de la v1 à la lettre.
+  plaque `--accent`, libellé `--primary` (le corail — écart de contraste assumé dans la
+  marque), MÊME graisse que ses voisines, icône en `currentColor`. Jamais « noir gras ».
 - États rendus : dépliée, repliée, item au repos / survolé / actif, tiroir ouvert.
 
 ## Tabs
@@ -920,81 +877,6 @@ Tabs filtre un contenu en place.
 
 # overlays
 
-## ActionSheet
-
-Le menu « ⋯ » sur mobile : une feuille basse d'actions, Annuler intégré, chaque ligne au
-moins `--control-md` (le rail tactile). Surface modale complète : focus piégé, Échap
-ferme, focus rendu au déclencheur, défilement verrouillé.
-
-**DOCTRINE ⋯ — ne pas l'ouvrir au-dessus de 64rem** : `.ds-scrim--sheet` y est en
-`display:none`, une ActionSheet modale y est invisible par construction (le composant le
-signale en console en développement). Au-dessus de 64rem, le même geste ouvre un
-`Dropdown`. En spécimen desktop : `inline panel`.
-
-```tsx
-<ActionSheet
-  open={sheet}
-  onCancel={() => setSheet(false)}
-  items={[
-    { label: 'Copier le lien', icon: <Icon name="copy" size="1rem" />, onSelect: () => setSheet(false) },
-    { label: 'Supprimer', icon: <Icon name="trash-2" size="1rem" />, danger: true },
-  ]}
-/>
-<ActionSheet inline panel items={[{ label: 'Copier le lien' }]} />
-```
-
-- Props : `open` · `title` / `subtitle` (en-tête optionnel) · `note` (légende de
-  conséquence au-dessus d'Annuler) · `items`
-  (`{label, icon?, danger?, checked?, onSelect?, className?}[]`) · `cancelLabel` ·
-  `onCancel` · `inline` (sans voile) · `panel` (spécimen desktop 20rem — implique
-  `inline`).
-- **Pas de séparateur** (v0.8.0) : l'item `separator` a été retiré, la feuille n'émet plus
-  aucun `<hr>`. C'est `Dropdown` qui garde le sien.
-- **`checked`** (v0.1.4) : la ligne cochée d'un menu de CHOIX, jumelle de celle de `Dropdown` —
-  `aria-checked`, plaque `--accent`, texte `--primary` (corail), coche en fin de ligne.
-- États rendus : fermée, ouverte (feuille), item au repos / survolé / danger, panneau
-  desktop.
-
-## Dropdown
-
-Menu contextuel — **desktop only**. Sous 64rem, un menu « ⋯ » ouvre TOUJOURS une
-`ActionSheet` : même geste, deux tailles d'écran. Panneau sur `--popover`, items éclairés
-sur `--surface-alt`.
-
-**Ne pas l'utiliser** comme select de formulaire (c'est `Select`).
-
-```tsx
-<span className="relative inline-flex">
-  <Button variant="secondary" onClick={() => setOpen(o => !o)}>Tous les réseaux</Button>
-  {open ? (
-    <Dropdown align="end" items={[
-      { label: 'Tous les réseaux', checked: true, onSelect: () => choisir('all') },
-      { label: 'Instagram', checked: false, onSelect: () => choisir('ig') },
-      { label: 'TikTok', checked: false, onSelect: () => choisir('tt') },
-    ]} />
-  ) : null}
-</span>
-<Dropdown items={[
-  { label: 'Copier le lien', icon: <Icon name="copy" size="1rem" /> },
-  { label: 'Ouvrir la vidéo', icon: <Icon name="play" size="1rem" />, hint: '⏎' },
-  { separator: true },
-  { label: 'Supprimer', icon: <Icon name="trash-2" size="1rem" />, danger: true },
-]} />
-<Dropdown inline items={[{ label: 'Spécimen dans le flux' }]} />
-```
-
-- Props : `items` (`{label, icon?, hint?, danger?, checked?, separator?, onSelect?, className?}[]`)
-  · `align` (`start·end`) · `inline` (rendu dans le flux, sans positionnement absolu).
-- **L'ancrage** (v0.1.4) : flottant, le panneau se pose JUSTE SOUS son déclencheur, dans un
-  parent en `position: relative` — c'est à l'app de le poser sur l'enveloppe du bouton.
-  `align="start"` (défaut) aligne les bords gauches, `align="end"` les bords droits (le menu
-  d'un bouton en bout de ligne). Avant, sans `top`/`left`, il s'ouvrait à DROITE du bouton.
-- **`checked`** (v0.1.4) : un menu de CHOIX (tri, filtre) — `role="menuitemradio"` +
-  `aria-checked`, plaque `--accent`, texte `--primary` (corail) à la MÊME graisse que les
-  autres, coche en fin de ligne en `currentColor`. `undefined` = un item d'action, sans coche. Les deux se
-  mélangent dans un même menu. Rail d'item à 44 px, texte `--text-control`.
-- États rendus : item au repos, survolé, coché, danger, séparateur ; ancrage start et end.
-
 ## Modal
 
 Dialogue de confirmation ou de tâche focalisée, sur `--popover`, au-dessus d'un voile
@@ -1004,7 +886,7 @@ encre flouté. **Trois phases dans UN dialogue** : `confirm` → `loading` (rien
 focus rendu au déclencheur.
 
 **Ne pas l'utiliser** pour du feedback passif (c'est `Toast` ou `Banner`) ni pour un menu
-d'actions (c'est `Dropdown` / `ActionSheet`).
+d'actions (c'est `.ds-dropdown`, voir « Classes sans composant »).
 
 ```tsx
 <Modal
@@ -1027,19 +909,83 @@ d'actions (c'est `Dropdown` / `ActionSheet`).
   `onClose` · `closeButton` · `dismissable` · `phase` (`confirm·loading·result`) ·
   `result` (`{status, title?, message?, onRetry?}`) · `size` (`md·lg`) · `inline` (spécimen
   sans voile).
-- **Sans icône, le titre partage la ligne de la croix**, centré verticalement (v0.1.4) — la
-  croix seule laissait le titre 46-56 px sous le bord. Avec une pastille, la rangée pastille +
+- **Sans icône, le titre partage la ligne de la croix**, centré verticalement — seule sur sa
+  rangée, la croix ferait tomber le titre 46-56 px sous le bord. Avec une pastille, la rangée pastille +
   croix reste et le titre passe dessous.
-- **`size="lg"`** (v0.1.4) : 32,5 rem (`--modal-w-lg`), la modale à FORMULAIRE — « Analyser une
-  vidéo ». `md` (23,75 rem) reste la confirmation et le résultat. Sans effet sous 64 rem.
-- **Rythme interne `--space-5`** (v0.1.9) : 24 px entre l'en-tête, le texte, les enfants et le
-  pied ; le pied n'a plus de marge propre. Une ligne de coût, un champ : des enfants, le gap fait
-  le reste.
-- **La croix et les gestes de fuite sont découplés** (v0.3.0) : `closeButton={false}`
+- **`size="lg"`** : 32,5 rem (`--modal-w-lg`), la modale à FORMULAIRE ou à contenu riche (un
+  paiement, une résiliation). `md` (23,75 rem) reste la confirmation et le résultat. Sans effet
+  sous 64 rem.
+- **Rythme interne `--space-5`** : 24 px entre l'en-tête, le texte, les enfants et le pied ; le
+  pied n'a pas de marge propre. Une ligne d'appoint, un champ : des enfants, le gap fait le
+  reste.
+- **La croix et les gestes de fuite sont découplés** : `closeButton={false}`
   retire la croix en gardant Échap et le clic-voile ; `dismissable={false}` fait
   l'inverse — la croix devient le seul geste de fermeture, pour une modale à saisie
-  qu'un clic à côté ne doit pas jeter. Les deux à `true` par défaut : rien ne bouge.
+  qu'un clic à côté ne doit pas jeter. Les deux à `true` par défaut.
 - Un champ dans une modale : voir le spécimen « Avec un champ contrôlé » de la vitrine —
   le piège de focus tient la frappe.
 - États rendus : les trois phases, avec et sans icône, succès et erreur, feuille basse
   sous 64rem.
+
+---
+
+# Classes sans composant
+
+Deux motifs du socle n'ont **pas** de composant React : leurs classes sont stables et
+documentées ici, et une app écrit le balisage elle-même (le site vitrine les emploie ainsi).
+`check-catalogue.mjs` n'exige pas de section `##` pour eux, puisqu'ils ne sont pas exportés.
+
+**La tuile cochable — `.ds-tile`.** UNE anatomie pour tous les choix en tuile. Fond
+`--background`, radius md, filet 1,5 px ; cochée : filet `--primary` + plaque `--accent`, le
+titre reste en encre à sa graisse. La tuile EST le `<label>` : toute sa surface coche, le
+clavier et le formulaire sont ceux de l'`<input>` natif, et le contrôle `.ds-choice` (case ou
+rond) rend dedans, dans un `<span>` — jamais un `<label>` dans un `<label>`, jamais un
+`<button role="checkbox">`.
+
+```html
+<label class="ds-tile">
+  <span class="ds-choice">
+    <input type="radio" name="formule" value="solo" />
+    <span class="ds-choice__box ds-choice__box--radio" aria-hidden="true"><span class="ds-choice__dot"></span></span>
+  </span>
+  <span class="ds-tile__main">
+    <span class="ds-tile__title">Solo</span>
+    <span class="ds-tile__desc">Un espace, un projet.</span>
+  </span>
+  <span class="ds-tile__meta">1 projet</span>
+</label>
+```
+
+- Classes : `.ds-tile` · `.ds-tile__main` / `__title` / `__desc` / `__meta` · `.ds-tile--media`
+  + `.ds-tile__media` (vignette 6 rem collée aux bords haut, bas et gauche, `<img>` en cover ;
+  le titre passe en ellipse) · `.ds-tile--start` (la case sur la PREMIÈRE ligne d'un texte de
+  plusieurs lignes ; sans effet avec un média) · `.is-disabled`. Une case à cocher prend
+  `.ds-choice__box` avec une coche `<Icon name="check">` dedans.
+- États : repos, survol, cochée (lue par `:has(input:checked)`), focus-visible (anneau sur la
+  tuile), désactivée. Les aides `.is-hover` / `.is-checked` / `.is-focus` servent la vitrine.
+
+**Le menu déroulant — `.ds-dropdown`.** Panneau sur `--popover`, rayon lg, `--shadow-lg`,
+items éclairés sur `--surface-alt`, rail d'item à 44 px. `role="menu"` sur le panneau,
+`role="menuitem"` sur un item d'action, `role="menuitemradio"` + `aria-checked` sur un item de
+CHOIX (tri, filtre) : plaque `--accent`, texte `--primary` à la MÊME graisse, coche en fin de
+ligne. Les deux se mélangent dans un même menu.
+
+```html
+<span class="relative inline-flex">
+  <button class="ds-btn ds-btn--secondary" aria-haspopup="menu" aria-expanded="true">Plus récents</button>
+  <div role="menu" class="ds-dropdown ds-dropdown--floating ds-dropdown--end">
+    <button role="menuitemradio" aria-checked="true" class="ds-dropdown__item"><span class="ds-dropdown__label">Plus récents</span><span class="ds-dropdown__check" aria-hidden="true">…</span></button>
+    <button role="menuitemradio" aria-checked="false" class="ds-dropdown__item"><span class="ds-dropdown__label">Par nom</span></button>
+    <hr class="ds-dropdown__sep" />
+    <button role="menuitem" class="ds-dropdown__item ds-dropdown__item--danger"><span class="ds-dropdown__label">Supprimer</span></button>
+  </div>
+</span>
+```
+
+- Classes : `.ds-dropdown` · `--floating` (ancré JUSTE SOUS son déclencheur, dans un parent en
+  `position: relative` que l'app pose) · `--end` (bords droits alignés : le menu d'un bouton en
+  bout de ligne) · `__item` / `__item--danger` · `__label` · `__hint` (raccourci, méta) ·
+  `__check` · `__sep`.
+- Sans `--floating`, le panneau est rendu dans le flux (spécimen).
+- Le comportement (ouverture, fermeture au clic extérieur et à Échap, navigation au clavier)
+  est à la charge de l'app.

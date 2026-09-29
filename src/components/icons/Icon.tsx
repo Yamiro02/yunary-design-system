@@ -16,10 +16,9 @@ import { House } from './compat-glyphs';
 /**
  * Lucide icon renderer — the ONLY icon system in this design system.
  * BANNED: `sparkles` — the AI-slop star. Never reintroduce it, in the set or in an app.
- * `youtube` et `instagram` NE SONT PLUS ICI : ce sont des icônes de PLATEFORME, pas
- * d'interface. Elles vivent dans l'extension métier, sur le sous-chemin
- * `@yunary/ds/brand-content`, sous le composant `ContentIcon`. `github` reste :
- * c'est une plateforme de développement, présente dans à peu près tout produit technique.
+ * Aucune icône de plateforme sociale (YouTube, Instagram…) : ce sont des logos, pas des
+ * icônes d'interface. `github` est la seule marque du set : c'est une plateforme de
+ * développement, présente dans à peu près tout produit technique.
  * Sizes are CSS lengths in rem (1rem / 1.25rem / 1.5rem); the 24x24 viewBox stays unitless.
  * stroke-width 2 by default, 2.5 inside pills and toasts, 3 for the check.
  */

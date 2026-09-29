@@ -42,8 +42,6 @@ export { Switch } from './components/forms/Switch';
 export type { SwitchProps } from './components/forms/Switch';
 export { FormField } from './components/forms/FormField';
 export type { FormFieldProps } from './components/forms/FormField';
-export { ChoiceTile, CheckTile, RadioTile } from './components/forms/ChoiceTile';
-export type { ChoiceTileProps, CheckTileProps, RadioTileProps } from './components/forms/ChoiceTile';
 
 /* data-display */
 export { Card } from './components/data-display/Card';
@@ -80,10 +78,6 @@ export type { ProgressProps } from './components/feedback/Progress';
 /* overlays */
 export { Modal } from './components/overlays/Modal';
 export type { ModalProps, ModalResult } from './components/overlays/Modal';
-export { ActionSheet } from './components/overlays/ActionSheet';
-export type { ActionSheetProps, ActionSheetItem } from './components/overlays/ActionSheet';
-export { Dropdown } from './components/overlays/Dropdown';
-export type { DropdownProps, DropdownItem } from './components/overlays/Dropdown';
 
 /* navigation */
 export { Navbar } from './components/navigation/Navbar';
@@ -104,9 +98,6 @@ export { Logo } from './components/brand/Logo';
 export type { LogoProps } from './components/brand/Logo';
 export { Halo } from './components/brand/Halo';
 export type { HaloProps } from './components/brand/Halo';
-/* HaloHot et ContentIcon ne sont PAS exportés ici : ce sont des outils de MINIATURE et de
-   MOTION, pas d'interface. Ils vivent sur le sous-chemin optionnel
-   `@yunary/ds/brand-content`, avec `brand-content.css` en face. */
 export { Avatar } from './components/brand/Avatar';
 export type { AvatarProps } from './components/brand/Avatar';
 

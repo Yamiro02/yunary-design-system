@@ -1,7 +1,7 @@
 # Charte — Yunary
 
 Le document qu'on lit **avant** de toucher au CSS — et avant de monter une nouvelle app.
-Ce design system est le **socle partagé de plusieurs apps Yunary** : ces arbitrages
+Ce design system est le **socle partagé de toutes les surfaces Yunary** : ces arbitrages
 valent pour toutes, et c'est ce fichier qui les empêche de diverger.
 
 ---
@@ -9,11 +9,12 @@ valent pour toutes, et c'est ce fichier qui les empêche de diverger.
 ## 1. La marque en cinq lignes ★
 
 **Nom :** Yunary
-**Ce que c'est :** le socle de design partagé des apps Yunary — le produit principal
-(analyse de vidéos performantes en fiches, génération de scripts) et les micro-outils qui
-l'entourent. Toutes installent le même paquet et montent la même marque.
-**Pour qui :** des créateurs Instagram/TikTok, plusieurs fois par semaine, desktop d'abord —
-et, côté code, chaque personne qui monte une nouvelle app Yunary sans avoir lu le CSS.
+**Ce que c'est :** le socle de design de Yunary, la suite d'outils méthodiques pour
+créateurs de contenu intégrée dans Claude — les écrans MCP (`@yunary/mcp-ui`), la coquille
+web (`@yunary/shell` et le hub : compte, offre, paiement) et le site vitrine. Toutes ces
+surfaces montent la même marque.
+**Pour qui :** des créateurs Instagram/TikTok, plusieurs fois par semaine — et, côté code,
+chaque personne qui monte un écran Yunary sans avoir lu le CSS.
 **Trois adjectifs :** chaud · assuré · rigoureux — contre froid, corporate, mou.
 **Ce qu'on refuse :** le froid corporate, l'emoji, la couleur en grands aplats, le blanc pur
 en surface.
@@ -25,9 +26,12 @@ en surface.
 
 ## 2. Support et contexte
 
-**Où ça vit :** plusieurs petites apps web Yunary. Chacune monte exactement deux imports —
-`@yunary/ds/core.css` puis `@yunary/ds/brand-yunary.css` (et `@yunary/ds/theme.css` côté
-CSS). Aucune app ne redéclare un jeton de marque : une divergence locale est un bug.
+**Où ça vit :** la coquille web (shell + hub), les écrans MCP et le site vitrine. Chaque
+surface monte exactement deux imports — `@yunary/ds/core.css` puis
+`@yunary/ds/brand-yunary.css` (et `@yunary/ds/theme.css` côté CSS pour une app Tailwind).
+Aucune surface ne redéclare un jeton de marque : une divergence locale est un bug. Un écran
+MCP prend fond, texte et bordures aux variables de l'hôte ; l'accent, les formes et les
+polices restent ceux de Yunary.
 **Thème principal :** clair d'abord ; le sombre est complet et à parité de règles.
 **Densité :** confortable — cartes à padding 28/32, grilles de cartes gap ≥ 1.5rem.
 **Écran de référence :** 1440, desktop ; le mobile est secondaire (cibles 44 px tenues par le socle).
@@ -54,8 +58,8 @@ de TEXTE sur un aplat de marque.
 | `--surface-alt` | `#f6ede2` | `#32302d` | le cran de survol/rail/shimmer (écart 1,084 / 1,090) |
 | `--border` · `--input` | `#e5e1da` | `#3a3936` / `#4a4843` | hairlines douces ; le champ a son contour propre en sombre |
 
-**Pourquoi l'échelle est mesurée** : l'ancien système empilait card/popover/muted sur une
-même valeur — tout ce qui se posait sur une carte disparaissait. `check-surfaces.mjs`
+**Pourquoi l'échelle est mesurée** : si card, popover et muted partagent une valeur, tout ce
+qui se pose sur une carte disparaît. `check-surfaces.mjs`
 mesure ces paires dans les deux thèmes ; les deux collisions voulues (`--secondary`/`--card`)
 sont assumées par écrit dans le fichier de marque.
 
@@ -92,9 +96,9 @@ sont assumées par écrit dans le fichier de marque.
 deux mots d'un même titre, mélangé à une autre couleur d'accent. Une nouvelle app qui a
 besoin d'un 8ᵉ site d'accent l'ajoute ICI, par PR — pas dans son code.
 
-**Vérification :** `TOKENS=src/styles/brand-yunary.css node check-contrast.mjs` — 15 écarts
-assumés par écrit dans le fichier (signature CTA, ring dégradé, contours doux), le reste
-conforme. Voir README-EXPORT § gardes pour les deux paires dont la formule est à recaler.
+**Vérification :** `TOKENS=src/styles/brand-yunary.css node check-contrast.mjs` — 24 écarts
+assumés par écrit dans le fichier (signature CTA, ring dégradé, contours doux, élément
+sélectionné en corail), le reste conforme.
 
 ---
 
@@ -108,7 +112,7 @@ conforme. Voir README-EXPORT § gardes pour les deux paires dont la formule est 
 | `--heading-transform` | `none` | Onest = grotesque classique |
 | `--heading-weight` | `var(--weight-bold)` | gras, casse d'origine |
 | `--heading-xl-weight` | `var(--weight-extrabold)` | le titre de page un cran au-dessus (Onest 800), H2-H4 en 700 |
-| `--text-heading-xl` | `2.25rem` | le titre de page à 36 px, la valeur de la v1 (socle : 40) ; le palier mobile du socle (28 sous 64 rem) est répété dans la marque, sinon la redéclaration l'écraserait |
+| `--text-heading-xl` | `2.25rem` | le titre de page à 36 px (socle : 40) ; le palier mobile du socle (28 sous 64 rem) est répété dans la marque, sinon la redéclaration l'écraserait |
 
 **Graisses chargées :** Onest 700/800 · DM Sans 400/500/600/700 · DM Mono 400/500 — rien
 d'autre. Chaque app hérite de l'`@import` via le fichier de marque.
@@ -136,18 +140,18 @@ l'échelle `--radius-*`.
 **Le dégradé :** CTA primaire + un mot de titre. 90°/135° du socle.
 **La lueur :** `--shadow-glow*` chaude, réservée au CTA primaire. Identique dans les deux thèmes.
 **L'ombre :** trois niveaux teintés de `--tone-dark`, jamais du noir pur en clair.
-**La sélection — UNE convention, partout, en CORAIL (v0.1.5) :** plaque `--accent` + texte
+**La sélection — UNE convention, partout, en CORAIL :** plaque `--accent` + texte
 `--primary` (`#e85d2f`), **même graisse** que les voisins, icône et coche en `currentColor` —
 l'entrée de Sidebar, l'onglet actif (sur une carte : surface `--card`, même texte), la page
-courante, l'item de menu ou de feuille coché, l'option de select, le lien de barre, le
-bouton-icône accent ou enfoncé. Jamais « noir gras ». Décision Julien, 11/09/2026 : le rendu de
-la v1 à la lettre (`bg-accent text-primary`), et **l'écart de contraste est assumé** — 3,00 sur
-`--accent`, le seuil des graphiques, pas celui du texte — huit blocs `@a11y-assume` dans
+courante, l'item de menu coché, l'option de select, le lien de barre, le bouton-icône accent
+ou enfoncé. Jamais « noir gras ». Décision Julien, 11/09/2026 : `bg-accent text-primary`, et
+**l'écart de contraste est assumé** — 3,00 sur `--accent`, le seuil des graphiques, pas celui
+du texte — sept blocs `@a11y-assume` dans
 `brand-yunary.css`, § 3.6 de `docs/accessibilite.md`. `--primary-readable` reste le jeton des
 liens, du badge accent, du bandeau info, des erreurs. La tuile cochée garde son titre en encre.
 Les contrôles cochés (case, switch, jour choisi) ne suivent pas : ils portent le dégradé plein.
 Les toasts et bandeaux centrent leur icône verticalement.
-**La pastille de marque est outlined**, carrée, sur toutes les maquettes du 11/09/2026 —
+**La pastille de marque est outlined**, carrée, sur toutes les maquettes —
 `Pastille tone="brand" outlined` : état vide, carte d'état héros, en-tête de carte. Pleine ou
 ronde, c'est un écart aux maquettes.
 **L'espacement interne d'une carte** reste à 24 px (`--card-pad`), et sa pile sur l'échelle
@@ -170,12 +174,13 @@ l'icône seule. La pastille du socle est neutralisée dans le fichier de marque.
 ## 8. Périmètre du design system
 
 **Ce qui entre :** structure, comportements, états, composants sans métier.
-**Ce qui n'entre pas :** fiches, scripts, crédits, personas — le vocabulaire d'UNE app reste
-dans cette app. En cas de doute, ça reste dans l'app.
+**Ce qui n'entre pas :** analyses, audits, quotas, règles, profil créateur — le vocabulaire
+d'UN outil reste dans sa couche. En cas de doute, ça reste dans la couche.
 **Le fichier de marque est un export du paquet** : `@yunary/ds/brand-yunary.css` — le
-sous-chemin stable du second import de chaque micro-app. Il ne se copie jamais dans une app.
-**Extension métier :** `brand-content.css` NON importé ; `--tone-deep`,
-`--gradient-thumbnail`, `--shadow-accent-hot` non déclarés.
+sous-chemin stable du second import de chaque surface. Il ne se copie jamais dans une app
+(le site vitrine, déployé à part, en porte une copie dans `site/src/styles/ds/`).
+**Pas de visuels d'export dans le paquet :** miniatures, cartes motion et icônes de
+plateformes sociales vivent dans le projet qui les fabrique.
 
 ---
 
@@ -202,16 +207,19 @@ sous-chemin stable du second import de chaque micro-app. Il ne se copie jamais d
 | Date | Décision | Pourquoi |
 |---|---|---|
 | 2026-08-31 | Label du CTA : blanc sur le dégradé, assumé sous 4,5:1 | signature Yunary ; un seul CTA/vue, 15/600 + lueur |
-| 2026-08-31 | Échelle de surfaces reconstruite puis alignée sur le régime v0.5 du kit maître (« plus aucun blanc pur », secondary ≈ carte assumé) | le blanc tranchait à côté des cartes ; deux rôles, une hauteur de plan, la déduction sépare |
+| 2026-08-31 | Échelle de surfaces alignée sur le kit maître (« plus aucun blanc pur », secondary ≈ carte assumé) | le blanc tranchait à côté des cartes ; deux rôles, une hauteur de plan, la déduction sépare |
 | 2026-08-31 | `--destructive` = `#e84c3d` partout, label blanc (3,80 assumé) | aligné kit maître ; le rouge foncé sortait de la palette chaude |
 | 2026-08-31 | `--ring` = `--brand-via` (2,41 assumé, halo 3px en compensation) | aligné kit maître |
 | 2026-08-31 | Rayons : échelle du socle + **rayon des contrôles = hauteur ÷ 3** | l'arrondi Yunary à 48px sans petits contrôles quasi-pill |
 | 2026-08-31 | `--card-pad` 28/32 · `--sidebar-w` en clamp 240→288 · bord optique barre 24px | kit maître v0.12–v0.14 |
-| 2026-08-31 | Sélection = plaque `--accent` + texte `--primary` (sur page) ; `--card`+`--foreground` dans une carte | l'actif à ~1,05 de sa barre était invisible depuis le régime v0.5 |
-| 2026-08-31 | Pastilles de marque : fond `--pill-coral-bg`, icône `--primary` ; jour du jour du calendrier en `--primary` | le rendu de l'app existante ; « les icônes de marque prennent --primary » |
+| 2026-08-31 | Sélection = plaque `--accent` + texte `--primary` (sur page) ; `--card`+`--foreground` dans une carte | un actif à ~1,05 de sa barre est invisible |
+| 2026-08-31 | Pastilles de marque : fond `--pill-coral-bg`, icône `--primary` ; jour du jour du calendrier en `--primary` | « les icônes de marque prennent --primary » |
 | 2026-08-31 | Logo : icône vectorielle (squircle dégradé) à la place de la pastille CSS | décision de marque ; Logo.tsx livré, API conservée |
 | 2026-08-31 | Toast/Banner : icône centrée verticalement ; croix du toast à 1.125rem | revue vitrine |
-| 2026-08-31 | Tabs : pill → 14 (socle) | interdit n° 4 ; le contrat prime sur l'ancien Yunary |
+| 2026-08-31 | Tabs : rayon 14 (socle), jamais un pill | interdit n° 4 ; le contrat prime |
 | 2026-08-31 | --font-mono = DM Mono | même fonderie que DM Sans |
 | 2026-08-31 | Dégradé et lueur identiques en sombre ; jetons dérivés non recopiés | calculés par le socle (derives.css) |
-| 2026-08-31 | Marque exportée sous `./brand-yunary.css` dans package.json | sous-chemin stable des micro-apps |
+| 2026-08-31 | Marque exportée sous `./brand-yunary.css` dans package.json | sous-chemin stable de chaque surface |
+| 2026-09-11 | Élément sélectionné en corail (`--primary` sur `--accent`), écart de contraste assumé | décision de marque Julien |
+| 2026-09-11 | Titre de page à 36 px, `Card gap` sur l'échelle `--space-*` sans palier 20 | décisions Julien |
+| 2026-09-29 | 0.2.0 : retrait de l'extension de visuels d'export et des composants React sans consommateur | le paquet ne porte que ce que les surfaces emploient |

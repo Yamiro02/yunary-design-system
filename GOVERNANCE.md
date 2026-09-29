@@ -119,16 +119,16 @@ est un bouton qui ne branche rien : `check-contract.mjs` refuse les deux.
 
 Plus rare, et plus délicat : quelque chose est publié, on ne sait pas qui l'importe.
 
-**Ne supprime pas sèchement. Déplace.** C'est le seul choix réversible. Le pan « création de
-contenu » — grille fine, halos de vignette, icônes de plateformes — n'a pas été effacé : il
-est parti en extension isolée, `brand-content.css` plus un sous-chemin. Une app qui n'en a
-pas besoin ne l'importe pas ; celles qui s'en servaient changent une ligne d'import.
+**Ne supprime pas sèchement quand un consommateur est possible. Déplace.** C'est le seul
+choix réversible : un pan isolé dans une extension optionnelle ne coûte qu'une ligne
+d'import à ceux qui s'en servent.
 
-Supprimer sèchement se décide en une ligne plus tard. Ressusciter du code supprimé, non.
-
-**Ce qu'on supprime vraiment** : ce dont on peut prouver que personne ne s'en sert. Trois
-règles `.ds-metric*` sans consommateur depuis le retrait de `MetricPill`, un dégradé de
-vignette qui ne pouvait pas peindre, trois alias non publiés. Le `grep` vert est la preuve.
+**Ce qu'on supprime vraiment** : ce dont on peut prouver que personne ne s'en sert — un
+`grep` vert dans chaque consommateur (shell, hub, mcp-ui, site). Si le site emploie les
+CLASSES d'un motif sans son composant React, le composant part et les classes restent.
+Chaque retrait est inscrit dans la liste `RETIRES` de `check-catalogue.mjs` (et, pour une
+classe, dans `RETIREES` de `check-classes.mjs`) : un portage qui le réintroduirait fait
+tomber le build.
 
 ---
 
@@ -138,9 +138,8 @@ vignette qui ne pouvait pas peindre, trois alias non publiés. Le `grep` vert es
 
 `npm i github:<compte>/<dépôt>#vX.Y.Z` : sur la voie git, **le tag EST le mécanisme
 d'installation**. Une ligne restée sur la version précédente ne lève aucune erreur — elle
-installe silencieusement l'ancienne, et l'app croit avoir la nouvelle. Le cas s'est produit
-en 0.3.0, en 0.4.0, puis en 0.4.1 : ce n'est pas une étourderie, c'est une étape manquante
-dans la séquence.
+installe silencieusement l'ancienne, et l'app croit avoir la nouvelle. Ce n'est pas une
+étourderie à surveiller, c'est une étape de la séquence.
 
 L'ordre, sans exception :
 
@@ -151,8 +150,7 @@ L'ordre, sans exception :
    `npm run build` (qui joue `check-classes.mjs` au passage). Voir ci-dessous :
    `check-version.mjs` ne peut pas passer à cette étape
 5. le commit unique du lot
-6. `git tag -a vX.Y.Z -m "…"` — **annoté**, comme tous les tags depuis la v0.1.0 : un tag
-   léger ne part pas avec `--follow-tags`
+6. `git tag -a vX.Y.Z -m "…"` — **annoté** : un tag léger ne part pas avec `--follow-tags`
 7. **les gardes, second passage** — `npm run lint` en ENTIER, les treize. Rien ne part sans
    les treize
 8. `git push --follow-tags`
@@ -184,8 +182,8 @@ donc joué à l'étape 4, et par la CI. Ne conclus jamais de la lecture du seul 
 qu'un garde ne tourne pas.
 
 **C'est un job de CI bloquant, pas une checklist.** `check-version.mjs` compare les trois —
-version, README, existence du tag — et fait tomber le build s'ils divergent. La procédure
-écrite a échoué trois fois de suite ; c'est pour ça que le contrôle existe.
+version, README, existence du tag — et fait tomber le build s'ils divergent : une procédure
+seulement écrite ne suffit pas.
 
 ```bash
 node check-version.mjs

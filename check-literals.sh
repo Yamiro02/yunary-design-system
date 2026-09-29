@@ -5,7 +5,7 @@
 set -u
 SOCLE="src/styles/core.css src/styles/patterns.css src/styles/tokens/base.css
        src/styles/tokens/derives.css src/styles/tokens/preflight.css
-       src/styles/theme.css src/styles/brand-content.css"
+       src/styles/theme.css"
 n=0
 for f in $SOCLE; do
   # commentaires retirés : la prose n'est pas du code
@@ -16,7 +16,7 @@ for f in $SOCLE; do
 done
 if [ "$n" -eq 0 ]; then
   echo "✓ littéraux — aucune valeur de couleur, d'ombre, de dégradé ou de durée dans les"
-  echo "              7 fichiers du socle. Elles vivent toutes dans tokens/scales.css,"
+  echo "              6 fichiers du socle. Elles vivent toutes dans tokens/scales.css,"
   echo "              tokens/typography.css et les fichiers de marque."
 fi
 exit "$n"

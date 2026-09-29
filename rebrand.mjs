@@ -19,7 +19,8 @@
  *     recevraient le paquet de quelqu'un d'autre.
  *
  * Il ne crée AUCUN fichier de marque : la marque se fabrique ensuite, en copiant
- * src/styles/brand-example.css et en repeignant chaque valeur (GETTING-STARTED, étape 3).
+ * src/styles/brand-yunary.css (la marque livrée) et en repeignant chaque valeur
+ * (GETTING-STARTED, étape 3).
  *
  * Ce qu'il NE touche PAS, et c'est volontaire, ce sont des choix de design :
  *   · les valeurs de la palette → le fichier de marque que vous écrivez ensuite
@@ -155,11 +156,11 @@ ${ligne(versionRemise, `Version    remise à 0.1.0${versionRemise ? ', README à
 
 Il reste l'essentiel, et le script ne peut pas le faire à votre place : ÉCRIRE LA MARQUE.
 
-  1. supprimez  le fichier de marque du dépôt d'origine, sa doc, et le contenu de
-                src/styles/assets/fonts/   — la liste exacte est dans GETTING-STARTED.md
-  2. copiez     src/styles/brand-example.css en src/styles/brand-${slug}.css et
+  1. copiez     src/styles/brand-yunary.css en src/styles/brand-${slug}.css et
                 repeignez chaque valeur — le gabarit src/styles/brand.template.css
                 porte le contrat, jeton par jeton : gardez-le ouvert à côté
+  2. supprimez  ENSUITE le fichier de marque d'origine, sa doc, et le contenu de
+                src/styles/assets/fonts/   — la liste exacte est dans GETTING-STARTED.md
   3. montez-la  dans le montage de la vitrine (demo/*-entry.css) et dans vos apps :
                 @import "core.css" puis @import votre marque
 

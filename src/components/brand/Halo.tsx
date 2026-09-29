@@ -7,9 +7,6 @@ import { cn } from '../../lib/cn';
  * le contenu.
  * Les dégradés viennent des utilitaires `.halo` / `.halo-top` / `.halo-center` de
  * tokens/base.css — aucune valeur n'est réécrite ici.
- *
- * Le mode `hot` N'EST PLUS ICI : c'est un halo de MINIATURE, pas d'interface. Il vit dans
- * l'extension métier, sous `HaloHot`, sur `@yunary/ds/brand-content`.
  */
 export interface HaloProps extends HTMLAttributes<HTMLSpanElement> {
   placement?: 'bottom' | 'top' | 'center';

@@ -15,8 +15,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * The surface the button sits on — the escape hatch to the surface deduction of
    * patterns.css, and the exact twin of Input's `surface`. `auto` (default) lets the
-   * deduction do its job: a secondary button inside a Card / Modal / ActionSheet /
-   * Dropdown fills with --background so it detaches from its carrier. `page` forces
+   * deduction do its job: a secondary button inside a Card / Modal / .ds-dropdown menu
+   * fills with --background so it detaches from its carrier. `page` forces
    * --secondary — for a secondary button sitting on a --background PANEL nested inside a
    * card, where the deduction would paint it the colour of that panel. `card` forces
    * --background outside of a real .ds-card, e.g. in a container that only looks like one.

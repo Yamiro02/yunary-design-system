@@ -177,7 +177,7 @@
    SOUS elle, sur --background. Couvre Input, Textarea, Select et le déclencheur de
    DatePicker (tous portent .ds-input). La prop surface="card" reste comme échappatoire
    explicite, elle n'est plus une obligation. */
-.ds-card .ds-input,.ds-modal .ds-input,.ds-actionsheet .ds-input,.ds-dropdown .ds-input,.ds-datepicker__pop .ds-input{background:var(--background)}
+.ds-card .ds-input,.ds-modal .ds-input,.ds-dropdown .ds-input,.ds-datepicker__pop .ds-input{background:var(--background)}
 .ds-input--sm{min-height:var(--control-sm)}
 .ds-input--lg{min-height:var(--control-lg)}
 .ds-input--sm{border-radius:calc(var(--control-sm) / 3)}
@@ -248,26 +248,24 @@
 .ds-switch input:checked+.ds-switch__track .ds-switch__knob,.ds-switch.is-checked .ds-switch__knob{transform:translateX(calc(var(--switch-w) - var(--switch-knob) - var(--switch-inset) * 2))}
 .ds-switch input:focus-visible+.ds-switch__track,.ds-switch.is-focus .ds-switch__track{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
 .ds-switch.is-disabled{opacity:.5;cursor:not-allowed}
-/* ---------- forms: ChoiceTile — la tuile cochable ---------- */
-/* UNE SEULE ANATOMIE POUR TOUS LES CHOIX EN TUILE (v0.1.4) : la niche de la coque, les sorties
-   et les modèles de Creator — cinq compositions différentes pour le même objet. La tuile EST
-   le <label> : toute sa surface coche, le clavier et le formulaire sont ceux de l'<input> natif
+/* ---------- forms: la tuile cochable (classes seules) ---------- */
+/* UNE SEULE ANATOMIE POUR TOUS LES CHOIX EN TUILE. Pas de composant React : les classes
+   s'écrivent directement (le site les emploie ainsi). La tuile EST le <label> : toute sa surface coche, le clavier et le formulaire sont ceux de l'<input> natif
    (name, value, required, react-hook-form), et le contrôle du socle (.ds-choice__box, case ou
    rond) rend DEDANS — un <span class="ds-choice">, pas un second <label>, un label imbriqué est
    du HTML invalide. Fond --background, radius md, filet 1,5 px ; cochée : filet --primary +
    plaque --accent (la convention de l'élément sélectionné, le titre RESTE en encre et à sa
    graisse). `:has()` lit l'état de l'input ; les aides .is-checked/.is-focus servent la vitrine.
-   Colonnes : [média optionnel] contrôle · contenu · méta — le média (vignette 96 px, maquette
-   S3a) colle au bord gauche et annule le padding. Le titre est --text-body/600 parce que c'est
+   Colonnes : [média optionnel] contrôle · contenu · méta — le média (vignette 96 px) colle au
+   bord gauche et annule le padding. Le titre est --text-body/600 parce que c'est
    un LIBELLÉ de choix, pas un titre de section : pas de face display. */
 .ds-tile{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--space-4);padding:1.125rem 1.25rem;box-sizing:border-box;border:1.5px solid var(--border);border-radius:var(--radius-md);background:var(--background);color:var(--foreground);font-family:var(--font-body);text-align:left;cursor:pointer;position:relative;transition:border-color var(--duration-base) var(--ease-standard),background var(--duration-base) var(--ease-standard),box-shadow var(--duration-base) var(--ease-standard)}
-/* LA TUILE À MÉDIA — v0.1.8, maquettes S3a / S3b : la vignette est COLLÉE aux bords haut, bas et
-   gauche. Le padding vertical quitte la tuile (0 / 1,25 / 0 / 0) et passe sur la zone de contenu
-   (1 rem haut et bas) ; la vignette s'étire à la hauteur de la rangée (align-self:stretch sur une
-   grille centrée), au moins 6,5 rem, et le rognage de la tuile (overflow:hidden) lui donne le
-   rayon. En 0.1.4 la tuile gardait son 1,125 rem vertical : la vignette flottait à 18 px des
-   bords. Le titre y est sur UNE ligne, en ellipse (maquette) — la vignette impose sa hauteur, un
-   titre qui se replie la ferait grandir. Une <img> remplit la vignette en cover. */
+/* LA TUILE À MÉDIA : la vignette est COLLÉE aux bords haut, bas et gauche. Le padding vertical
+   quitte la tuile (0 / 1,25 / 0 / 0) et passe sur la zone de contenu (1 rem haut et bas) ; la
+   vignette s'étire à la hauteur de la rangée (align-self:stretch sur une grille centrée), au
+   moins 6,5 rem, et le rognage de la tuile (overflow:hidden) lui donne le rayon. Avec le padding
+   vertical sur la tuile, la vignette flotterait à 18 px des bords. Le titre y est sur UNE ligne,
+   en ellipse — la vignette impose sa hauteur, un titre qui se replie la ferait grandir. Une <img> remplit la vignette en cover. */
 .ds-tile--media{grid-template-columns:auto auto minmax(0,1fr) auto;padding:0 1.25rem 0 0;overflow:hidden}
 .ds-tile--media>.ds-tile__main{padding-block:1rem}
 .ds-tile--media .ds-tile__title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -277,13 +275,11 @@
    que le contenu et le plancher de 6,5 rem décident, en cover. */
 .ds-tile__media>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .ds-tile .ds-choice{pointer-events:none}
-/* L'ALIGNEMENT DU CONTRÔLE — v0.1.9, une prop, parce que les artboards ne disent pas la même
-   chose : S2 (sorties, titre + description) et 08 (niches, une ligne) CENTRENT le rond ; S3c
-   (propositions de hooks, un texte de deux à quatre lignes) pose la case sur la PREMIÈRE LIGNE
-   (align-items:start, margin-top 3 px pour la centrer sur la ligne). `center` reste le défaut :
-   deux artboards sur trois, et c'est le rendu de la 0.1.4 — rien ne bouge sans la prop.
-   `align="start"` ne s'applique qu'aux tuiles sans média : la tuile à média (0.1.8) est
-   centrée par construction, sa vignette impose la hauteur. */
+/* L'ALIGNEMENT DU CONTRÔLE. Par défaut la case ou le rond est CENTRÉ sur la hauteur (un titre +
+   une description, une ligne seule). `.ds-tile--start` le pose sur la PREMIÈRE LIGNE
+   (align-items:start, margin-top 3 px pour le centrer sur la ligne) : un texte de deux à quatre
+   lignes sans titre distinct. Réservé aux tuiles sans média : la tuile à média est centrée par
+   construction, sa vignette impose la hauteur. */
 .ds-tile--start{align-items:start}
 .ds-tile--start .ds-choice{margin-top:0.1875rem}
 .ds-tile__main{display:flex;flex-direction:column;gap:0.3125rem;min-width:0}
@@ -322,9 +318,8 @@
 .ds-card{background:var(--card);color:var(--card-foreground);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--card-pad);box-shadow:var(--shadow-sm);box-sizing:border-box}
 .ds-card--lg{border-radius:var(--radius-xl);padding:var(--card-pad-lg)}
 .ds-card--flush{padding:0;overflow:hidden}
-/* LA PILE — OPT-IN, v0.1.4. `.ds-card` est `display:block` : un `gap-*` posé dessus ne rend RIEN,
-   et vingt-trois cartes de Creator en portaient un pour 0 px d'écart (audit du 11/09/2026). La
-   prop `gap` passe la carte en colonne flex et pose l'écart du palier. Opt-in : une carte sans
+/* LA PILE — OPT-IN. `.ds-card` est `display:block` : un `gap-*` posé dessus ne rend RIEN, en
+   silence (0 px d'écart). La prop `gap` passe la carte en colonne flex et pose l'écart du palier. Opt-in : une carte sans
    `gap` garde son DOM et son rendu au pixel. L'en-tête cède sa marge basse au gap — sinon les
    deux s'ajoutaient. QUATRE paliers, pas de « 20 » : l'espacement interne d'une carte reste sur
    l'échelle --space-* (décision Julien, 11/09/2026 — le 24 du padding ne bouge pas non plus). */
@@ -426,14 +421,12 @@
    d'identité. Littéral structurel, comme les micro-espacements (voir la doctrine en tête). */
 .ds-empty__desc{max-width:20rem;color:var(--muted-foreground);font-size:var(--text-body-sm);line-height:var(--leading-normal)}
 /* ---------- feedback: StateCard — la carte d'état héros ---------- */
-/* LA TROISIÈME DEMANDE, promue (v0.1.4) : l'attente, l'indisponible, l'erreur, le cas limite —
-   l'audit d'onboarding de la coque, puis trois écrans de Creator (S1b, S3g, 09b). Ce n'est pas
-   l'EmptyState : celui-là est un emplacement VIDE en pointillés qui invite à remplir ; celle-ci
-   est une carte PLEINE qui explique un état. Anatomie de la v1 et des maquettes du 11/09 :
-   .ds-card--lg centrée, pastille HÉROS outlined et CARRÉE (la v1 la faisait ronde — les
-   maquettes du 11/09 la posent carrée, comme partout ailleurs), titre --text-subheading, corps
-   body-sm muted sur la colonne --container-narrow (le rôle « message centré, état vide » ;
-   la maquette 09b dit 520, le rôle dit 480 — le jeton fait foi), appoint, action. Les tons : brand (« attends, c'est normal ») et danger (« c'est nous, pas toi »). Le
+/* L'attente, l'indisponible, l'erreur, le cas limite. Ce n'est pas l'EmptyState : celui-là est
+   un emplacement VIDE en pointillés qui invite à remplir ; celle-ci est une carte PLEINE qui
+   explique un état. Anatomie : .ds-card--lg centrée, pastille HÉROS outlined et CARRÉE (comme
+   partout ailleurs), titre --text-subheading, corps body-sm muted sur la colonne
+   --container-narrow (le rôle « message centré, état vide » — le jeton fait foi), appoint,
+   action. Les tons : brand (« attends, c'est normal ») et danger (« c'est nous, pas toi »). Le
    composant pose role="status" ou "alert" selon le ton : l'état se lit, il s'annonce aussi. */
 .ds-state-card{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-5);padding:var(--space-7)}
 .ds-state-card__main{display:flex;flex-direction:column;gap:var(--space-2);max-width:var(--container-narrow)}
@@ -446,31 +439,28 @@
    squelette immobile. */
 .ds-skel{display:block;background:linear-gradient(90deg,var(--muted) 0%,var(--surface-alt) 50%,var(--muted) 100%);background-size:560px 100%;border-radius:var(--radius-sm);animation:shimmer var(--duration-shimmer) infinite linear}
 
-/* ---------- overlays: Modal · Dropdown ---------- */
+/* ---------- overlays: Modal · menu déroulant (classes seules) ---------- */
 .ds-scrim{position:fixed;inset:0;z-index:var(--z-modal);background:color-mix(in srgb,var(--tone-dark) 45%,transparent);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:var(--space-5)}
 .ds-modal{width:var(--modal-w);max-width:100%;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-radius:var(--radius-2xl);box-shadow:var(--shadow-lg);padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-5);box-sizing:border-box}
-/* LE RYTHME INTERNE DE LA MODALE EST SUR L'ÉCHELLE — v0.1.9 : --space-5 (24) entre l'en-tête, le
-   texte, le champ et le pied, là où 0,875 rem (14) serrait tout (audit Creator, maquette 02 :
-   22 ; Julien tranche pour 24, le palier du DS). Le padding ne bouge pas (--space-5 aussi). */
+/* LE RYTHME INTERNE DE LA MODALE EST SUR L'ÉCHELLE : --space-5 (24) entre l'en-tête, le texte,
+   le champ et le pied — 0,875 rem (14) serrait tout. Le padding vaut --space-5 aussi. */
 .ds-modal__close{width:var(--modal-close);height:var(--modal-close);border-radius:var(--radius-sm);border:none;background:transparent;color:var(--muted-foreground);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-left:auto}
 .ds-modal__close:hover:not(:disabled){background:var(--surface-alt);color:var(--foreground)}
 .ds-modal__close:disabled{opacity:.4;cursor:not-allowed;background:transparent;color:var(--muted-foreground)}
 .ds-modal__head{display:flex;align-items:flex-start;justify-content:space-between}
 .ds-modal__head--end{justify-content:flex-end}
-/* SANS ICÔNE, LE TITRE PARTAGE LA LIGNE DE LA CROIX — v0.1.4. La croix seule occupait une rangée
-   de 32 px et le titre tombait 46-56 px sous le bord (audit Creator, maquette 02). Avec une
-   pastille, la rangée pastille + croix reste, le titre en dessous : la pastille est le repère. */
+/* SANS ICÔNE, LE TITRE PARTAGE LA LIGNE DE LA CROIX : seule sur sa rangée de 32 px, la croix
+   ferait tomber le titre 46-56 px sous le bord. Avec une pastille, la rangée pastille + croix reste, le titre en dessous : la pastille est le repère. */
 .ds-modal__head--inline{align-items:center;gap:var(--space-3)}
 .ds-modal__head--inline .ds-modal__title{flex:1;min-width:0}
-/* La modale à FORMULAIRE : 32,5 rem (maquette 02 « Analyser une vidéo »). Sous 64 rem, même
+/* La modale à FORMULAIRE ou à contenu riche : 32,5 rem. Sous 64 rem, même
    sort que --modal-w — la feuille est en pleine largeur, la règle @media ci-dessous gagne. */
 .ds-modal--lg{width:var(--modal-w-lg)}
 .ds-modal__title{margin:0}
 .ds-modal__text{margin:0}
 /* Modal phases — __desc and __foot officialise Modal.tsx's inline styles, values identical. */
 .ds-modal__desc{font-size:var(--text-body-sm);color:var(--muted-foreground);line-height:1.5;display:flex;flex-direction:column;gap:var(--space-3)}
-/* Plus de marge propre sur le pied (0,25 rem, v0.1.9) : elle rattrapait le gap de 14 à 18 avant
-   les boutons ; avec 24 partout elle ferait un 28 hors échelle. */
+/* Pas de marge propre sur le pied : avec le gap de 24, elle ferait un écart hors échelle. */
 .ds-modal__foot{display:flex;gap:0.625rem;justify-content:flex-end}
 .ds-modal__desc--block{display:block}
 .ds-modal__foot--center{justify-content:center}
@@ -480,46 +470,18 @@
 /* Bottom-sheet grip — hidden until the modal is a sheet (under 64rem). */
 .ds-grip{display:none;flex:none;width:var(--grip-w);height:var(--space-1);margin-inline:auto;border-radius:var(--radius-pill);background:var(--border)}
 
-/* ActionSheet — the « ⋯ » menu on mobile. DOCTRINE: Dropdown is desktop only; under 64rem
-   a « ⋯ » menu ALWAYS opens as an ActionSheet. Same gesture, two screen sizes. */
-.ds-actionsheet{width:100%;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-bottom:0;border-radius:var(--radius-2xl) var(--radius-2xl) 0 0;box-shadow:var(--shadow-lg);padding:var(--space-2) var(--space-2) max(var(--space-3),env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:0.125rem;box-sizing:border-box}
-.ds-actionsheet .ds-grip{display:block;margin-block:var(--space-1) var(--space-2)}
-.ds-actionsheet__head{display:flex;flex-direction:column;gap:0.125rem;padding:var(--space-1) var(--space-3) var(--space-2)}
-.ds-actionsheet__title{font-size:var(--text-body-sm);font-weight:var(--weight-semibold)}
-.ds-actionsheet__subtitle{font-size:var(--text-caption);color:var(--text-muted)}
-.ds-actionsheet__item{display:flex;align-items:center;gap:0.625rem;min-height:var(--control-md);padding:0 var(--space-3);border:0;background:transparent;color:var(--foreground);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-medium);text-align:left;border-radius:var(--radius-sm);cursor:pointer;transition:background var(--duration-fast) var(--ease-standard)}
-.ds-actionsheet__item:hover,.ds-actionsheet__item.is-hover,.ds-actionsheet__item:focus-visible{background:var(--surface-alt);outline:none}
-.ds-actionsheet__item--danger{color:var(--destructive-readable)}
-/* La ligne cochée — jumelle de .ds-dropdown__item.is-checked (v0.1.4), même convention. */
-.ds-actionsheet__item[aria-checked="true"],.ds-actionsheet__item.is-checked{background:var(--accent);color:var(--primary)}
-.ds-actionsheet__label{flex:1;min-width:0}
-.ds-actionsheet__check{display:inline-flex;flex:none;margin-left:auto}
-.ds-actionsheet__note{font-size:var(--text-caption);color:var(--text-muted);line-height:var(--leading-normal);padding:var(--space-1) var(--space-3) var(--space-2)}
-/* PAS DE FILET DANS UNE FEUILLE D'ACTION — v0.8.0. La règle .ds-actionsheet__sep a été
-   retirée, et ActionSheet n'émet plus de <hr>. Un menu de BUREAU (.ds-dropdown) garde le
-   sien : il est dense, survolé à la souris, et le filet y sépare l'action destructrice du
-   reste. Une feuille du bas est haute, aérée, parcourue au pouce — le rythme des lignes
-   suffit, et l'action destructrice se signale déjà par sa couleur. */
-.ds-actionsheet__cancel{justify-content:center;font-weight:var(--weight-semibold);color:var(--text-secondary)}
-.ds-scrim--sheet{align-items:flex-end;padding:0}
-/* RÈGLE, pas effet de bord : au-dessus de 64 rem une ActionSheet ne s'ouvre JAMAIS en surface
-   modale — la doctrine ⋯ est tenue par le CSS, sans JS de point de rupture. */
-@media (min-width:64.0625rem){.ds-scrim--sheet{display:none}}
-/* Au-dessus de 64 rem elle n'existe QU'EN spécimen : un panneau, pas une feuille — 4 coins au
-   rayon 2xl, bordure complète, pas de poignée, largeur nommée --actionsheet-w-panneau. */
-.ds-actionsheet--panneau{width:var(--actionsheet-w-panneau);max-width:100%;border:1px solid var(--border);border-radius:var(--radius-2xl);padding-bottom:var(--space-2)}
-.ds-actionsheet--panneau .ds-grip{display:none}
-/* LE PANNEAU S'ANCRE SOUS SON DÉCLENCHEUR — v0.1.4. Sans `top`/`left`, un `position:absolute`
-   reste à sa place statique : dans un conteneur `inline-flex`, c'est À DROITE du bouton, et
-   c'est ce que rendaient les menus de Creator (audit du 11/09/2026). Le parent porte
-   `position:relative` (le composant ne peut pas le poser pour lui) ; `align="end"` colle le
-   bord droit du panneau à celui du déclencheur — le menu d'un bouton en bout de ligne. Les
-   6 px d'écart sont ceux de la maquette 01. */
+/* LE MENU DÉROULANT — pas de composant React : les classes s'écrivent directement (le site les
+   emploie ainsi), `role="menu"` sur le panneau, `role="menuitem"` (ou `menuitemradio` +
+   `aria-checked` pour un menu de choix) sur chaque item.
+   LE PANNEAU S'ANCRE SOUS SON DÉCLENCHEUR. Sans `top`/`left`, un `position:absolute` reste à sa
+   place statique : dans un conteneur `inline-flex`, c'est À DROITE du bouton. Le parent porte
+   `position:relative` ; `.ds-dropdown--end` colle le bord droit du panneau à celui du
+   déclencheur — le menu d'un bouton en bout de ligne. 6 px d'écart sous le déclencheur. */
 .ds-dropdown--floating{position:absolute;z-index:var(--z-popover);top:calc(100% + 0.375rem);left:0}
 .ds-dropdown--floating.ds-dropdown--end{left:auto;right:0}
 .ds-dropdown{width:var(--dropdown-w);padding:0.375rem;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;gap:0.125rem;box-sizing:border-box}
 /* L'item est sur le rail de 44 (--dropdown-item-h) et en --text-control, comme une entrée de
-   Sidebar (v0.1.4 — il rendait 38 px en body-sm, un cran sous tout ce qui se clique). */
+   Sidebar : en body-sm il rendrait 38 px, un cran sous tout ce qui se clique. */
 .ds-dropdown__item{display:flex;align-items:center;gap:0.625rem;width:100%;min-height:var(--dropdown-item-h);padding:0 0.875rem;border:0;background:transparent;color:var(--foreground);font-family:var(--font-body);font-size:var(--text-control);text-align:left;border-radius:var(--radius-sm);cursor:pointer;transition:background var(--duration-fast) var(--ease-standard)}
 .ds-dropdown__item:hover,.ds-dropdown__item.is-hover,.ds-dropdown__item:focus-visible{background:var(--surface-alt);outline:none}
 /* L'ITEM COCHÉ — role="menuitemradio" + aria-checked, la convention de l'élément sélectionné
@@ -529,8 +491,7 @@
 .ds-dropdown__label{flex:1;min-width:0}
 .ds-dropdown__check{display:inline-flex;flex:none;margin-left:auto}
 .ds-dropdown__item--danger{color:var(--destructive-readable)}
-/* Le hint d'un item — le raccourci, la méta. Était couleur + taille inline dans
-   Dropdown.tsx : une décision du socle qu'aucun sélecteur ne pouvait viser (v0.3.0). */
+/* Le hint d'un item — le raccourci, la méta. */
 .ds-dropdown__hint{color:var(--text-muted);font-size:var(--text-caption)}
 .ds-dropdown__sep{height:1px;margin:0.25rem 0.375rem;background:var(--border);border:0}
 
@@ -551,17 +512,15 @@
 .ds-navbar__cta{display:flex;align-items:center;gap:var(--space-3)}
 .ds-navlink{font-size:var(--text-body);font-weight:var(--weight-medium);color:var(--text-secondary);text-decoration:none;padding:var(--space-2) 0;transition:color var(--duration-fast) var(--ease-standard)}
 .ds-navlink:hover,.ds-navlink.is-hover{color:var(--foreground)}
-/* ═══ LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ — v0.1.4, corail depuis la v0.1.5, partout ═══
-   Le rendu de la v1 (Sidebar.tsx : `bg-accent text-primary`), à la lettre : plaque --accent,
-   texte --primary — LE CORAIL —, MÊME graisse que les voisins, icône et coche en currentColor.
+/* ═══ LA CONVENTION DE L'ÉLÉMENT SÉLECTIONNÉ — partout ═══
+   Plaque --accent, texte --primary — LE CORAIL —, MÊME graisse que les voisins, icône et coche en currentColor.
    Jamais « noir gras » — décision de Julien (11/09/2026) : un actif en --foreground + 600 se
    lisait comme un titre, et chaque composant avait sa propre idée (surface-alt + gras ici,
    --primary là, --card ailleurs).
    ⚠️ ÉCART DE CONTRASTE ASSUMÉ, et c'est une décision de marque, pas un oubli : --primary mesure
    3,00 sur --accent en clair (3,94 en sombre), 3,25 sur --card, 3,28 sur --secondary — le seuil
-   des graphiques, PAS celui du texte (4,5). La v0.1.4 avait posé le jumeau lisible
-   --primary-readable (5,16) pour tenir le seuil ; Julien a tranché pour la fidélité à la v1
-   (11/09/2026) : le corail, et l'écart est ÉCRIT dans la marque (@a11y-assume, brand-yunary.css,
+   des graphiques, PAS celui du texte (4,5). Le jumeau lisible --primary-readable (5,16)
+   tiendrait le seuil ; Julien a tranché pour le corail (11/09/2026), et l'écart est ÉCRIT dans la marque (@a11y-assume, brand-yunary.css,
    un bloc par paire) — check-contrast.mjs le mesure et le laisse passer parce qu'il est déclaré,
    jamais parce qu'il serait masqué. Ce qui le rend tenable : l'état n'est jamais porté par la
    couleur seule — la plaque --accent, l'ombre (onglet, page), la coche (menu), l'aria-current /
@@ -696,15 +655,13 @@
 .ds-sidenav{display:flex;align-items:center;gap:var(--space-3);min-height:var(--sidenav-h);padding:0 var(--space-2);border-radius:var(--radius-sm);border:0;background:transparent;color:var(--text-secondary);font-family:var(--font-body);font-size:var(--text-control);font-weight:var(--weight-medium);text-align:left;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background-color var(--duration-fast) var(--ease-standard),color var(--duration-fast) var(--ease-standard)}
 .ds-sidenav:hover{background:var(--surface-alt);color:var(--foreground)}
 /* L'ENTRÉE ACTIVE : la convention de l'élément sélectionné — plaque --accent, libellé --primary
-   (le corail de la v1, 3,00 assumé), graisse INCHANGÉE (500, comme ses voisines), icône en
-   currentColor. Elle rendait surface-alt + encre + 600 + icône --brand-via (2,29 en clair,
-   assumé) : le « noir gras » que Julien a refusé, et un rendu que ni la v1 ni les maquettes du
-   11/09 ne montrent. La règle svg est retirée : l'icône hérite. */
+   (le corail, 3,00 assumé), graisse INCHANGÉE (500, comme ses voisines), icône en currentColor
+   (elle hérite). Jamais surface-alt + encre + 600 : le « noir gras » que Julien a refusé. */
 .ds-sidenav.is-active{background:var(--accent);color:var(--primary)}
 .ds-sidenav:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 .ds-sidebar.is-collapsed .ds-sidenav{justify-content:center;padding:0}
 .ds-sidebar.is-collapsed .ds-sidenav__label{display:none}
-/* Le libellé cède avant l'appoint : à 240 px, « Yunary Metrics · Bientôt » se rognait d'un pixel. v0.1.2 */
+/* Le libellé cède avant l'appoint : à 240 px, un libellé long suivi de « Bientôt » se rognerait. */
 .ds-sidenav__label{min-width:0;overflow:hidden;text-overflow:ellipsis}
 /* Entrée annoncée (« Bientôt ») : grisée, inerte, son appoint poussé à droite ; l'appoint disparaît en replié. v0.1.2 */
 .ds-sidenav.is-disabled{opacity:.5;cursor:not-allowed;pointer-events:none}
