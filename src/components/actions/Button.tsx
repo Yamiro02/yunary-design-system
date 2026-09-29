@@ -8,8 +8,13 @@ import { Spinner } from '../feedback/Spinner';
  * Radius is always --radius-md — NEVER a pill.
  */
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** primary = brand CTA (glow) · secondary = white/ink outline · ghost = bare · danger = destructive. */
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  /**
+   * primary = brand CTA (glow) · secondary = white/ink outline · ghost = bare · danger = destructive.
+   * danger-soft = l'action destructrice SECONDAIRE (retirer, se déconnecter) : la paire de la pilule
+   * danger, sans bordure — la recette de l'IconButton du même nom. `danger` reste l'action
+   * destructrice unique et définitive d'une vue.
+   */
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'danger-soft';
   /** Shared control rail: every size has min-height 3rem (2.75rem under 64rem); sm tightens padding + type; lg (3.25rem) is the hero CTA. */
   size?: 'sm' | 'md' | 'lg';
   /**
@@ -45,6 +50,7 @@ const button = cva('ds-btn', {
       secondary: 'ds-btn--secondary',
       ghost: 'ds-btn--ghost',
       danger: 'ds-btn--danger',
+      'danger-soft': 'ds-btn--danger-soft',
     },
     size: { sm: 'ds-btn--sm', md: 'ds-btn--md', lg: 'ds-btn--lg' },
     surface: { auto: '', page: 'ds-btn--on-page', card: 'ds-btn--on-card' },

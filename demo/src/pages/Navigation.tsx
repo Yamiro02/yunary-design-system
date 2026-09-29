@@ -13,6 +13,8 @@ const SERIES = [
 
 export function NavigationPage() {
   const [tab, setTab] = useState('build');
+  const [ton, setTon] = useState('naturel');
+  const [rythme, setRythme] = useState('pose');
   const [page, setPage] = useState(4);
   const [longPage, setLongPage] = useState(12);
 
@@ -63,6 +65,31 @@ export function NavigationPage() {
               <button type="button" className="ds-tab is-hover">Build</button>
               <button type="button" className="ds-tab">Tuto</button>
             </div>
+          </Row>
+        </Block>
+        <Block label="mode=&quot;choice&quot; — choisir une valeur" hint="Même rendu, sémantique radiogroup / radio + aria-checked : un seul arrêt de tabulation (la valeur choisie), les flèches ← → ↑ ↓ et Début / Fin déplacent le choix, comme un groupe de radios. fullWidth partage la largeur à parts égales. Le groupe se nomme par aria-label.">
+          <Row label="interactif, pleine largeur">
+            <div className="flex w-full flex-col gap-space-2">
+              <Tabs mode="choice" fullWidth aria-label="Ton" value={ton} onChange={setTon}
+                items={[{ value: 'soutenu', label: 'Soutenu' }, { value: 'naturel', label: 'Naturel' }, { value: 'familier', label: 'Familier' }, { value: 'direct', label: 'Direct' }]} />
+              <p className="caption">Choisi : {ton}</p>
+            </div>
+          </Row>
+          <Row label="dans une carte">
+            <span className="flex w-full rounded-lg border border-border bg-card p-space-4 ds-card">
+              <Tabs mode="choice" fullWidth aria-label="Rythme" value={rythme} onChange={setRythme}
+                items={[{ value: 'lent', label: 'Lent' }, { value: 'pose', label: 'Posé' }, { value: 'rapide', label: 'Rapide' }]} />
+            </span>
+          </Row>
+          <Row label="lecture seule (aria-readonly : focusable, ne change pas)">
+            <Tabs mode="choice" readOnly aria-label="Rythme (lecture seule)" value="pose" onChange={() => undefined}
+              items={[{ value: 'lent', label: 'Lent' }, { value: 'pose', label: 'Posé' }, { value: 'rapide', label: 'Rapide' }]} />
+          </Row>
+          <Row label="désactivé · un item désactivé">
+            <Tabs mode="choice" disabled aria-label="Rythme (désactivé)" value="pose" onChange={() => undefined}
+              items={[{ value: 'lent', label: 'Lent' }, { value: 'pose', label: 'Posé' }, { value: 'rapide', label: 'Rapide' }]} />
+            <Tabs mode="choice" aria-label="Rythme (un item désactivé)" value="lent" onChange={() => undefined}
+              items={[{ value: 'lent', label: 'Lent' }, { value: 'pose', label: 'Posé', disabled: true }, { value: 'rapide', label: 'Rapide' }]} />
           </Row>
         </Block>
       </Section>

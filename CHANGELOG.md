@@ -14,6 +14,42 @@ Une ligne par décision, et c'est le **pourquoi** qui compte.
 
 ---
 
+## 0.3.0 — listes de choix, choix d'une valeur, champ verrouillé, encart de valeur
+
+Les manques des pages Profil créateur, Paramètres et de la carte d'outil du hub (maquettes
+HubProfil, HubParametres, Hub-Outils-CarteAnalyse). Règle suivie : étendre l'existant, ne créer
+qu'en dernier recours. Aucune rupture : tout est additif, les rendus existants ne bougent pas.
+
+- **`.ds-tile--compact` et `.ds-tile--chip`** — la tuile cochable étendue pour une LISTE de
+  choix, sur une ligne. `--compact` garde la case (choix simple : une niche) ; `--compact` +
+  `--chip` est une pastille en pilule pour un choix multiple (passions, vécus, humour) : case
+  masquée visuellement, `<input>` toujours focusable et annoncé, coche `.ds-tile__check` en tête
+  une fois cochée. Glyphe de tête `.ds-tile__lead` (Icon, ou emoji quand l'emoji est la donnée).
+  Lecture seule : `.is-readonly` ou `aria-readonly="true"`. Classes seules, documentées dans
+  « Classes sans composant ». La limite `max` reste à l'app.
+- **`Tabs` : `mode="choice"`, `fullWidth`, `disabled`, `readOnly`, `items[i].disabled`** — le
+  même rendu pour choisir une valeur parmi trois ou quatre : `radiogroup` / `radio` +
+  `aria-checked`, un seul arrêt de tabulation, flèches, Début / Fin. `.ds-tab[aria-checked]`
+  porte la convention de l'élément sélectionné ; `.ds-tabs--block`, `.ds-tab:disabled`,
+  `.ds-tabs[aria-readonly]`. Le mode `tabs` (défaut) est inchangé.
+- **`Button variant="danger-soft"`** — la recette de l'`IconButton` du même nom
+  (`.ds-btn--danger-soft`) : l'action destructrice secondaire (retirer, se déconnecter).
+- **`Input iconEnd`** — un glyphe dans le champ, à droite (`.ds-input-unit--icon`,
+  `.ds-input-unit__icon`), compatible avec `unit`. `.ds-input[readonly]` : texte en sourdine,
+  curseur neutre, focus conservé. Nouveau glyphe `lock` au catalogue (49 glyphes). Ferme
+  l'entrée « Slot d'icône sur `Input` » du BACKLOG.
+- **`.ds-inset`** (+ `--dashed`, `--bare`, `__value`, `__action`) — l'encart de valeur posé
+  dans une carte. Créé parce que rien ne le couvrait : `Card` est la surface racine (on ne
+  l'imbrique pas), `EmptyState` une colonne centrée à pastille, `StateCard` un héros, et le
+  socle n'avait aucune surface creusée. Classe seule ; surface déduite comme celle d'un champ.
+- **Contrôles** — `check-catalogue.mjs` vérifie (point 7) que chaque classe citée dans
+  « Classes sans composant » existe dans `patterns.css`. `check-contrast.mjs` mesure six
+  paires de plus, toutes conformes (70 paires, 24 écarts assumés, inchangés).
+- **Charte** — le pill est permis pour une pastille de choix ; un emoji qui EST la donnée est
+  permis en tête de tuile, jamais comme icône d'interface (`docs/DESIGN.md` § 9).
+
+---
+
 ## 0.2.0 — le paquet ne porte que ce que Yunary emploie
 
 Retraits décidés par Julien le 29/09/2026 (audit « zéro legacy », Q11). Chaque retrait est

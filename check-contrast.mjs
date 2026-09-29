@@ -189,6 +189,15 @@ function pairs(theme, { ROOT, DARK }, fichier) {
   /* La tuile cochée : son contenu reste en encre sur la plaque, son filet est --primary. */
   add('Marque-contenu', '.ds-tile cochée — titre sur --accent', g('--foreground'), g('--accent'), 4.5, '16 / 600');
   add('Marque-contenu', '.ds-tile cochée — description sur --accent', g('--text-secondary'), g('--accent'), 4.5, '14 / 400');
+  /* La tuile compacte : son libellé au repos est --text-secondary sur --background. */
+  add('Marque-contenu', '.ds-tile--compact — libellé au repos', g('--text-secondary'), g(B), 4.5, '15 / 500');
+  /* Le danger doux du Button : la paire de la pilule danger, sur les deux porteuses. */
+  add('Marque-contenu', '.ds-btn--danger-soft sur --card — label', g('--pill-danger-fg'), on('--pill-danger-bg', C), 4.5, '14 / 600');
+  add('Marque-contenu', '.ds-btn--danger-soft sur --background — label', g('--pill-danger-fg'), on('--pill-danger-bg', B), 4.5, '14 / 600');
+  /* Les textes en sourdine des ajouts : le champ en lecture seule, l'encart vide. */
+  add('Texte', '.ds-input[readonly] — texte sur --background', g('--text-muted'), g(B), 4.5, '15 / 400');
+  add('Texte', '.ds-input[readonly] — texte sur --secondary', g('--text-muted'), g('--secondary'), 4.5, '15 / 400');
+  add('Texte', '.ds-inset--dashed — texte sur --background', g('--text-muted'), g(B), 4.5, '14 / 400');
 
   for (const n of ['coral', 'amber', 'danger', 'warning', 'success', 'neutral']) {
     add('Pill', `.ds-badge--${n} sur --card`, g(`--pill-${n}-fg`), on(`--pill-${n}-bg`, C), 4.5, '12 / 700');

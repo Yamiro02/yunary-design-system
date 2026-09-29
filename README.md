@@ -58,7 +58,7 @@ sans toucher aux composants.
 Pas de registry : chaque app épingle une version par un tag git.
 
 ```bash
-npm i github:Yamiro02/yunary-design-system#v0.2.0
+npm i github:Yamiro02/yunary-design-system#v0.3.0
 ```
 
 Cinq **peer dependencies**, à la charge de l'app :
@@ -210,7 +210,7 @@ Une section ink au milieu d'une page crème adopte le scope, elle ne peint pas u
 |---|---|
 | Couleurs | `bg-background` `text-foreground` `bg-card` `text-card-foreground` `bg-popover` `bg-primary` `bg-secondary` `bg-muted` `text-muted-foreground` `bg-accent` `bg-destructive` `border-border` `ring-ring` `bg-tone-dark` `bg-tone-dark-soft` `bg-tone-light` `bg-tone-light-alt` `text-text-secondary` `text-text-muted` `text-text-inverted` `bg-brand-from/via/to` `bg-pill-*-bg` `text-pill-*-fg` |
 | Dégradés | `bg-brand-gradient` `bg-brand-gradient-diagonal` `bg-grad-soft` `bg-halo` — pas de namespace v4 pour `background-image` : ce sont des `@utility`, donc variantables (`hover:`, `dark:`) |
-| Rayons | `rounded-xs` `rounded-sm` `rounded-md` `rounded-lg` `rounded-xl` `rounded-2xl` `rounded-pill` — le pill est réservé aux **badges et compteurs** : jamais un bouton, un input ni une barre d'onglets. **`rounded` nu n'est pas au barème**, voir plus bas |
+| Rayons | `rounded-xs` `rounded-sm` `rounded-md` `rounded-lg` `rounded-xl` `rounded-2xl` `rounded-pill` — le pill est réservé aux **badges, compteurs et pastilles de choix** (`.ds-tile--chip`) : jamais un bouton, un input ni une barre d'onglets. **`rounded` nu n'est pas au barème**, voir plus bas |
 | Ombres | `shadow-sm` `shadow-md` `shadow-lg` `shadow-glow` `shadow-glow-lg` |
 | Typo | `font-display` `font-body` `font-mono` · `text-display-xl` `text-display` `text-heading-xl` `text-heading` `text-subheading` `text-heading-sm` `text-body-lg` `text-body` `text-body-sm` `text-control` `text-caption` `text-eyebrow` `text-chip` |
 | Espacement | `gap-space-1` … `gap-space-8` · `h-control-sm/md/lg` · `w-icon-control-sm/md/lg` · `p-card-pad` `p-card-pad-lg` — **rail unique** : tous les contrôles s'alignent sur `--control-md`, qui descend à 2.75rem sous 64rem |
@@ -259,13 +259,13 @@ de Tailwind, sur laquelle reposent les composants shadcn de ton app.
 
 | Famille | Composants |
 |---|---|
-| `icons` | `Icon` — 48 glyphes Lucide ; la taille vient du **créneau** (`--ds-icon-size`, repli `1.25rem`), `size` reste la surcharge au site d'appel |
-| `actions` | `Button` · `IconButton` — 4 variantes (5 pour `IconButton`, `accent` compris), 3 tailles, jamais un pill |
-| `forms` | `Input` · `Textarea` · `Select` · `Checkbox` · `Radio` · `Switch` · `FormField` · `Calendar` · `DatePicker` |
+| `icons` | `Icon` — 49 glyphes Lucide ; la taille vient du **créneau** (`--ds-icon-size`, repli `1.25rem`), `size` reste la surcharge au site d'appel |
+| `actions` | `Button` · `IconButton` — 5 variantes, `danger-soft` compris (6 pour `IconButton`, `accent` compris), 3 tailles, jamais un pill |
+| `forms` | `Input` (unité, icône de fin, lecture seule) · `Textarea` · `Select` · `Checkbox` · `Radio` · `Switch` · `FormField` · `Calendar` · `DatePicker` |
 | `data-display` | `Card` (+ en-tête à slots) · `Pastille` · `Badge` (2 rembourrages) · `Tooltip` · `Separator` · `Table` (+ `THead` `TBody` `Tr` `Th` `Td`) — `framed` · `columns` · `striped` · `hoverable`, composables |
 | `feedback` | `Toast` · `Banner` · `EmptyState` · `Skeleton` · `SkeletonCard` · `Spinner` · `Progress` |
 | `overlays` | `Modal` (3 phases + feuille basse sous 64 rem) |
-| `navigation` | `Navbar` · `Footer` · `Tabs` · `Pagination` · `AppShell` · `Sidebar` |
+| `navigation` | `Navbar` · `Footer` · `Tabs` (onglets ou choix d'une valeur) · `Pagination` · `AppShell` · `Sidebar` |
 | `brand` | `Logo` · `Halo` · `Avatar` |
 
 Tous sont exportés en nommé depuis la racine, avec leurs types :
@@ -276,9 +276,10 @@ import { Button, type ButtonProps } from '@yunary/ds';
 
 Les règles d'usage composant par composant sont dans [`docs/PROMPTS.md`](docs/PROMPTS.md).
 
-> **Classes sans composant.** La tuile cochable (`.ds-tile`) et le menu déroulant
-> (`.ds-dropdown`) n'ont pas de composant React : leurs classes sont stables, l'app écrit le
-> balisage. Voir la fin de [`docs/PROMPTS.md`](docs/PROMPTS.md).
+> **Classes sans composant.** La tuile cochable (`.ds-tile`, avec ses formes compacte et
+> pastille), l'encart de valeur (`.ds-inset`) et le menu déroulant (`.ds-dropdown`) n'ont pas
+> de composant React : leurs classes sont stables, l'app écrit le balisage (React, Preact ou
+> HTML). Voir la fin de [`docs/PROMPTS.md`](docs/PROMPTS.md).
 
 > **Hors périmètre** — les composants métier (blocs de code, cartes d'étape, pills de
 > métrique…) vivent dans l'app qui en a besoin. Les classes `.ds-metric*` sont dans
@@ -385,7 +386,8 @@ est reporté, puis porté ici.
 ## Interdits
 
 Pas de valeur inventée : chaque couleur, taille, rayon ou ombre vient d'un jeton. Pas
-d'emoji — seul le point médian `·`. Jamais un pill sur un bouton ou un input. La face
+d'emoji d'interface — seul le point médian `·` (un emoji qui EST la donnée, en tête de tuile, est
+permis : voir `docs/DESIGN.md` § 9). Jamais un pill sur un bouton ou un input. La face
 `--font-display` est réservée aux titres, jamais sous `1.125rem`, jamais faux-grassée — sa
 casse et sa graisse viennent de `--heading-transform` / `--heading-weight`, que la marque
 règle. Jamais `rounded` nu — toujours

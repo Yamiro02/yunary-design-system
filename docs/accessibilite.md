@@ -10,7 +10,7 @@
 > translucides — pilules, plaques de marque — sont **composités sur leur surface porteuse**
 > avant mesure : c'est la couleur que l'œil reçoit, pas celle qui est écrite.
 >
-> **64 paires × 2 thèmes. 40 conformes, 24 écarts assumés.** Un écart assumé n'est pas un
+> **70 paires × 2 thèmes. 46 conformes, 24 écarts assumés.** Un écart assumé n'est pas un
 > oubli : c'est une décision écrite, déclarée dans `src/styles/brand-yunary.css` par un bloc
 > `@a11y-assume:` avec sa raison. Le build tombe si une **vingt-cinquième** apparaît.
 
@@ -84,6 +84,12 @@ la convention d'état actif (§ 3.6) — toutes décidées, aucune par accident.
 | `.ds-icon-btn--danger-soft sur --background — glyphe` | icône | 3 | 5,28 | 7,59 |
 | `.ds-tile cochée — titre sur --accent` | 16 / 600 | 4,5 | 14,38 | 11,95 |
 | `.ds-tile cochée — description sur --accent` | 14 / 400 | 4,5 | 9,51 | 8,82 |
+| `.ds-tile--compact — libellé au repos` | 15 / 500 | 4,5 | 9,88 | 10,72 |
+| `.ds-btn--danger-soft sur --card — label` | 14 / 600 | 4,5 | 5,47 | 6,59 |
+| `.ds-btn--danger-soft sur --background — label` | 14 / 600 | 4,5 | 5,28 | 7,59 |
+| `.ds-input[readonly] — texte sur --background` | 15 / 400 | 4,5 | 4,91 | 7,51 |
+| `.ds-input[readonly] — texte sur --secondary` | 15 / 400 | 4,5 | 5,17 | 6,47 |
+| `.ds-inset--dashed — texte sur --background` | 14 / 400 | 4,5 | 4,91 | 7,51 |
 | `.ds-badge--coral sur --card` | 12 / 700 | 4,5 | 4,90 | 5,73 |
 | `.ds-badge--coral sur --background` | 12 / 700 | 4,5 | 4,69 | 6,62 |
 | `.ds-badge--amber sur --card` | 12 / 700 | 4,5 | 4,99 | 7,13 |

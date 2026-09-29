@@ -191,12 +191,12 @@ plateformes sociales vivent dans le projet qui les fabrique.
 3. `--primary` et `--destructive` jamais en `color:` de TEXTE COURANT — les jumeaux
    lisibles. (Exceptions écrites : icônes de marque, texte de l'onglet actif — décisions
    § 6, portées par la plaque + la forme, jamais par la couleur seule.)
-4. Jamais un rayon pill sur un bouton, un champ ou une barre d'onglets.
+4. Jamais un rayon pill sur un bouton, un champ ou une barre d'onglets. Il est réservé aux badges, aux compteurs et aux pastilles de choix (`.ds-tile--chip`).
 5. Jamais la couleur seule pour porter un sens — couleur + icône + texte.
 6. Jamais deux éléments chauds dans la même vue (la règle qui décide, § 1).
 7. Jamais un utilitaire de couleur, fond, `background-clip` ou dimension sur `.accent` / `.eyebrow`.
 8. Jamais un défaut de design en style inline.
-9. Jamais d'emoji — les icônes sont Lucide.
+9. Jamais d'emoji d'interface — les icônes sont Lucide. Seule exception : un emoji qui EST la donnée affichée (l'emoji d'une passion, fourni par l'app), dans le glyphe de tête d'une tuile (`.ds-tile__lead`).
 10. Jamais un jeton de marque redéclaré dans une app — une divergence locale se corrige ici, par PR.
 11. Jamais de blanc pur en surface — `#ffffff` est une couleur de texte sur aplat de marque.
 
@@ -222,4 +222,5 @@ plateformes sociales vivent dans le projet qui les fabrique.
 | 2026-08-31 | Marque exportée sous `./brand-yunary.css` dans package.json | sous-chemin stable de chaque surface |
 | 2026-09-11 | Élément sélectionné en corail (`--primary` sur `--accent`), écart de contraste assumé | décision de marque Julien |
 | 2026-09-11 | Titre de page à 36 px, `Card gap` sur l'échelle `--space-*` sans palier 20 | décisions Julien |
+| 2026-09-29 | 0.3.0 : pastille de choix en pilule, emoji de contenu autorisé en tête de tuile | les listes de choix du profil créateur (maquette HubProfil) |
 | 2026-09-29 | 0.2.0 : retrait de l'extension de visuels d'export et des composants React sans consommateur | le paquet ne porte que ce que les surfaces emploient |

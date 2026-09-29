@@ -106,6 +106,38 @@ export function DataDisplayPage() {
         </Block>
       </Section>
 
+      <Section title="Encart de valeur — classes .ds-inset" note="Une valeur posée DANS une carte : une ligne de texte sur une surface creusée, rayon md, action facultative à droite. Ni une Card (on n'imbrique pas de carte), ni un EmptyState (colonne centrée à pastille). La surface se déduit comme celle d'un champ : --secondary sur la page, --background dans une carte.">
+        <Card title="Dans une carte">
+          <div className="flex flex-col gap-space-4">
+            <Row label="bordé — une valeur remplie">
+              <p className="ds-inset w-full"><span className="ds-inset__value">Développeuse indépendante, je construis des outils internes pour des équipes de dix personnes.</span></p>
+            </Row>
+            <Row label="--dashed — un champ vide, avec action">
+              <div className="ds-inset ds-inset--dashed w-full">
+                <span className="ds-inset__value">Comment tu en es arrivée là, en deux ou trois phrases.</span>
+                <a className="ds-inset__action" href="#data-display">Compléter</a>
+              </div>
+            </Row>
+            <Row label="--bare — une matière en lecture seule">
+              <p className="ds-inset ds-inset--bare"><span className="ds-inset__value">« Je vais être directe. »</span></p>
+              <p className="ds-inset ds-inset--bare"><span className="ds-inset__value">« Voilà. Simple, pas facile. »</span></p>
+            </Row>
+            <Row label="action en bouton">
+              <div className="ds-inset w-full">
+                <span className="ds-inset__value">Un tableau de bord par équipe.</span>
+                <span className="ds-inset__action"><Button variant="ghost" size="sm" icon={<Icon name="copy" />}>Copier</Button></span>
+              </div>
+            </Row>
+          </div>
+        </Card>
+        <Block label="Sur la page" hint="Hors carte, l'encart prend --secondary pour rester visible sur la page.">
+          <div className="ds-inset ds-inset--dashed">
+            <span className="ds-inset__value">Ce qui la bloque aujourd'hui, en une phrase.</span>
+            <a className="ds-inset__action" href="#data-display">Compléter</a>
+          </div>
+        </Block>
+      </Section>
+
       <Section title="Pastille" note="La tuile d'icône du système — une seule pour toutes les tuiles teintées. Les tailles sont nommées PAR CONTEXTE, jamais par mesure : un site d'appel n'écrit jamais un rem.">
         <Block label="Tailles" hint="carte 2.25 · dialogue 2.625 · panneau 3.25 · héros 4 · écran 5rem. Le rayon suit la taille : sm · md · lg · xl · 2xl.">
           <Row>

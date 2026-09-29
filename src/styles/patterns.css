@@ -103,7 +103,13 @@
 .ds-btn--danger{background:var(--destructive);color:var(--destructive-foreground)}
 .ds-btn--danger:hover:not(:disabled),.ds-btn--danger.is-hover{filter:brightness(.93);transform:translateY(-1px)}
 .ds-btn--danger:active:not(:disabled),.ds-btn--danger.is-active{transform:translateY(1px)}
-.ds-btn--secondary:focus-visible,.ds-btn--ghost:focus-visible,.ds-btn--danger:focus-visible,.ds-btn--secondary.is-focus,.ds-btn--ghost.is-focus,.ds-btn--danger.is-focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+/* LE DANGER DOUX DU BOUTON — la recette de .ds-icon-btn--danger-soft : la paire de la pilule
+   danger, sans bordure. L'action destructrice SECONDAIRE d'une vue (retirer une photo, se
+   déconnecter) ; le --danger plein reste l'action destructrice UNIQUE et définitive. */
+.ds-btn--danger-soft{background:var(--pill-danger-bg);color:var(--pill-danger-fg)}
+.ds-btn--danger-soft:hover:not(:disabled),.ds-btn--danger-soft.is-hover{background:color-mix(in srgb,var(--destructive) 12%,var(--pill-danger-bg))}
+.ds-btn--danger-soft:active:not(:disabled),.ds-btn--danger-soft.is-active{transform:translateY(1px)}
+.ds-btn--secondary:focus-visible,.ds-btn--ghost:focus-visible,.ds-btn--danger:focus-visible,.ds-btn--danger-soft:focus-visible,.ds-btn--secondary.is-focus,.ds-btn--ghost.is-focus,.ds-btn--danger.is-focus,.ds-btn--danger-soft.is-focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
 /* LA SURFACE D'UN BOUTON SECONDAIRE, DÉCLARÉE À LA MAIN.
    Le socle ne DÉDUIT pas la surface ici : `.ds-btn--secondary` porte --secondary partout, et
    l'échelle de surfaces du gabarit garantit déjà que --secondary se distingue de --card
@@ -187,6 +193,11 @@
 .ds-input.is-error,.ds-input[aria-invalid="true"]{border-color:var(--destructive)}
 .ds-input.is-error:focus,.ds-input[aria-invalid="true"]:focus{border-color:var(--destructive)}
 .ds-input:disabled,.ds-input.is-disabled{cursor:not-allowed;background:var(--muted);color:var(--muted-foreground)}
+/* LE CHAMP EN LECTURE SEULE — `readonly` : la valeur se lit, se sélectionne, se copie et reste
+   dans l'ordre de tabulation (au contraire de `disabled`), mais ne se modifie pas. Texte en
+   sourdine, curseur neutre ; le focus garde son anneau. Le sélecteur est l'ATTRIBUT et non
+   `:read-only`, qui attraperait aussi le déclencheur <button> du DatePicker. */
+.ds-input[readonly]:not(:disabled){color:var(--text-muted);cursor:default}
 /* LE CHAMP À UNITÉ — v0.3.0. L'unité (« kg », « € », « min ») est une méta posée DANS
    le champ, à droite, en sourdine : elle ne se clique pas, ne se lit pas deux fois
    (aria-hidden — le libellé du FormField la nomme). Le padding réservé vaut --space-7 :
@@ -199,6 +210,15 @@
 .ds-input-unit{position:relative;display:block;width:100%}
 .ds-input-unit .ds-input{padding-right:var(--space-7)}
 .ds-input-unit__label{position:absolute;right:0.875rem;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:var(--text-body-sm)}
+/* L'ICÔNE DE FIN — un glyphe DANS le champ, à droite (le cadenas d'un champ verrouillé). Même
+   retrait que le texte (0.875rem), glyphe à 1rem en sourdine, décoratif : son sens est porté
+   par le libellé ou l'aide du FormField. Avec une unité, l'unité se décale à gauche de
+   l'icône. */
+.ds-input-unit__icon{position:absolute;right:0.875rem;top:50%;transform:translateY(-50%);pointer-events:none;display:inline-flex;color:var(--text-muted)}
+.ds-input-unit__icon svg{--ds-icon-size:1rem}
+.ds-input-unit--icon .ds-input{padding-right:calc(0.875rem + 1rem + var(--space-2))}
+.ds-input-unit--icon .ds-input-unit__label{right:calc(0.875rem + 1rem + var(--space-2))}
+.ds-input-unit--icon:has(.ds-input-unit__label) .ds-input{padding-right:calc(var(--space-7) + 1rem + var(--space-2))}
 .ds-textarea{height:auto;min-height:0;resize:vertical;line-height:var(--leading-normal)}
 .ds-select{position:relative;display:block}
 .ds-select select{appearance:none;-webkit-appearance:none;padding-right:var(--space-7);cursor:pointer}
@@ -293,6 +313,37 @@
 /* Le contrôle interne ne porte pas son propre anneau : c'est la tuile qui le porte. */
 .ds-tile .ds-choice input:focus-visible+.ds-choice__box{box-shadow:none}
 .ds-tile:has(input:disabled),.ds-tile.is-disabled{opacity:.5;cursor:not-allowed}
+/* LA TUILE EN LECTURE SEULE — `.is-readonly` sur la tuile ou `aria-readonly="true"` sur l'input :
+   le choix se lit, reste focusable et annoncé, mais le survol ne l'invite plus (filet et case
+   inchangés, curseur neutre). EMPÊCHER le changement reste à l'app (onChange ignoré). */
+.ds-tile.is-readonly,.ds-tile:has(input[aria-readonly="true"]){cursor:default}
+.ds-tile.is-readonly:not(.is-checked):not(:has(input:checked)):hover,.ds-tile:has(input[aria-readonly="true"]:not(:checked)):hover{border-color:var(--border)}
+.ds-tile.is-readonly:hover .ds-choice__box,.ds-tile:has(input[aria-readonly="true"]):hover .ds-choice__box{border-color:var(--input)}
+/* LA TUILE COMPACTE — une ligne, pour une LISTE de choix (une niche parmi treize, des passions,
+   des vécus). Même anatomie que la tuile : le <label>, l'<input> natif dedans, cochée lue par
+   `:has(input:checked)`. Rangée en flex et non en grille : un glyphe de tête optionnel
+   (`.ds-tile__lead`, un emoji ou une icône, aria-hidden) s'ajoute sans colonne à déclarer.
+   Libellé en --text-control/500, --text-secondary au repos, encre une fois coché. */
+.ds-tile--compact{display:flex;gap:var(--space-3);padding:0.875rem 1rem;color:var(--text-secondary)}
+.ds-tile--compact:has(input:checked),.ds-tile--compact.is-checked{color:var(--foreground)}
+.ds-tile--compact .ds-tile__main{flex:1;min-width:0}
+.ds-tile--compact .ds-tile__title{font-size:var(--text-control);font-weight:var(--weight-medium)}
+.ds-tile__lead{display:inline-flex;flex:none;align-items:center;font-size:0.9375rem;line-height:1}
+.ds-tile__lead svg{--ds-icon-size:1rem}
+/* LA PASTILLE DE CHOIX — `.ds-tile--compact.ds-tile--chip` : la tuile compacte en pilule, pour un
+   choix multiple court et nombreux (passions, humour). La CASE est masquée visuellement — la
+   tuile cochée suffit à le montrer — mais l'<input> reste dans le flux d'accessibilité :
+   focusable, annoncé, coché par Espace. Cochée : filet --primary, fond inchangé, et la coche
+   `.ds-tile__check` apparaît en tête. Le rayon pill est légal ici : c'est une pastille de
+   choix, pas un bouton ni un champ. */
+.ds-tile--chip{display:inline-flex;gap:0.4375rem;padding:0.5rem 0.875rem;border-radius:var(--radius-pill);color:var(--foreground)}
+.ds-tile--chip:has(input:checked),.ds-tile--chip.is-checked{background:var(--background)}
+.ds-tile--chip .ds-tile__main{flex:none}
+.ds-tile--chip .ds-tile__title{font-size:var(--text-body-sm);font-weight:var(--weight-semibold)}
+.ds-tile--chip .ds-choice{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.ds-tile__check{display:none;flex:none}
+.ds-tile__check svg{--ds-icon-size:0.875rem}
+.ds-tile:has(input:checked) .ds-tile__check,.ds-tile.is-checked .ds-tile__check{display:inline-flex}
 
 /* ---------- data-display: Card · Badge · Tooltip ---------- */
 /* Card — header slots. Passing no slot renders exactly as before. */
@@ -420,6 +471,22 @@
 /* 20rem : largeur max d'une colonne de texte courte — une mesure de LISIBILITÉ, pas
    d'identité. Littéral structurel, comme les micro-espacements (voir la doctrine en tête). */
 .ds-empty__desc{max-width:20rem;color:var(--muted-foreground);font-size:var(--text-body-sm);line-height:var(--leading-normal)}
+/* ---------- data-display: l'encart de valeur (classes seules) ---------- */
+/* L'ENCART — une valeur posée DANS une carte : une bio, une réponse, une citation relevée. Ni une
+   Card (on n'imbrique pas une carte dans une carte : pas d'ombre, pas de --card-pad), ni un
+   EmptyState (colonne centrée à pastille) : une ligne de texte sur une surface creusée, rayon
+   md, avec une action facultative à droite (`.ds-inset__action`, un lien ou un Button sm).
+   Trois formes : bordée (défaut, une valeur remplie), `--dashed` (un champ VIDE, « à
+   compléter » : texte en sourdine, filet pointillé), `--bare` (sans filet, une matière en
+   lecture seule). La surface se DÉDUIT comme celle d'un champ : --secondary sur la page,
+   --background dans une carte, une modale ou un menu. */
+.ds-inset{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-2) var(--space-4);margin:0;padding:0.75rem 0.875rem;box-sizing:border-box;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--secondary);color:var(--foreground);font-size:var(--text-body-sm);line-height:var(--leading-normal);text-wrap:pretty}
+.ds-card .ds-inset,.ds-modal .ds-inset,.ds-dropdown .ds-inset{background:var(--background)}
+.ds-inset--dashed{border:1.5px dashed var(--border)}
+.ds-inset--bare{border-color:transparent}
+.ds-inset__value{flex:1 1 12rem;min-width:0;margin:0}
+.ds-inset--dashed .ds-inset__value{color:var(--text-muted)}
+.ds-inset__action{display:inline-flex;flex:none;align-items:center;gap:var(--space-2);font-weight:var(--weight-semibold)}
 /* ---------- feedback: StateCard — la carte d'état héros ---------- */
 /* L'attente, l'indisponible, l'erreur, le cas limite. Ce n'est pas l'EmptyState : celui-là est
    un emplacement VIDE en pointillés qui invite à remplir ; celle-ci est une carte PLEINE qui
@@ -542,18 +609,27 @@
    (régime v0.5 du kit maître), un actif posé en --background n'avait plus que ~1,05 d'écart avec
    sa barre : invisible. La teinte chaude se lit dans les DEUX thèmes — plus de régime sombre
    séparé. */
-.ds-tab[aria-selected="true"],.ds-tab.is-selected{background:var(--accent);color:var(--primary);box-shadow:var(--shadow-sm)}
+.ds-tab[aria-selected="true"],.ds-tab[aria-checked="true"],.ds-tab.is-selected{background:var(--accent);color:var(--primary);box-shadow:var(--shadow-sm)}
 /* Sur une carte, la plaque accent se confondrait avec la teinte de la carte : l'actif garde le
    régime historique de SURFACE — fond --card au-dessus de la barre creusée en --background —
    mais son texte suit la convention (v0.1.4 : il était --foreground, le seul sélectionné
    « noir » qui restait ; 3,25 / 4,12 sur --card, assumé). */
-.ds-tabs--on-card .ds-tab[aria-selected="true"],.ds-tabs--on-card .ds-tab.is-selected{background:var(--card);color:var(--primary)}
+.ds-tabs--on-card .ds-tab[aria-selected="true"],.ds-tabs--on-card .ds-tab[aria-checked="true"],.ds-tabs--on-card .ds-tab.is-selected{background:var(--card);color:var(--primary)}
 /* La barre d'onglets DÉDUIT la carte comme le champ (même défaut d'opt-in que surface="card") :
    posée dans une carte, elle se creuse en --background et son onglet actif remonte au niveau
    de la carte. La prop onCard reste comme échappatoire explicite. */
 .ds-card .ds-tabs{background:var(--background)}
-.ds-card .ds-tabs .ds-tab[aria-selected="true"],.ds-card .ds-tabs .ds-tab.is-selected{background:var(--card);color:var(--primary)}
+.ds-card .ds-tabs .ds-tab[aria-selected="true"],.ds-card .ds-tabs .ds-tab[aria-checked="true"],.ds-card .ds-tabs .ds-tab.is-selected{background:var(--card);color:var(--primary)}
 .ds-tab:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+/* LA BARRE PLEINE LARGEUR — les onglets se partagent la largeur à parts égales ; le padding
+   latéral descend à --space-1 pour que quatre valeurs tiennent dans une colonne étroite. */
+.ds-tabs--block{display:flex;width:100%}
+.ds-tabs--block .ds-tab{flex:1;min-width:0;text-align:center;padding-inline:var(--space-1)}
+/* Désactivé et lecture seule — valent pour les deux modes (onglets et choix). En lecture
+   seule la valeur choisie reste lisible et focusable, les autres ne s'éclairent plus. */
+.ds-tab:disabled,.ds-tab.is-disabled{opacity:.5;cursor:not-allowed}
+.ds-tabs[aria-readonly="true"] .ds-tab{cursor:default}
+.ds-tabs[aria-readonly="true"] .ds-tab:not([aria-checked="true"]):not([aria-selected="true"]):hover{color:var(--text-muted)}
 .ds-footer{border-top:1px solid var(--border);background:var(--background);color:var(--text-secondary)}
 .ds-footer__inner{display:flex;flex-wrap:wrap;gap:var(--space-7);justify-content:space-between;padding-block:var(--space-7)}
 /* 20rem : lisibilité de la ligne de signature — voir .ds-empty__desc. */

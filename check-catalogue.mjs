@@ -8,7 +8,7 @@
  * citaient des icônes sorties du type — un agent qui les recopiait produisait du code qui
  * ne compile pas.
  *
- * SIX VÉRITÉS, vérifiées à chaque `npm run lint` :
+ * SEPT VÉRITÉS, vérifiées à chaque `npm run lint` :
  *   1. chaque composant exporté par src/index.ts a sa section `## <Nom>` dans
  *      docs/PROMPTS.md — un composant non documenté ne sera jamais bien utilisé ;
  *   2. chaque section de docs/PROMPTS.md correspond à un export réel — une section
@@ -22,7 +22,9 @@
  *      les deux dépôts. Une liste dont on annonce la taille doit voir sa taille vérifiée.
  *   6. aucun élément RETIRÉ ne revient — composant, sous-chemin, jeton ou classe. Un portage
  *      depuis une maquette ou un autre gabarit les réintroduit sans bruit : ils compilent,
- *      ils rendent, et plus personne ne sait qu'ils avaient été retirés exprès.
+ *      ils rendent, et plus personne ne sait qu'ils avaient été retirés exprès ;
+ *   7. chaque classe `.ds-*` citée dans « Classes sans composant » (docs/PROMPTS.md) existe
+ *      dans patterns.css — ces motifs n'ont ni type ni composant pour les tenir.
  *
  * « Composant » = le FICHIER : les sous-exports d'un même fichier (THead, Tr, Td…)
  * appartiennent à la section de leur composant (Table) et n'exigent pas la leur.
@@ -139,6 +141,21 @@ if (/brand-content/.test(lire('package.json'))) erreurs.push(
   }
 })('src/styles');
 
+/* ── 7 · les classes documentées sans composant existent ───────────────────── */
+/* La partie « Classes sans composant » de PROMPTS.md est le SEUL contrat de ces motifs : pas
+   de type, pas de composant pour trahir une classe renommée. Chaque `.ds-*` qu'elle cite (hors
+   blocs de code, qui ne font qu'illustrer) doit exister comme sélecteur dans patterns.css. */
+const partie = doc.split(/^# Classes sans composant$/m)[1] ?? '';
+if (!partie) erreurs.push(`docs/PROMPTS.md n'a plus de partie « # Classes sans composant ».`);
+const css = lire('src/styles/patterns.css');
+const prose = partie.replace(/```[\s\S]*?```/g, '');
+const citees = new Set([...prose.matchAll(/`\.(ds-[a-z0-9_-]+)`/g)].map(m => m[1]));
+for (const c of [...citees].sort()) {
+  if (!new RegExp(`\\.${c.replace(/[-]/g, '\\-')}(?![a-z0-9_-])`).test(css)) erreurs.push(
+    `docs/PROMPTS.md (« Classes sans composant ») cite \`.${c}\`, absente de patterns.css.\n`
+    + `      Une classe documentée qui n'existe pas fait écrire un balisage qui ne rend rien.`);
+}
+
 /* ── verdict ──────────────────────────────────────────────────────────────── */
 if (erreurs.length) {
   console.error(`\n✗ catalogue — ${erreurs.length} incohérence(s) entre le code et sa doc :\n`);
@@ -150,4 +167,4 @@ if (erreurs.length) {
 }
 console.log(`✓ catalogue — ${composants.size} composants exportés, ${sections.size} sections, `
   + `icônes de la doc toutes dans IconName, comptes « ${reel} composants » et `
-  + `« ${noms.size} glyphes » exacts partout`);
+  + `« ${noms.size} glyphes » exacts partout, ${citees.size} classes sans composant présentes`);

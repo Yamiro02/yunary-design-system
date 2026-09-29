@@ -74,7 +74,7 @@ couleur, `bg-*`, `w-*`…) — le dégradé meurt en silence. **Sans risque** : 
 ## Button
 
 L'action du système. `primary` porte le dégradé de marque et la lueur : c'est LE CTA de la
-vue — un seul par écran. Tout le reste est `secondary`, `ghost` ou `danger`.
+vue — un seul par écran. Tout le reste est `secondary`, `ghost`, `danger` ou `danger-soft`.
 
 **Ne pas l'utiliser** pour une action icône seule (c'est `IconButton`), ni pour un lien de
 navigation dans du texte (un `<a>` suffit).
@@ -84,12 +84,13 @@ navigation dans du texte (un `<a>` suffit).
 <Button variant="secondary" icon={<Icon name="play" />}>Voir la démo</Button>
 <Button variant="ghost" size="sm">Annuler</Button>
 <Button variant="danger" icon={<Icon name="triangle-alert" />}>Supprimer</Button>
+<Button variant="danger-soft" size="sm" icon={<Icon name="trash-2" />}>Retirer</Button>
 <Button loading>Génération…</Button>
 <Button as="a" href="/inscription">S'inscrire</Button>
 <Button variant="secondary" surface="card">Dans un conteneur qui n'est pas une Card</Button>
 ```
 
-- Props : `variant` (`primary·secondary·ghost·danger`) · `size` (`sm·md·lg`) · `surface`
+- Props : `variant` (`primary·secondary·ghost·danger·danger-soft`) · `size` (`sm·md·lg`) · `surface`
   (`auto·page·card`) · `icon` / `iconRight` · `loading` (spinner + désactivé) · `fullWidth`
   · `as` / `href`.
 - **`surface` déclare à la main la surface qui porte le bouton**, jumelle de celle
@@ -98,7 +99,12 @@ navigation dans du texte (un `<a>` suffit).
   qui n'a que l'apparence d'une carte. `page` force `--secondary` — inerte tant que
   `patterns.css` ne déduit pas la surface, indispensable le jour où il le fait : une
   déduction ne prévoit qu'un bouton posé SUR une carte, jamais sur un panneau imbriqué
-  dedans. Sans effet sur `ghost`, `primary` et `danger`.
+  dedans. Sans effet sur `ghost`, `primary`, `danger` et `danger-soft`.
+- **`variant="danger-soft"`** : l'action destructrice SECONDAIRE — retirer une photo, se
+  déconnecter. La recette de l'`IconButton` du même nom : fond `--pill-danger-bg`, texte
+  `--pill-danger-fg` (≥ 4,5:1 sur les deux porteuses), sans bordure ; le survol tire la plaque
+  vers le rouge. `danger` reste l'action destructrice UNIQUE et définitive d'une vue
+  (supprimer le compte).
 - Rayon toujours `--radius-md`. **Jamais un pill** — le pill est réservé aux badges.
 - Rail partagé : min-height 3rem (2.75rem sous 64rem). `lg` (3.25rem) = CTA de héros.
 - **Les icônes ne se dimensionnent pas au site d'appel** : le créneau du bouton s'en
@@ -633,15 +639,26 @@ l'`<input>` natif.
 <Input invalid defaultValue="pas-un-email" />
 <Input size="lg" placeholder="CTA de héros" />
 <Input unit="kg" inputMode="decimal" placeholder="72" />
+<FormField label="E-mail" htmlFor="mail3" help="Sert d'identifiant, ne se change pas.">
+  <Input id="mail3" readOnly defaultValue="toi@exemple.com" iconEnd={<Icon name="lock" />} />
+</FormField>
 ```
 
 - Props : `size` (`sm·md·lg`) · `invalid` · `surface` (`page` = fond `--secondary`, posé
-  à même le layout · `card` = fond `--background`, dans une Card) · `unit` + attributs
-  natifs.
+  à même le layout · `card` = fond `--background`, dans une Card) · `unit` · `iconEnd` +
+  attributs natifs (`readOnly` compris).
+- **`iconEnd`** : un glyphe DANS le champ, à droite, en sourdine, à 1rem (le créneau le
+  dimensionne). Décoratif (`aria-hidden`) : le sens — « ne se change pas » — se dit dans le
+  libellé ou l'aide du `FormField`. Avec `unit`, l'unité passe à gauche de l'icône.
+- **`readOnly`** : la valeur se lit, se sélectionne, se copie et reste dans l'ordre de
+  tabulation — au contraire de `disabled`, qui la sort du formulaire. Texte en
+  `--text-muted`, curseur neutre. Un champ verrouillé s'écrit `readOnly` + `iconEnd={<Icon
+  name="lock" />}` + une aide, jamais `disabled`.
 - **`unit`** : l'unité — « kg », « € », « min » — posée DANS le champ, à
   droite, en sourdine. **Trois caractères au plus** ; plus long, c'est un suffixe de
   libellé, pas une unité. Elle est `aria-hidden` : le libellé du `FormField` la nomme.
-- États rendus : repos, focus, invalide, désactivé — sur les deux surfaces.
+- États rendus : repos, focus, invalide, désactivé, lecture seule — sur les deux surfaces ;
+  avec unité, avec icône de fin.
 
 ## Radio
 
@@ -714,7 +731,7 @@ vertical uniquement. Même règle de `surface` que l'Input. `forwardRef` sur le
 ## Icon
 
 LE système d'icônes : Lucide, exclusivement. Jamais un emoji, jamais un SVG dessiné à la
-main. 48 glyphes typés (`IconName`) — un nom hors du type est une erreur TypeScript, et
+main. 49 glyphes typés (`IconName`) — un nom hors du type est une erreur TypeScript, et
 c'est voulu.
 
 **Ne pas** chercher d'icône de plateforme sociale ici (YouTube, Instagram…) : ce sont des
@@ -737,7 +754,7 @@ enregistrée `inherits: false`, une règle de conteneur est inerte, et c'est vou
 ```
 
 **Ce que le catalogue ne couvre pas se passe en `glyph`.** Lucide compte ~1500 tracés ;
-le catalogue en cure 48 glyphes. Pour le reste, l'app importe le tracé et le socle lui applique
+le catalogue en cure 49 glyphes. Pour le reste, l'app importe le tracé et le socle lui applique
 ses propres règles — même grille, même épaisseur. Plus besoin de publier une version du
 design system pour une icône.
 
@@ -862,16 +879,31 @@ Rectangle (barre 0.875rem · onglet `--radius-sm`) — jamais un pill, jamais fo
 fond.
 
 **Ne pas l'utiliser** pour de la navigation entre pages (c'est `Navbar` ou `Sidebar`) :
-Tabs filtre un contenu en place.
+Tabs filtre un contenu en place — ou, en `mode="choice"`, choisit une valeur.
 
 ```tsx
 <Tabs value={tab} onChange={setTab}
   items={[{ value: 'all', label: 'Tout' }, { value: 'build', label: 'Build' }]} />
 <Tabs onCard value={tab} onChange={setTab} items={[{ value: 'all', label: 'Tout' }]} />
+<Tabs mode="choice" fullWidth aria-label="Niveau de langue" value={niveau} onChange={setNiveau}
+  items={[{ value: 'soutenu', label: 'Soutenu' }, { value: 'naturel', label: 'Naturel' }, { value: 'familier', label: 'Familier' }]} />
 ```
 
-- Props : `items` (`{value, label}[]`) · `value` / `onChange` (contrôlé) · `onCard`.
-- États rendus : onglet au repos, survolé, sélectionné (`aria-selected`), focus-visible.
+- Props : `items` (`{value, label, disabled?}[]`) · `value` / `onChange` (contrôlé) · `onCard` ·
+  `mode` (`tabs·choice`) · `fullWidth` · `disabled` · `readOnly` (mode `choice`).
+- **`mode="choice"`** — choisir UNE valeur parmi trois ou quatre (un niveau, un degré), avec
+  le rendu de la barre d'onglets. Sémantique d'un groupe de radios : `radiogroup` / `radio` +
+  `aria-checked`, un seul arrêt de tabulation (la valeur choisie), `←` `→` `↑` `↓` déplacent
+  le choix, `Début` / `Fin` vont aux extrémités. Le groupe se NOMME : `aria-label` ou
+  `aria-labelledby`. Au-delà de quatre valeurs ou pour des libellés longs : des tuiles
+  compactes (`.ds-tile--compact`, voir « Classes sans composant »).
+- **`fullWidth`** : la barre prend la largeur, les onglets se la partagent à parts égales
+  (padding latéral réduit à `--space-1` pour tenir dans une colonne étroite).
+- **`readOnly`** : la valeur reste lisible et focusable (`aria-readonly`), ni le clic ni le
+  clavier ne la changent. **`disabled`** : tout le groupe inerte ; un item seul par
+  `items[i].disabled` (sauté par les flèches).
+- États rendus : onglet au repos, survolé, sélectionné (`aria-selected` / `aria-checked`),
+  focus-visible, désactivé, lecture seule.
 
 ---
 
@@ -931,9 +963,12 @@ d'actions (c'est `.ds-dropdown`, voir « Classes sans composant »).
 
 # Classes sans composant
 
-Deux motifs du socle n'ont **pas** de composant React : leurs classes sont stables et
-documentées ici, et une app écrit le balisage elle-même (le site vitrine les emploie ainsi).
-`check-catalogue.mjs` n'exige pas de section `##` pour eux, puisqu'ils ne sont pas exportés.
+Trois motifs du socle n'ont **pas** de composant React — la tuile cochable (et sa forme
+compacte), l'encart de valeur, le menu déroulant. Leurs classes sont stables et documentées
+ici ; une app écrit le balisage elle-même, en React comme en Preact (écrans MCP) ou en HTML
+(site vitrine). `check-catalogue.mjs` n'exige pas de section `##` pour eux, puisqu'ils ne sont
+pas exportés, mais il vérifie que chaque classe `.ds-*` citée dans cette partie existe dans
+`patterns.css`.
 
 **La tuile cochable — `.ds-tile`.** UNE anatomie pour tous les choix en tuile. Fond
 `--background`, radius md, filet 1,5 px ; cochée : filet `--primary` + plaque `--accent`, le
@@ -963,6 +998,70 @@ rond) rend dedans, dans un `<span>` — jamais un `<label>` dans un `<label>`, j
   `.ds-choice__box` avec une coche `<Icon name="check">` dedans.
 - États : repos, survol, cochée (lue par `:has(input:checked)`), focus-visible (anneau sur la
   tuile), désactivée. Les aides `.is-hover` / `.is-checked` / `.is-focus` servent la vitrine.
+
+**La tuile compacte et la pastille de choix — `.ds-tile--compact`, `.ds-tile--chip`.** La même
+tuile pour une LISTE de choix, sur une ligne. `--compact` garde la case : un choix simple parmi
+une dizaine (une niche). `--compact` + `--chip` en fait une pastille en pilule pour un choix
+multiple court et nombreux (des passions, des vécus, un humour) : la case est masquée
+visuellement mais l'`<input>` reste focusable, annoncé et coché par Espace ; une fois cochée, la
+pastille prend un filet `--primary` et affiche `.ds-tile__check` en tête. Un glyphe de tête
+optionnel, `.ds-tile__lead` (`aria-hidden`), porte une `<Icon>` — ou un emoji quand l'emoji EST
+la donnée affichée (l'emoji d'une passion), jamais une icône d'interface. **La limite `max` d'un
+choix multiple reste à l'app** (désactiver les pastilles restantes, dire pourquoi).
+
+```html
+<div role="radiogroup" aria-label="Ta niche" class="grid gap-space-3">
+  <label class="ds-tile ds-tile--compact">
+    <span class="ds-choice">
+      <input type="radio" name="niche" value="tech" />
+      <span class="ds-choice__box ds-choice__box--radio" aria-hidden="true"><span class="ds-choice__dot"></span></span>
+    </span>
+    <span class="ds-tile__main"><span class="ds-tile__title">Tech & IA</span></span>
+  </label>
+</div>
+
+<fieldset>
+  <legend class="ds-label">Passions</legend>
+  <label class="ds-tile ds-tile--compact ds-tile--chip">
+    <span class="ds-tile__check" aria-hidden="true"><!-- <Icon name="check" strokeWidth={3} /> --></span>
+    <span class="ds-tile__lead" aria-hidden="true">✈️</span>
+    <span class="ds-choice">
+      <input type="checkbox" name="passions" value="voyage" />
+      <span class="ds-choice__box" aria-hidden="true"></span>
+    </span>
+    <span class="ds-tile__main"><span class="ds-tile__title">Voyage</span></span>
+  </label>
+</fieldset>
+```
+
+- Classes : `.ds-tile--compact` · `.ds-tile--chip` (avec `--compact`) · `.ds-tile__lead` ·
+  `.ds-tile__check` (rendu seulement cochée) · `.is-readonly` sur la tuile ou
+  `aria-readonly="true"` sur l'input (lecture seule : focusable, le survol ne l'invite plus ;
+  EMPÊCHER le changement reste à l'app).
+- États : repos, survol, coché, focus-visible (anneau sur la tuile), désactivé, lecture seule.
+
+**L'encart de valeur — `.ds-inset`.** Une valeur posée DANS une carte : une bio, une réponse, une
+citation relevée. Une ligne de texte sur une surface creusée, rayon md, action facultative à
+droite. Ce n'est pas une `Card` (on n'imbrique pas une carte dans une carte), ni un `EmptyState`
+(colonne centrée à pastille) : c'est l'équivalent en lecture d'un champ, et sa surface se
+DÉDUIT comme la sienne — `--secondary` sur la page, `--background` dans une carte, une modale ou
+un menu.
+
+```html
+<p class="ds-inset"><span class="ds-inset__value">Développeuse indépendante, outils internes.</span></p>
+<div class="ds-inset ds-inset--dashed">
+  <span class="ds-inset__value">Comment tu en es arrivé là, en deux ou trois phrases.</span>
+  <a class="ds-inset__action" href="/profil#histoire">Compléter</a>
+</div>
+<p class="ds-inset ds-inset--bare"><span class="ds-inset__value">« Je vais être direct. »</span></p>
+```
+
+- Classes : `.ds-inset` (bordé : une valeur remplie) · `--dashed` (un champ VIDE, « à
+  compléter » : filet pointillé, texte en sourdine) · `--bare` (sans filet : une matière en
+  lecture seule) · `__value` · `__action` (un lien ou un `Button` `sm`, qui porte ses propres
+  états : survol, focus-visible, désactivé).
+- L'encart ne se clique pas en entier : l'action est l'élément interactif. Un titre ou une
+  provenance au-dessus (« Détecté par… », « À compléter ») est une composition de l'app.
 
 **Le menu déroulant — `.ds-dropdown`.** Panneau sur `--popover`, rayon lg, `--shadow-lg`,
 items éclairés sur `--surface-alt`, rail d'item à 44 px. `role="menu"` sur le panneau,

@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import type { InputHTMLAttributes, JSX } from 'react';
+import type { InputHTMLAttributes, JSX, ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 
 /**
@@ -21,10 +21,17 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
    * une unité. `aria-hidden` : c'est au libellé du FormField de la nommer.
    */
   unit?: string;
+  /**
+   * L'icône de fin — un glyphe DANS le champ, à droite (le cadenas d'un champ verrouillé :
+   * `<Icon name="lock" />`). Décorative (`aria-hidden`) : le sens se dit dans le libellé ou
+   * l'aide du FormField. Sa taille est posée par le créneau (1rem). Avec `unit`, l'unité se
+   * place à gauche de l'icône.
+   */
+  iconEnd?: ReactNode;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
-  size = 'md', invalid = false, surface = 'page', unit, className = '', ...rest
+  size = 'md', invalid = false, surface = 'page', unit, iconEnd, className = '', ...rest
 }: InputProps, ref): JSX.Element {
   // surface: 'page' (default) = the input sits directly on the layout (fill --secondary) · 'card' = inside a card (fill --background).
   // Since the surface-inference rule in patterns.css, a field inside a Card, Modal, .ds-dropdown menu or DatePicker pop deduces --background by itself — the prop is only needed for other containers.
@@ -39,13 +46,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
     className,
   );
   const champ = <input ref={ref} className={cls} aria-invalid={invalid || undefined} {...rest} />;
-  if (!unit) return champ;
-  /* L'enveloppe n'existe QUE si `unit` est passé : sans elle, le DOM d'hier — un <input>
-     nu — ne bouge pas d'un nœud. */
+  if (!unit && !iconEnd) return champ;
+  /* L'enveloppe n'existe QUE si `unit` ou `iconEnd` est passé : sans eux, le champ reste un
+     <input> nu. */
   return (
-    <span className="ds-input-unit">
+    <span className={cn('ds-input-unit', Boolean(iconEnd) && 'ds-input-unit--icon')}>
       {champ}
-      <span className="ds-input-unit__label" aria-hidden="true">{unit}</span>
+      {unit ? <span className="ds-input-unit__label" aria-hidden="true">{unit}</span> : null}
+      {iconEnd ? <span className="ds-input-unit__icon" aria-hidden="true">{iconEnd}</span> : null}
     </span>
   );
 });

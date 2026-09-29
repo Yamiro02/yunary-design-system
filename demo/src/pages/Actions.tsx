@@ -1,7 +1,7 @@
 import { Button, Icon, IconButton } from '@yunary/ds';
 import { Block, Row, Section } from '../ui';
 
-const VARIANTS = ['primary', 'secondary', 'ghost', 'danger'] as const;
+const VARIANTS = ['primary', 'secondary', 'ghost', 'danger', 'danger-soft'] as const;
 /* `accent` n'existe que sur IconButton — Button attend son deuxième appelant. */
 const ICON_VARIANTS = ['primary', 'secondary', 'ghost', 'danger', 'danger-soft', 'accent'] as const;
 
@@ -9,12 +9,13 @@ export function ActionsPage() {
   return (
     <div className="flex flex-col gap-space-7">
       <Section title="Button" note="Rayon toujours --radius-md. Jamais un pill. Un seul bouton primaire par vue.">
-        <Block label="Variantes" hint="primary porte seul le glow de marque ; secondary, ghost et danger n'en ont aucun.">
+        <Block label="Variantes" hint="primary porte seul le glow de marque ; secondary, ghost, danger et danger-soft n'en ont aucun. danger-soft = l'action destructrice secondaire (retirer, se déconnecter), la recette de l'IconButton du même nom ; danger reste l'action destructrice unique.">
           <Row>
             <Button variant="primary">On build une app</Button>
             <Button variant="secondary">Voir la chaîne</Button>
             <Button variant="ghost">Annuler</Button>
             <Button variant="danger">Supprimer</Button>
+            <Button variant="danger-soft" icon={<Icon name="trash-2" />}>Retirer</Button>
           </Row>
         </Block>
 

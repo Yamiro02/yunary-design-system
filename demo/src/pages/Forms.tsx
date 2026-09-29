@@ -15,11 +15,14 @@ const VIGNETTE = 'data:image/svg+xml;utf8,' + encodeURIComponent(
 type TuileProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'title'> & {
   radio?: boolean; title: ReactNode; description?: ReactNode; meta?: ReactNode; media?: ReactNode;
   start?: boolean; etat?: string; children?: ReactNode;
+  compact?: boolean; chip?: boolean; lead?: ReactNode;
 };
-function Tuile({ radio = false, title, description, meta, media, start = false, etat, disabled, children, ...rest }: TuileProps) {
+function Tuile({ radio = false, title, description, meta, media, start = false, etat, disabled, children, compact = false, chip = false, lead, ...rest }: TuileProps) {
   return (
-    <label className={cn('ds-tile', Boolean(media) && 'ds-tile--media', !media && start && 'ds-tile--start', disabled && 'is-disabled', etat)}>
+    <label className={cn('ds-tile', Boolean(media) && 'ds-tile--media', !media && start && 'ds-tile--start', (compact || chip) && 'ds-tile--compact', chip && 'ds-tile--chip', disabled && 'is-disabled', etat)}>
       {media ? <span className="ds-tile__media" aria-hidden="true">{media}</span> : null}
+      {chip ? <span className="ds-tile__check" aria-hidden="true"><Icon name="check" strokeWidth={3} /></span> : null}
+      {lead ? <span className="ds-tile__lead" aria-hidden="true">{lead}</span> : null}
       <span className="ds-choice">
         <input type={radio ? 'radio' : 'checkbox'} disabled={disabled} {...rest} />
         {radio
@@ -46,6 +49,9 @@ export function FormsPage() {
   const [checked, setChecked] = useState(true);
   const [niveau, setNiveau] = useState('debutant');
   const [formule, setFormule] = useState<'solo' | 'equipe' | 'both'>('both');
+  const [domaine, setDomaine] = useState('produit');
+  const [themes, setThemes] = useState<string[]>(['Voyage', 'Écriture']);
+  const basculer = (v: string) => setThemes(l => (l.includes(v) ? l.filter(x => x !== v) : [...l, v]));
   const [sombre, setSombre] = useState(true);
   const [date, setDate] = useState<Date | undefined>(new Date(2026, 8, 24));
 
@@ -65,6 +71,7 @@ export function FormsPage() {
             <Input className="is-focus" defaultValue="Focus" />
             <Input invalid defaultValue="pas-un-email" />
             <Input disabled defaultValue="Indisponible" />
+            <Input readOnly defaultValue="Lecture seule — se sélectionne, reste focusable" />
           </Stack>
         </Block>
         <Block label="Surfaces" hint="page (défaut) = le champ est posé à même le layout, fond --secondary — comme la navbar, les onglets et la recherche · card = dans une card, fond --background.">
@@ -78,6 +85,17 @@ export function FormsPage() {
             <Input unit="kg" inputMode="decimal" placeholder="72" />
             <Input unit="€" inputMode="decimal" placeholder="49" />
             <Input unit="min" inputMode="numeric" invalid defaultValue="beaucoup" />
+          </Stack>
+        </Block>
+        <Block label="Icône de fin" hint="iconEnd pose un glyphe dans le champ, à droite, en sourdine, à 1rem. Décoratif (aria-hidden) : le sens se dit dans le libellé ou l'aide. Le cas type : le champ verrouillé, readOnly + cadenas.">
+          <Stack>
+            <FormField label="E-mail" htmlFor="demo-verrou" help="Sert d'identifiant, ne se change pas.">
+              <Input id="demo-verrou" type="email" readOnly defaultValue="julien@exemple.com" iconEnd={<Icon name="lock" />} />
+            </FormField>
+            <Input placeholder="Rechercher" iconEnd={<Icon name="search" />} />
+            <Input className="is-focus" defaultValue="Focus" iconEnd={<Icon name="lock" />} />
+            <Input disabled defaultValue="Désactivé" iconEnd={<Icon name="lock" />} />
+            <Input unit="€" inputMode="decimal" placeholder="49" iconEnd={<Icon name="lock" />} />
           </Stack>
         </Block>
       </Section>
@@ -195,6 +213,47 @@ export function FormsPage() {
               <Tuile name="etat" value="c" title="Cochée" description="Filet --primary, plaque --accent." defaultChecked />
               <Tuile name="etat" value="d" title="Focus" description="L'anneau est porté par la tuile." etat="is-focus" />
               <Tuile name="etat" value="e" title="Désactivée" description="Inerte, à 50 %." disabled />
+            </div>
+          </Block>
+        </Grid>
+      </Section>
+
+      <Section title="Tuile compacte et pastille de choix — .ds-tile--compact, .ds-tile--chip" note="La même tuile pour une LISTE de choix : une ligne, un glyphe de tête optionnel (.ds-tile__lead). --compact garde la case (choix simple : une valeur parmi une dizaine). --compact + --chip en fait une pastille en pilule dont la case est masquée visuellement — l'input reste focusable et annoncé — et la coche .ds-tile__check apparaît en tête une fois cochée. La limite max d'un choix multiple reste à l'app.">
+        <Grid cols={2}>
+          <Block label="--compact — choix simple, input radio" hint="Libellé --text-control/500, --text-secondary au repos, encre une fois coché. Grille auto-fill à composer par l'app.">
+            <div role="radiogroup" aria-label="Ton domaine" className="grid grid-cols-1 gap-space-3 md:grid-cols-2">
+              {['Produit', 'Design', 'Données', 'Infrastructure', 'Marketing', 'Autre'].map(d => (
+                <Tuile key={d} compact radio name="domaine" value={d.toLowerCase()} title={d}
+                  checked={domaine === d.toLowerCase()} onChange={() => setDomaine(d.toLowerCase())} />
+              ))}
+            </div>
+          </Block>
+          <Block label="--compact --chip — choix multiple, glyphe de tête" hint="Pastille en pilule, case masquée, coche en tête une fois cochée. Le glyphe de tête est une Icon, ou un emoji quand l'emoji EST la donnée (ici « Écriture »), jamais une icône d'interface.">
+            <div className="flex flex-wrap gap-space-2">
+              {([['Voyage', <Icon key="i" name="rocket" />], ['Écriture', '✍️'], ['Lecture', <Icon key="i" name="book-open" />], ['Musique', null], ['Sport', <Icon key="i" name="dumbbell" />], ['Cinéma', <Icon key="i" name="video" />]] as const).map(([v, g]) => (
+                <Tuile key={v} chip name="themes" value={v} title={v} lead={g}
+                  checked={themes.includes(v)} onChange={() => basculer(v)} />
+              ))}
+            </div>
+          </Block>
+          <Block label="États — --compact" hint="Repos, survol, coché, focus-visible (anneau sur la tuile), désactivé, lecture seule (.is-readonly : le survol ne l'invite plus, l'app ignore le changement).">
+            <div className="flex flex-col gap-space-3">
+              <Tuile compact radio name="etat-c" value="a" title="Repos" />
+              <Tuile compact radio name="etat-c" value="b" title="Survol" etat="is-hover" />
+              <Tuile compact radio name="etat-c" value="c" title="Coché" defaultChecked />
+              <Tuile compact radio name="etat-c2" value="d" title="Focus" etat="is-focus" />
+              <Tuile compact radio name="etat-c3" value="e" title="Désactivé" disabled />
+              <Tuile compact radio name="etat-c4" value="f" title="Lecture seule, coché" etat="is-readonly" aria-readonly="true" checked readOnly />
+            </div>
+          </Block>
+          <Block label="États — --chip" hint="Mêmes états. Cochée : filet --primary, fond inchangé, coche en tête.">
+            <div className="flex flex-wrap gap-space-2">
+              <Tuile chip name="etat-p" value="a" title="Repos" />
+              <Tuile chip name="etat-p" value="b" title="Survol" etat="is-hover" />
+              <Tuile chip name="etat-p" value="c" title="Cochée" defaultChecked />
+              <Tuile chip name="etat-p" value="d" title="Focus" etat="is-focus" />
+              <Tuile chip name="etat-p" value="e" title="Désactivée" disabled />
+              <Tuile chip name="etat-p" value="f" title="Lecture seule" etat="is-readonly" aria-readonly="true" checked readOnly />
             </div>
           </Block>
         </Grid>
