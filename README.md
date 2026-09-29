@@ -5,8 +5,7 @@ générique — structure, comportements, échelles, rail de contrôles, motion,
 React + TypeScript, **zéro couleur** — et la **marque Yunary**, qui porte les couleurs, les
 polices, les dégradés et la lueur.
 
-C'est le socle commun de Yunary : la coquille web (`@yunary/shell` et le hub) installe ce
-paquet, les écrans MCP (`@yunary/mcp-ui`) en importent les jetons, et le site vitrine en
+C'est le socle commun de Yunary : la coquille web (le hub) installe ce paquet, les écrans MCP (`@yunary/mcp-ui`) en importent les jetons, et le site vitrine en
 porte une copie du CSS. Tous montent la même marque, pour que chaque surface se ressemble
 sans qu'on redécide à chaque fois.
 

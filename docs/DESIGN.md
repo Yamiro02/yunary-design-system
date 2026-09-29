@@ -11,7 +11,7 @@ valent pour toutes, et c'est ce fichier qui les empêche de diverger.
 **Nom :** Yunary
 **Ce que c'est :** le socle de design de Yunary, la suite d'outils méthodiques pour
 créateurs de contenu intégrée dans Claude — les écrans MCP (`@yunary/mcp-ui`), la coquille
-web (`@yunary/shell` et le hub : compte, offre, paiement) et le site vitrine. Toutes ces
+web (le hub : compte, offre, paiement) et le site vitrine. Toutes ces
 surfaces montent la même marque.
 **Pour qui :** des créateurs Instagram/TikTok, plusieurs fois par semaine — et, côté code,
 chaque personne qui monte un écran Yunary sans avoir lu le CSS.
@@ -26,7 +26,7 @@ en surface.
 
 ## 2. Support et contexte
 
-**Où ça vit :** la coquille web (shell + hub), les écrans MCP et le site vitrine. Chaque
+**Où ça vit :** la coquille web (le hub), les écrans MCP et le site vitrine. Chaque
 surface monte exactement deux imports — `@yunary/ds/core.css` puis
 `@yunary/ds/brand-yunary.css` (et `@yunary/ds/theme.css` côté CSS pour une app Tailwind).
 Aucune surface ne redéclare un jeton de marque : une divergence locale est un bug. Un écran
